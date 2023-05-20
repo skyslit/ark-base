@@ -4,26 +4,15 @@ import "antd/dist/antd.css";
 import MainUIModule from "./modules/main/ui.module";
 
 export default createReactApp(({ use, useModule }) => {
-  const { useRouteConfig } = use(Frontend);
+  const { useRouteConfig, useComponent } = use(Frontend);
 
   useModule("main", MainUIModule);
 
   useRouteConfig("default", () => [
     {
-      path: "*",
+      path: "/admin/:dynamics_path*",
       hideInMenu: true,
-      component: () => {
-        return (
-          <iframe
-            src="https://skyslit-web.firebaseapp.com/research/ark/boilerplate"
-            style={{
-              width: "100vw",
-              height: "100vh",
-              border: "none",
-            }}
-          />
-        );
-      },
+      component: useComponent("main/data-explorer"),
     },
   ]);
 });
