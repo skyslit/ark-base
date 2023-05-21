@@ -2,8 +2,8 @@ import { Backend } from "@skyslit/ark-backend";
 import { createModule } from "@skyslit/ark-core";
 
 export default createModule(({ use }) => {
-  const { enablePowerServer } = use(Backend);
+  const { enableDynamicsV2Services } = use(Backend);
   console.log("api.module.ts loaded");
 
-  enablePowerServer();
+  enableDynamicsV2Services();
 });

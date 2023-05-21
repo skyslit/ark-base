@@ -13,10 +13,10 @@ import {
 } from "antd";
 import { Folder } from "../icons/global-icons";
 import { Link } from "react-router-dom";
-import FileIcon from "./../icons/file-icon.png";
+import FileIcon from "../icons/file-icon.png";
+import { PropetriesProvider } from "@skyslit/ark-frontend/build/dynamics-v2";
 
 const { TabPane } = Tabs;
-const { Option } = Select;
 
 export default (props: any) => {
   const { title, item, fullPath, onDelete, onRename } = props;
@@ -52,6 +52,14 @@ export default (props: any) => {
     }
 
     return DefaultItemIcon;
+  }, [customType]);
+
+  const MetaEditor = React.useMemo(() => {
+    if (customType?.metaEditor) {
+      return customType.metaEditor;
+    }
+
+    return () => null;
   }, [customType]);
 
   const rename = React.useCallback(
@@ -168,7 +176,7 @@ export default (props: any) => {
                 ref={(e) => {
                   if (e?.focus) {
                     e.focus();
-                    document.execCommand("selectAll", false, null);
+                    document.execCommand("selectAll", false, undefined);
                   }
                 }}
                 contentEditable={isRenaming === false}
@@ -197,10 +205,20 @@ export default (props: any) => {
         </Link>
       </Dropdown>
       <Modal
+        bodyStyle={{ padding: "0px 18px" }}
         visible={modalVisible}
         title={
-          <span>
-            <Folder /> New Folder
+          <span
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <span>
+              <Icon style={{ fontSize: 25, width: 25, height: 25 }} />
+            </span>
+            <span style={{ marginLeft: 8 }}>{item.name}</span>
           </span>
         }
         onCancel={handleCloseModal}
@@ -218,45 +236,17 @@ export default (props: any) => {
           </div>,
         ]}
       >
-        <Tabs>
-          <TabPane tab="Properties" key="properties">
-            <div style={{ marginBottom: "16px" }}>
-              <label htmlFor="textField">Text Field:</label>
-              <Input
-                id="textField"
-                placeholder="Enter Text"
-                style={{ marginTop: 10 }}
-              />
-            </div>
-            <div style={{ marginBottom: "16px" }}>
-              <label htmlFor="dropdown">Dropdown:</label>
-              <Select
-                placeholder="Select an option"
-                style={{ width: "100%", marginTop: 10 }}
-              >
-                <Option value="option1">Option 1</Option>
-                <Option value="option2">Option 2</Option>
-                <Option value="option3">Option 3</Option>
-              </Select>
-            </div>
-            <div style={{ marginBottom: "16px" }}>
-              <label htmlFor="description">Long text:</label>
-              <Input.TextArea
-                placeholder="Description"
-                rows={4}
-                maxLength={133}
-                style={{ marginTop: 10 }}
-              />
-            </div>
-          </TabPane>
+        <PropetriesProvider>
+          <Tabs>
+            <TabPane tab="Meta" key="meta">
+              <MetaEditor />
+            </TabPane>
 
-          <TabPane disabled tab="Permissions" key="permissions">
-            {/* Permissions content goes here */}
-          </TabPane>
-          <TabPane disabled tab="Details" key="details">
-            {/* Details content goes here */}
-          </TabPane>
-        </Tabs>
+            <TabPane tab="Security" key="security">
+              {/* Permissions content goes here */}
+            </TabPane>
+          </Tabs>
+        </PropetriesProvider>
       </Modal>
     </>
   );

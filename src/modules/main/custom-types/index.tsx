@@ -5,7 +5,8 @@ import {
   FileEditor,
   createSchema,
 } from "@skyslit/ark-frontend/build/dynamics-v2";
-import { Button, Col, Input, Row } from "antd";
+import { Button, Col, Input, Row, Select } from "antd";
+const { Option } = Select;
 
 function ProductForm() {
   const file = useFile();
@@ -59,18 +60,6 @@ function CertForm() {
       </Col>
     </Row>
   );
-  // return (
-  //     <div>
-  //         <label>Title</label>
-  //         <Input value={(file.cms.content as any).title} onChange={(e) => file.cms.updateKey('title', e.target.value)} />
-
-  //         <label>Year</label>
-  //         <Input value={(file.cms.content as any).year} onChange={(e) => file.cms.updateKey('year', e.target.value)} />
-
-  //         <label>Univ</label>
-  //         <Input value={(file.cms.content as any).univ} onChange={(e) => file.cms.updateKey('univ', e.target.value)} />
-  //     </div>
-  // )
 }
 
 export function initialiseCustomTypes() {
@@ -111,6 +100,40 @@ export function initialiseCustomTypes() {
         }}
       />
     ),
+    metaEditor: () => {
+      return (
+        <>
+          <div style={{ marginBottom: "16px" }}>
+            <label htmlFor="textField">Text Field:</label>
+            <Input
+              id="textField"
+              placeholder="Enter Text"
+              style={{ marginTop: 10 }}
+            />
+          </div>
+          <div style={{ marginBottom: "16px" }}>
+            <label htmlFor="dropdown">Dropdown:</label>
+            <Select
+              placeholder="Select an option"
+              style={{ width: "100%", marginTop: 10 }}
+            >
+              <Option value="option1">Option 1</Option>
+              <Option value="option2">Option 2</Option>
+              <Option value="option3">Option 3</Option>
+            </Select>
+          </div>
+          <div style={{ marginBottom: "16px" }}>
+            <label htmlFor="description">Long text:</label>
+            <Input.TextArea
+              placeholder="Description"
+              rows={4}
+              maxLength={133}
+              style={{ marginTop: 10 }}
+            />
+          </div>
+        </>
+      );
+    },
     toolkit: {
       Renderer: () => {
         return (
