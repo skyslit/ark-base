@@ -1,0 +1,385 @@
+.recovery-page-wrapper {
+  display: flex;
+  .recovery-page-first-section {
+    flex: 1;
+    padding: 95px;
+    background-color: #fff;
+    @media (min-width: 0px) and (max-width: 768px) {
+      padding: 42px 29px;
+      }
+    .divider{
+      @media (min-width: 0px) and (max-width: 768px) {
+        display: none;
+      }
+    }
+    .back-btn-section{
+      @media (min-width: 0px) and (max-width: 768px) {
+        padding-top: 69px;
+      }
+    }
+    .reset-password-text-div{
+      margin-top: 20px;
+      @media (min-width: 0px) and (max-width: 768px) {
+         padding-bottom: 15px;
+      }
+      .reset-password-text{
+        font-size: 25px;
+        font-weight: 500;
+         @media (min-width: 0px) and (max-width: 768px) {
+          font-size: 20px;
+          color: #222222;
+          font-weight: 700;
+        }
+      } 
+    }
+    .recovery-form-section{
+      margin-top: 10px;
+      @media (min-width: 0px) and (max-width: 768px) {
+        margin-top: unset;
+      }
+      .provide-email-text{
+        color: #2F2F2F;
+        font-weight: 500;
+        font-size: 12px;
+            margin-bottom: 10px;
+      }
+      .reset-password-btn{
+        display: flex;
+        margin-top: 30px;
+        @media (min-width: 0px) and (max-width: 768px) {
+          justify-content: flex-end;
+        }
+        .reset-button{
+          color: #FFFFFF;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 11px;
+          border-color: unset;
+          background: #2e2e2e;
+          margin-top: 8px;
+          font-weight: 500;
+          padding: 22px 75px;
+           &:hover {
+            opacity: 0.9;
+        }
+        &:active {
+            transform: scale(0.98);
+        }
+        &:disabled {
+            opacity:0.5;
+        } 
+          @media (min-width: 0px) and (max-width: 768px) {
+            margin-top: unset;
+            padding: 22px 26px;
+          }
+        }
+      }
+      .ant-divider {
+        border-top: 1px solid #bebebe;
+      }
+      
+      .ant-input {
+        border-radius: 11px;
+        margin-top: 8px;
+        height: 45px;
+        @media (min-width: 0px) and (max-width: 768px) {
+          border-radius: 4px;
+          margin-top: 15px;
+          height: 50px;
+        }
+      }
+    }
+  }
+  .recovery-page-second-section {
+    flex: 2;
+    @media (min-width: 0px) and (max-width: 992px) {
+      flex: unset;
+      display: none;
+    }
+  }
+}
+.verification-state-wrapper {
+  display: flex;
+  .verification-state-first-section {
+    flex: 1;
+    padding: 95px;
+    background-color: #fff;
+    @media (min-width: 0px) and (max-width: 768px) {
+      padding: 42px 29px;
+      }
+    .divider{
+      @media (min-width: 0px) and (max-width: 768px) {
+        display: none;
+      }
+    }
+    .back-btn-section{
+      @media (min-width: 0px) and (max-width: 768px) {
+        padding-top: 69px;
+      }
+    }
+    .reset-password-text-div{
+      margin-top: 20px;
+      @media (min-width: 0px) and (max-width: 768px) {
+         padding-bottom: 15px;
+      }
+      .reset-password-text{
+        font-size: 25px;
+        font-weight: 500;
+         @media (min-width: 0px) and (max-width: 768px) {
+          font-size: 20px;
+          color: #222222;
+          font-weight: 700;
+        }
+      } 
+    }
+    .reset-form-section{
+      margin-top: 10px;
+      @media (min-width: 0px) and (max-width: 768px) {
+        margin-top: unset;
+      }
+      .provide-email-text{
+        color: #2F2F2F;
+        font-weight: 500;
+        font-size: 12px;
+        margin-bottom: 10px;
+      }
+      .reset-password-btn{
+        display: flex;
+        margin-top: 15px;
+        @media (min-width: 0px) and (max-width: 768px) {
+          justify-content: flex-end;
+        }
+        .reset-button{
+          color: #FFFFFF;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 11px;
+          border-color: unset;
+          background: #2e2e2e;
+          margin-top: 8px;
+          font-weight: 500;
+          padding: 22px 42px;
+           &:hover {
+            opacity: 0.9;
+        }
+        &:active {
+            transform: scale(0.98);
+        }
+        &:disabled {
+            opacity:0.5;
+        } 
+          @media (min-width: 0px) and (max-width: 768px) {
+            margin-top: unset;
+            padding: 22px 26px;
+          }
+        }
+      }
+      .ant-divider {
+        border-top: 1px solid #bebebe;
+      }
+      
+      .ant-input {
+        border-radius: 11px;
+        margin-top: 20px;
+        height: 45px;
+        @media (min-width: 0px) and (max-width: 768px) {
+          border-radius: 4px;
+          margin-top: 15px;
+          height: 50px;
+        }
+      }
+      
+    }
+  }
+  .recovery-page-second-section {
+    flex: 2;
+    @media (min-width: 0px) and (max-width: 992px) {
+      flex: unset;
+      display: none;
+    }
+  }
+}
+.new-password-state-wrapper {
+  display: flex;
+  .new-password-state-section{
+    flex: 1;
+    padding: 95px;
+    background-color: #fff;
+    @media (min-width: 0px) and (max-width: 768px) {
+      padding: 42px 29px;
+      }
+    .divider{
+      @media (min-width: 0px) and (max-width: 768px) {
+        display: none;
+      }
+    }
+    .back-btn-section{
+      @media (min-width: 0px) and (max-width: 768px) {
+        padding-top: 69px;
+      }
+    }
+    .reset-password-text-div{
+      margin-top: 20px;
+      @media (min-width: 0px) and (max-width: 768px) {
+         padding-bottom: 15px;
+      }
+      .reset-password-text{
+        font-size: 25px;
+        font-weight: 500;
+         @media (min-width: 0px) and (max-width: 768px) {
+          font-size: 20px;
+          color: #222222;
+          font-weight: 700;
+        }
+      } 
+    }
+    .form-section{
+      margin-top: 10px;
+      @media (min-width: 0px) and (max-width: 768px) {
+        margin-top: unset;
+      }
+      .provide-password-text{
+        color: #2F2F2F;
+        font-weight: 500;
+        font-size: 12px;
+        margin-bottom: 5px;
+      }
+      .provide-retype-password-text{
+        color: #2F2F2F;
+        font-weight: 500;
+        font-size: 12px;
+      }
+      .reset-password-btn{
+        display: flex;
+        justify-content: flex-end;
+        .reset-button{
+          color: #FFFFFF;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 11px;
+          border-color: unset;
+          background: #2e2e2e;
+          margin-top: 20px;
+          font-weight: 500;
+          padding: 20px 40px;
+           &:hover {
+            opacity: 0.9;
+          }
+          &:active {
+              transform: scale(0.98);
+          }
+          &:disabled {
+              opacity:0.5;
+          } 
+          @media (min-width: 0px) and (max-width: 768px) {
+            padding: 22px 26px;
+          }
+        }
+      }
+      .ant-divider {
+        border-top: 1px solid #bebebe;
+      }
+      
+      .password-input {
+        border-radius: 11px;
+        margin-top: 8px;
+        height: 45px;
+        @media (min-width: 0px) and (max-width: 768px) {
+          border-radius: 4px;
+          margin-top: 15px;
+          height: 50px;
+        }
+      }
+      
+    }
+  }
+  .recovery-page-second-section {
+    flex: 2;
+    @media (min-width: 0px) and (max-width: 992px) {
+      flex: unset;
+      display: none;
+    }
+  }
+}
+.recovery-success-wrapper{
+  display: flex;
+  .recovery-success-state-section{
+    flex: 1;
+    padding: 95px;
+    background-color: #fff;
+    @media (min-width: 0px) and (max-width: 768px) {
+      padding: 42px 29px;
+      }
+    .divider{
+      @media (min-width: 0px) and (max-width: 768px) {
+        display: none;
+      }
+    }
+    .recovery-success-center-wrapper{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 127px;
+      @media (min-width: 0px) and (max-width: 768px) {
+         padding-bottom: 15px;
+      }
+      .img-section{
+        display:flex;
+        justify-content:center;
+        padding-bottom: 19px;
+      }
+      .password-heading{
+        font-size: 22px;
+        font-weight: 500;
+        color: #222222;
+        text-align: center;
+        line-height: normal;
+      }
+      .back-to-login-btn-section{
+        display: flex;
+        justify-content: center;
+        padding-top: 33px;
+        .back-to-login-btn{
+          border: 1px solid #C4C3C3;
+          color: #2E2E2E;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 11px;
+          border-color: unset;
+          background: #FFFFFF;
+          margin-top: 8px;
+          font-weight: 500;
+          padding: 13px 25px;
+          &:hover {
+                opacity: 0.9;
+          }
+          &:active {
+              transform: scale(0.98);
+          }
+          &:disabled {
+              opacity:0.5;
+          }
+          @media (min-width: 0px) and (max-width: 768px) {
+            margin-top: unset;
+            padding: 13px 26px;
+          }
+        }
+      }
+      }
+  }
+  .recovery-page-second-section {
+    flex: 2;
+    @media (min-width: 0px) and (max-width: 992px) {
+      flex: unset;
+      display: none;
+    }
+  }
+}
+Input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

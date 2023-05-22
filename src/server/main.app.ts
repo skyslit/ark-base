@@ -1,5 +1,5 @@
 import { createContext, useEnv, setDefaultEnv } from "@skyslit/ark-core";
-import { Backend, Data } from "@skyslit/ark-backend";
+import { Backend, Data, Security } from "@skyslit/ark-backend";
 import MainAPIModule from "../modules/main/api.module";
 import webAppCreator from "../web.client";
 
@@ -8,11 +8,78 @@ setDefaultEnv({
   NODE_PORT: "3000",
 });
 
-export default createContext(({ use, useModule }) => {
-  const { useDatabase } = use(Data);
+export default createContext(({ use, useModule, useDataFromContext }) => {
+  const { useDatabase, useModel } = use(Data);
   const { useServer, useRoute, useWebApp } = use(Backend);
+  const { enableAuth } = use(Security);
 
   useDatabase("default", useEnv("MONGO_CONNECTION_STRING"));
+
+  enableAuth({
+    jwtSecretKey: "SECRET_123",
+    enableExternalAuthServer: true,
+    getInternalAppByAccessKeyId: async (key) => {
+      // @ts-ignore
+      const AppModel: any = useDataFromContext('main/app', undefined, undefined, 'model');
+      const app: any = await AppModel.findOne({ accessKeyId: key });
+      return app;
+    },
+    deserializeUser: async (user) => {
+      if (user && user?._id) {
+        // @ts-ignore
+        const AccountModel: any = useDataFromContext('main/account', undefined, undefined, 'model');
+        const GroupModel: any = useDataFromContext('main/group', undefined, undefined, 'model');
+        const userInfo: any = await AccountModel.findOne({ _id: user._id }).exec();
+
+        if (!userInfo) {
+          return user;
+        }
+
+        const groupInfo: any = await GroupModel.find({ _id: { $in: userInfo.groupId } }).exec();
+        let groups: any = [];
+
+        if (groupInfo) {
+          groups = groupInfo.map((group) => {
+            return (
+              group.groupTitle
+            )
+          });
+        }
+
+        return {
+          groupId: userInfo.groupId,
+          _id: userInfo._id,
+          name: userInfo.name,
+          emailAddress: userInfo.email,
+          password: undefined,
+          policies: groups,
+          deserialized: true,
+        };
+      }
+      return user;
+    },
+    async blacklistToken(token, issuedAt) {
+      // @ts-ignore
+      const BlacklistedTokenModel: any = useDataFromContext('main/blacklisted_token', undefined, undefined, 'model');
+      await BlacklistedTokenModel.updateOne({
+        token
+      }, {
+        $set: {
+          iat: issuedAt
+        }
+      }, { upsert: true });
+
+      console.log(`Blacklisted one token`);
+
+      return true;
+    },
+    async isTokenBlacklisted(token) {
+      // @ts-ignore
+      const BlacklistedTokenModel: any = useDataFromContext('main/blacklisted_token', undefined, undefined, 'model');
+      const blacklistedToken = await BlacklistedTokenModel.findOne({ token });
+      return Boolean(blacklistedToken);
+    },
+  });
 
   useModule("main", MainAPIModule);
 

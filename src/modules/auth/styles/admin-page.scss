@@ -1,0 +1,191 @@
+.Super-admin-setup {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+    background-color: #232329;
+  @media (min-width: 0px) and (max-width: 768px) {
+     padding: 25px 0px;
+  }
+  .Super-admin-setup-title {
+    display: flex;
+    flex: 1;
+    background-color: #232329;
+    justify-content: center;
+    align-items: center;
+    .Super-admin-setup-header {
+      .admin-text {
+        font-size: 39px;
+        color: #ffffff;
+        @media (min-width: 0px) and (max-width: 768px) {
+          display: flex;
+          font-size: 22px;
+          color: #ffffff;
+          text-align: center;
+          width: 297px; 
+        }
+      }
+    }
+  }
+  .Super-admin-setup-login-content {
+    display: flex;
+    flex: 3;
+    background-color: #232329;
+    justify-content: center;
+    .login-content {
+      display: flex;
+      width: 1057px;
+      height: 540px;
+      padding: 10px;
+      @media (min-width: 0px) and (max-width: 768px) {
+        display: flex;
+        flex-direction: column;
+        width: 361px;
+        height: 100%;
+        padding-bottom: 14px;
+      }
+      .content {
+        display: flex;
+        flex: 1;
+        background-color: #2b2b33;
+        border-radius: 17px 0px 0px 17px;
+        flex-direction: column-reverse;
+        justify-content: space-between;
+        @media (min-width: 0px) and (max-width: 768px) {
+          display: flex;
+          border-radius: 17px 17px 0px 0px;
+          flex-direction: column;
+        }
+        .sub-content {
+          display: flex;
+          background-color: #2b2b33;
+          flex: 2;
+          justify-content: center;
+          align-items: center;
+          border-bottom-left-radius: 17px;
+          @media (min-width: 0px) and (max-width: 768px) {
+            border-radius: 17px 17px 0px 0px;
+          }
+          .anmi-sm {
+            display: none;
+            @media (min-width: 0px) and (max-width: 768px) {
+              display: block;
+            }
+          }
+          .anmi-lg {
+            display: block;
+            @media (min-width: 0px) and (max-width: 768px) {
+              display: none;
+            }
+          }
+        }
+        .sub-content2 {
+          display: flex;
+          background-color: #2b2b33;
+          flex: 1;
+          flex-direction: column;
+          padding-left: 23px;
+          padding-top: 66px;
+          border-top-left-radius: 17px;
+          @media (min-width: 0px) and (max-width: 768px) {
+            padding-top: 0px;
+            padding-bottom: 10px;
+          }
+          .text1 {
+            color: #ffffff;
+            font-size: 18px;
+            @media (min-width: 0px) and (max-width: 768px) {
+              color: #ffffff;
+              font-size: 14px;
+            }
+          }
+          .text2 {
+            color: #ffffff;
+            font-size: 29px;
+            font-weight: 500;
+            margin-bottom: 11px;
+            @media (min-width: 0px) and (max-width: 768px) {
+              color: #ffffff;
+              font-size: 20px;
+              font-weight: bold;
+              margin-bottom: 11px;
+            }
+          }
+          .text3 {
+            color: #9494a0;
+            font-size: 15px;
+
+            @media (min-width: 0px) and (max-width: 768px) {
+              color: #9494a0;
+              font-size: 12px;
+              width: 290px;
+            }
+          }
+        }
+      }
+      .form-content {
+        display: flex;
+        flex: 1;
+        background-color: #35353e;
+        border-radius: 0px 17px 17px 0px;
+        @media (min-width: 0px) and (max-width: 768px) {
+          display: flex;
+          border-radius: 0px 0px 17px 17px;
+          justify-content: center;
+          padding: 25px 23px 0px 23px;
+        }
+        .ant-form {
+          width: 100%;
+        }
+        .admin-form {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          justify-content: space-between;
+          padding: 60px 60px 20px 55px;
+          @media (min-width: 0px) and (max-width: 768px) {
+            height: 100%;
+            padding: 0px;
+          }
+        }
+        .input {
+          background: #35353e;
+          border-color: #696969;
+          border-radius: 7px;
+          color: #ffffff;
+
+          .ant-input {
+            background-color: #35353e;
+          }
+          .ant-input-suffix {
+            display: none;
+          }
+        }
+        .ant-input-affix-wrapper > input.ant-input {
+          color: white;
+        }
+        .ant-form-item-label > label {
+          color: #9696ac;
+          font-size: 12px;
+        }
+        .create-button {
+          width: 100%;
+          height: 42px;
+          border-radius: 7px;
+          &:hover {
+            opacity: 0.9;
+        }
+        &:active {
+            transform: scale(0.98);
+        }
+        &:disabled {
+            opacity:0.5;
+        } 
+          @media (min-width: 0px) and (max-width: 768px) {
+            height: 42px;
+            border-radius: 7px;
+          }
+        }
+      }
+    }
+  }
+}
