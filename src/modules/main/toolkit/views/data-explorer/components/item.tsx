@@ -10,13 +10,68 @@ import {
   Menu,
   Spin,
   message,
+  Divider,
 } from "antd";
 import { Folder } from "../icons/global-icons";
 import { Link } from "react-router-dom";
 import FileIcon from "../icons/file-icon.png";
-import { PropetriesProvider } from "@skyslit/ark-frontend/build/dynamics-v2";
+import {
+  PropetriesProvider,
+  useProperties,
+} from "@skyslit/ark-frontend/build/dynamics-v2";
+import { CustomType } from "@skyslit/ark-frontend/build/dynamics-v2/core/controller";
 
 const { TabPane } = Tabs;
+
+function PropertiesModal(props: {
+  customType: CustomType;
+  handleCloseModal: any;
+}) {
+  const propertiesApi = useProperties();
+  const { customType, handleCloseModal } = props;
+
+  const MetaEditor = React.useMemo(() => {
+    if (customType?.metaEditor) {
+      return customType.metaEditor;
+    }
+
+    return () => null;
+  }, [customType]);
+
+  return (
+    <>
+      <Tabs>
+        <TabPane tab="Meta" key="meta">
+          <MetaEditor />
+        </TabPane>
+
+        <TabPane tab="Security" key="security">
+          {/* Permissions content goes here */}
+        </TabPane>
+      </Tabs>
+      <Divider />
+      <div
+        key="buttons"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          paddingBottom: 18,
+        }}
+      >
+        <Button onClick={handleCloseModal}>Discard</Button>
+        <Button
+          disabled={propertiesApi.cms.hasChanged === false}
+          type="primary"
+          onClick={() =>
+            propertiesApi.saveChanges().then(() => handleCloseModal())
+          }
+        >
+          Apply
+        </Button>
+      </div>
+    </>
+  );
+}
 
 export default (props: any) => {
   const { title, item, fullPath, onDelete, onRename } = props;
@@ -52,14 +107,6 @@ export default (props: any) => {
     }
 
     return DefaultItemIcon;
-  }, [customType]);
-
-  const MetaEditor = React.useMemo(() => {
-    if (customType?.metaEditor) {
-      return customType.metaEditor;
-    }
-
-    return () => null;
   }, [customType]);
 
   const rename = React.useCallback(
@@ -222,30 +269,14 @@ export default (props: any) => {
           </span>
         }
         onCancel={handleCloseModal}
-        footer={[
-          <div
-            key="buttons"
-            style={{ display: "flex", justifyContent: "space-between" }}
-          >
-            <Button key="discard" onClick={handleCloseModal}>
-              Discard
-            </Button>
-            <Button key="apply" type="primary">
-              Apply
-            </Button>
-          </div>,
-        ]}
+        destroyOnClose={true}
+        footer={null}
       >
-        <PropetriesProvider>
-          <Tabs>
-            <TabPane tab="Meta" key="meta">
-              <MetaEditor />
-            </TabPane>
-
-            <TabPane tab="Security" key="security">
-              {/* Permissions content goes here */}
-            </TabPane>
-          </Tabs>
+        <PropetriesProvider item={item}>
+          <PropertiesModal
+            customType={customType}
+            handleCloseModal={handleCloseModal}
+          />
         </PropetriesProvider>
       </Modal>
     </>

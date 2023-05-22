@@ -5,13 +5,13 @@ import MainUIModule from "./modules/main/ui.module";
 import { Redirect } from "react-router-dom";
 
 export default createReactApp(({ use, useModule }) => {
-  const { useRouteConfig, useComponent, useLayout, configureAuth } = use(Frontend);
+  const { useRouteConfig, useComponent, useLayout, configureAuth } =
+    use(Frontend);
 
   configureAuth({
-    defaultProtectedUrl: "/admin/:dynamics_path*",
+    defaultProtectedUrl: "/admin",
     loginPageUrl: "/auth/login",
   });
-
 
   useComponent("protectedRoute", Routers.ProtectedRoute),
     useComponent("authRoute", Routers.AuthRoute),

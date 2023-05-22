@@ -4,6 +4,7 @@ import {
   controller,
   FileEditor,
   createSchema,
+  useProperties,
 } from "@skyslit/ark-frontend/build/dynamics-v2";
 import { Button, Col, Input, Row, Select } from "antd";
 const { Option } = Select;
@@ -100,14 +101,26 @@ export function initialiseCustomTypes() {
         }}
       />
     ),
+    propertiesSchema: createSchema({
+      description: "default-desc",
+    }),
     metaEditor: () => {
+      const propertiesApi = useProperties();
+
       return (
         <>
           <div style={{ marginBottom: "16px" }}>
-            <label htmlFor="textField">Text Field:</label>
+            <label htmlFor="textField">Description:</label>
             <Input
               id="textField"
               placeholder="Enter Text"
+              value={propertiesApi.cms.content.meta.description}
+              onChange={(e) =>
+                propertiesApi.cms.updateKey(
+                  "meta.description",
+                  e.currentTarget.value
+                )
+              }
               style={{ marginTop: 10 }}
             />
           </div>

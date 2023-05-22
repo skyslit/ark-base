@@ -10,10 +10,7 @@ import { Link, useLocation } from "react-router-dom";
 
 const { Header, Sider } = Layout;
 
-
 export const DataExplorerView = createComponent((props) => {
-
-
   const location = useLocation();
 
   const { useService, useContext } = props.use(Frontend);
@@ -29,7 +26,7 @@ export const DataExplorerView = createComponent((props) => {
   const logoutUser = () => {
     logoutService
       .invoke()
-      .then((res) => { })
+      .then((res) => {})
       .catch((e) => {
         message.error("Try again!");
       })
@@ -45,7 +42,6 @@ export const DataExplorerView = createComponent((props) => {
   const closeSider = () => {
     setCollapsed("close");
   };
-
 
   return (
     <Layout className="homepage-wrapper">
@@ -79,7 +75,7 @@ export const DataExplorerView = createComponent((props) => {
           </div>
         </div>
       </Header>
-      <Layout>
+      {/* <Layout>
         <Sider
           className={
             collapsed === "close" ? "sider-wrapper-collapsed" : "sider-wrapper"
@@ -126,7 +122,7 @@ export const DataExplorerView = createComponent((props) => {
             </div>
           </div>
         </Sider>
-      </Layout>
+      </Layout> */}
       <Catalogue path={path} basePath="/admin" />
     </Layout>
   );
