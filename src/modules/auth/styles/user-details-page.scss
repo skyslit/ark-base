@@ -1,0 +1,1153 @@
+.user-details-layout {
+    background-color: #F8F8F8;
+    margin-top: 56px;
+    height: calc(100% - 56px);
+
+    @media (min-width: 0px) and (max-width: 380px) {
+        height: unset;
+    }
+
+    .user-details-col {
+        padding-top: 49px;
+
+        .user-details-wrapper {
+            display: flex;
+            flex-direction: column;
+
+            .top-section {
+                display: flex;
+                width: 100%;
+                justify-content: space-between;
+
+                .back-btn-section {
+                    .back-btn {
+                        cursor: pointer;
+                        background-color: unset;
+                        border: unset;
+                        padding-left: unset;
+                        transition: 0.5s;
+
+                        @media (min-width: 0px) and (max-width: 768px) {
+                            font-size: 20px;
+                        }
+
+                        &:hover {
+                            opacity: 0.9;
+                        }
+
+                        &:active {
+                            transform: scale(0.98);
+                        }
+
+                        &:disabled {
+                            opacity: 0.5;
+                        }
+
+                        .all-users-text {
+                            font-size: 14px;
+                            color: #222222;
+                            padding-left: 11px;
+
+                            @media (min-width: 0px) and (max-width: 768px) {
+                                display: none;
+                            }
+                        }
+
+                        .user-details-text {
+                            font-size: 14px;
+                            font-weight: 500;
+                            color: #222222;
+
+                            @media (min-width: 0px) and (max-width: 768px) {
+                                display: none;
+                            }
+                        }
+
+                    }
+                }
+
+                .assign-group-bttn {
+                    color: #d9dde2;
+                    font-size: 12px;
+                    cursor: pointer;
+                    background: none;
+                    border-radius: 11px;
+                    border: 1px solid #B7B7B7;
+                    padding: 9px 17px;
+                    transition: 0.5s;
+                    margin-right: 10px;
+
+                    &:hover {
+                        opacity: 0.9;
+                    }
+
+                    &:active {
+                        transform: scale(0.98);
+                    }
+
+                    &:disabled {
+                        opacity: 0.5;
+                    }
+
+                    @media (min-width: 0px) and (max-width: 768px) {
+                        padding: 9px 15px;
+                    }
+
+                    .assign-icon {
+                        color: #060708;
+
+                        @media (min-width: 0px) and (max-width: 768px) {
+                            display: none;
+                        }
+                    }
+
+                    .assign-text {
+                        font-size: 14px;
+                        color: #060708;
+                        font-weight: 500;
+                        padding-left: 9px;
+
+                    }
+                }
+
+                .delete-button {
+                    cursor: pointer;
+                    background-color: unset;
+                    border-radius: 11px;
+                    border: 1px solid #B7B7B7;
+                    padding: 9px 17px;
+                    transition: 0.5s;
+                    margin-right: 10px;
+                    display: flex;
+                    align-items: center;
+
+                    &:hover {
+                        opacity: 0.8;
+                    }
+
+                    &:active {
+                        transform: scale(0.98);
+                    }
+
+                    &:disabled {
+                        opacity: 0.5;
+                        cursor: not-allowed;
+                    }
+
+                    .delete-text {
+                        font-size: 14px;
+                        color: #BE3939;
+                        font-weight: 500;
+                        padding-left: 9px;
+
+                        @media (min-width: 0px) and (max-width: 768px) {
+                            display: none;
+                        }
+                    }
+
+                }
+
+                .edit-button {
+                    cursor: pointer;
+                    background-color: unset;
+                    border-radius: 11px;
+                    border: 1px solid #B7B7B7;
+                    padding: 9px 17px;
+                    transition: 0.5s;
+
+                    @media (min-width: 0px) and (max-width: 768px) {
+                        padding: 9px 15px;
+                    }
+
+                    &:hover {
+                        opacity: 0.8;
+                    }
+
+                    &:active {
+                        transform: scale(0.98);
+                    }
+
+                    &:disabled {
+                        opacity: 0.5;
+                        cursor: not-allowed;
+                    }
+
+                    .edit-user-text {
+                        font-size: 14px;
+                        color: #060708;
+                        font-weight: 500;
+                        padding-left: 9px;
+
+                        @media (min-width: 0px) and (max-width: 768px) {
+                            display: none;
+                        }
+                    }
+                }
+            }
+
+            .user-name-section {
+                padding-top: 9px;
+
+                .name-text {
+                    font-weight: 700;
+                    font-size: 30px;
+                    color: #222222;
+
+                }
+
+                .mail-id-text {
+                    font-size: 13px;
+                    color: #222222;
+                }
+            }
+
+            .user-information-box {
+                background-color: #FFFFFF;
+                border-radius: 17px;
+                margin-top: 41px;
+                padding: 20px 29px 10px 29px;
+                margin-bottom: 16px;
+
+                .basic-info-name-section {
+                    display: flex;
+                    padding: 17px 0px 10px 0px;
+                    border-bottom: 2px solid #F8F8F8;
+
+                    .basic-sub2 {
+                        flex: 4;
+                        display: flex;
+                        justify-content: space-between;
+                        padding-bottom: 10px;
+                        margin-top: 8px;
+
+                        .user-name {
+                            font-weight: 500;
+
+                            @media (min-width: 0px) and (max-width: 768px) {
+                                margin-right: 16px;
+                            }
+                        }
+
+                        .edit-btn {
+                            background: none;
+                            outline: none;
+                            border: none;
+                            cursor: pointer;
+                            display: flex;
+                            transition: 0.5s;
+
+                            &:hover {
+                                opacity: 0.8;
+                            }
+
+                            &:active {
+                                transform: scale(0.98);
+                            }
+
+                            &:disabled {
+                                opacity: 0.5;
+                                cursor: not-allowed;
+                            }
+                        }
+
+                        @media (min-width: 0px) and (max-width: 768px) {
+                            display: flex;
+                            justify-content: end;
+                        }
+                    }
+
+                    .basic-sub2-hide {
+                        display: none;
+                    }
+
+                    .name-img {}
+
+                    .edit-img {
+                        height: 14px;
+                        transition: 0.5s;
+
+                        &:hover {
+                            opacity: .8;
+                        }
+                    }
+
+                    .edit-name-section {
+                        flex: 4;
+                        height: 150px;
+                        position: relative;
+                        padding-top: 6px;
+
+                        @media (min-width: 0px) and (max-width: 768px) {
+                            display: none;
+                        }
+
+                        .input-section {
+                            width: 60%;
+                            border: 1px solid #D5D5D5;
+                            border-radius: 11px;
+                            height: 49px;
+                            color: #0F0F0F;
+                            font-size: 13px;
+                            font-weight: 500;
+                            margin-top: 7px;
+
+                            &::placeholder {
+                                color: #909090;
+                                font-size: 13px;
+                            }
+
+                            &:hover {
+                                border: 1px solid #D5D5D5;
+                            }
+
+                            &:focus {
+                                border: 1px solid #959595;
+                                box-shadow: none;
+                            }
+                        }
+
+                        .save-btn {
+                            background-color: #222222;
+                            color: #F5F5F6;
+                            font-size: 13px;
+                            border: none;
+                            outline: none;
+                            border-radius: 11px;
+                            padding: 8px 30px;
+                            font-weight: 500;
+                            cursor: pointer;
+                            transition: .5s;
+
+                            &:hover {
+                                opacity: 0.8;
+                            }
+
+                            &:active {
+                                transform: scale(0.98);
+                            }
+
+                            &:disabled {
+                                background-color: #EAEAEA;
+                                color: #A0A0A0;
+                                opacity: 0.5;
+                                cursor: not-allowed;
+                            }
+                        }
+
+                        .close-btn {
+                            position: absolute;
+                            right: 0px;
+                            top: 0;
+                            background: none;
+                            border: none;
+                            outline: none;
+                            display: flex;
+                            cursor: pointer;
+                            color: #151515;
+                            transition: 0.5s;
+
+                            &:hover {
+                                opacity: .8;
+                            }
+                        }
+                    }
+
+                    .edit-name-section-hide {
+                        display: none;
+                    }
+
+                    .edit-name-section-sm {
+                        display: none;
+
+                        @media (min-width: 0px) and (max-width: 768px) {
+                            display: block;
+                            flex: 4;
+                            height: 150px;
+                            position: relative;
+                            padding-top: 6px;
+
+                            .input-section-sm {
+                                border: 1px solid #D5D5D5;
+                                border-radius: 11px;
+                                height: 49px;
+                                color: #0F0F0F;
+                                font-size: 13px;
+                                font-weight: 500;
+                                margin-top: 7px;
+
+                                &::placeholder {
+                                    color: #909090;
+                                    font-size: 13px;
+                                }
+
+                                &:hover {
+                                    border: 1px solid #D5D5D5;
+                                }
+
+                                &:focus {
+                                    border: 1px solid #959595;
+                                    box-shadow: none;
+                                }
+                            }
+
+                            .save-btn-sm {
+                                background-color: #222222;
+                                color: #F5F5F6;
+                                font-size: 13px;
+                                border: none;
+                                outline: none;
+                                border-radius: 11px;
+                                padding: 8px 30px;
+                                font-weight: 500;
+                                cursor: pointer;
+                                transition: .5s;
+                                margin-bottom: 35px;
+
+                                &:hover {
+                                    opacity: 0.8;
+                                }
+
+                                &:active {
+                                    transform: scale(0.98);
+                                }
+
+                                &:disabled {
+                                    background-color: #EAEAEA;
+                                    color: #A0A0A0;
+                                    opacity: 0.5;
+                                    cursor: not-allowed;
+                                }
+                            }
+
+                            .close-btn-sm {
+                                position: absolute;
+                                right: 0px;
+                                top: -35px;
+                                background: none;
+                                border: none;
+                                outline: none;
+                                display: flex;
+                                cursor: pointer;
+                                color: #151515;
+                                transition: 0.5s;
+
+                                &:hover {
+                                    opacity: .8;
+                                }
+                            }
+                        }
+                    }
+
+                    .edit-name-section-hide-sm {
+                        display: none;
+                    }
+                }
+
+                .basic-info-email-section {
+                    display: flex;
+                    padding-top: 10px;
+                    border-bottom: 2px solid #F8F8F8;
+                    padding-bottom: 10px;
+
+                    .basic-sub {
+                        flex: 2;
+                        display: flex;
+                    }
+
+                    .name-text {
+                        margin-left: 17px;
+                    }
+
+                    .basic-sub2 {
+                        flex: 4;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+
+                        @media (min-width: 0px) and (max-width: 768px) {
+                            display: flex;
+                            justify-content: end;
+                        }
+
+                        .user-email {
+                            font-weight: 500;
+                            margin-top: 8px;
+
+                            @media (min-width: 0px) and (max-width: 768px) {
+                                margin-right: 16px;
+                                margin-bottom: 20px;
+                            }
+                        }
+
+                        .edit-btn {
+                            background: none;
+                            outline: none;
+                            border: none;
+                            cursor: pointer;
+                            display: flex;
+                            padding-top: 10px;
+
+                            &:hover {
+                                opacity: 0.8;
+                            }
+
+                            &:active {
+                                transform: scale(0.98);
+                            }
+
+                            &:disabled {
+                                opacity: 0.5;
+                                cursor: not-allowed;
+                            }
+                        }
+                    }
+
+                    .basic-sub2-hide {
+                        display: none;
+                    }
+
+                    .name-img {}
+
+                    .edit-img {
+                        height: 14px;
+                        transition: 0.5s;
+
+                        &:hover {
+                            opacity: .8;
+                        }
+                    }
+
+                    .edit-email-section {
+                        flex: 4;
+                        height: 180px;
+                        position: relative;
+                        padding-top: 8px;
+
+                        .email-description {
+                            font-size: 13px;
+                            color: #4A4A4A;
+                        }
+
+                        .input-section {
+                            width: 60%;
+                            border: 1px solid #D5D5D5;
+                            border-radius: 11px;
+                            height: 49px;
+                            color: #0F0F0F;
+                            font-size: 13px;
+                            font-weight: 500;
+                            margin-top: 10px;
+
+                            &::placeholder {
+                                color: #909090;
+                                font-size: 13px;
+                            }
+
+                            &:hover {
+                                border: 1px solid #D5D5D5;
+                            }
+
+                            &:focus {
+                                border: 1px solid #959595;
+                                box-shadow: none;
+                            }
+                        }
+
+                        .send-verfication-btn {
+                            background-color: #222222;
+                            color: #F5F5F6;
+                            font-size: 13px;
+                            border: none;
+                            outline: none;
+                            border-radius: 11px;
+                            padding: 10px 16px;
+                            font-weight: 500;
+                            cursor: pointer;
+                            transition: .5s;
+
+                            &:disabled {
+                                background-color: #EAEAEA;
+                                color: #A0A0A0;
+                                cursor: not-allowed;
+                            }
+
+                            &:hover {
+                                background-color: 0.8;
+                            }
+                        }
+
+                        .close-btn {
+                            position: absolute;
+                            right: 0px;
+                            top: 0;
+                            background: none;
+                            border: none;
+                            outline: none;
+                            display: flex;
+                            cursor: pointer;
+                            color: #151515;
+                            transition: 0.5s;
+
+                            &:hover {
+                                opacity: .8;
+                            }
+                        }
+
+                    }
+
+                    .edit-email-section-hide {
+                        display: none;
+                    }
+
+                }
+
+
+                .basic-name {
+                    display: flex;
+                    margin-top: 17px;
+                    border-bottom: 2px solid #F8F8F8;
+                }
+
+                .basic-sub {
+                    flex: 2;
+                    display: flex;
+                }
+
+                .name-text {
+                    margin-left: 17px;
+                    margin-top: 8px;
+                }
+
+                .basic-sub2 {
+                    flex: 4;
+                    display: flex;
+
+                }
+
+                .name-img {}
+
+                .basic-password {
+                    display: flex;
+                    padding: 10px 0px;
+
+                    @media (min-width: 0px) and (max-width: 1180px) {
+                        display: flex;
+                        flex-direction: column;
+                        position: relative;
+                    }
+                }
+
+                .basic-sub-button {
+                    flex: 4;
+                    margin-top: 4px;
+
+                    @media (min-width: 0px) and (max-width: 1180px) {
+                        display: flex;
+                        justify-content: end;
+                        position: absolute;
+                        right: 0;
+                    }
+
+                    .ant-btn {
+                        border-radius: 11px;
+                        border: 1px solid #B7B7B7;
+                        color: black;
+                        font-weight: 500;
+                        width: 131px;
+                        height: 36px;
+                        padding: 0px 0px 0px 0px;
+                        transition: 0.5s;
+
+                        &:hover {
+                            opacity: 0.9;
+                        }
+
+                        &:active {
+                            transform: scale(0.98);
+                        }
+
+                        &:disabled {
+                            opacity: 0.5;
+                            cursor: not-allowed;
+                        }
+                    }
+
+                }
+
+                .basic-sub-button-sm {
+                    display: none;
+
+                    @media (min-width: 0px) and (max-width: 768px) {
+                        display: flex;
+                        justify-content: end;
+                        flex: 4;
+                        margin-top: 4px;
+
+                    }
+                }
+
+                .basic-sub-button-hide-sm {
+                    display: none;
+
+                }
+
+                .edit-password-section-hide-sm {
+                    display: none;
+                }
+
+                .edit-password-section-sm {
+                    display: none;
+
+                    @media (min-width: 0px) and (max-width: 1180px) {
+                        display: block;
+                        flex: 4;
+
+                        .update-password {
+                            padding-top: 8px;
+                            flex: 1;
+                            position: relative;
+
+                            .close-btn {
+                                border: none;
+                                background: none;
+                                cursor: pointer;
+                                position: absolute;
+                                right: 0px;
+                                top: -40px;
+                            }
+                        }
+
+                        .update-password-btn {
+                            display: flex;
+                            justify-content: center;
+                            margin-top: 15px;
+                            margin-bottom: 8px;
+                        }
+
+                        .update-btn {
+                            background-color: #222222;
+                            color: #F5F5F6;
+                            font-size: 13px;
+                            transition: 0.5s;
+                            padding: 19px 16px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+
+                            &:hover {
+                                opacity: 0.9;
+                            }
+
+                            &:active {
+                                transform: scale(0.98);
+                            }
+
+                            &:disabled {
+                                opacity: 0.5;
+                                cursor: not-allowed;
+                            }
+                        }
+
+                        .change-password {
+                            display: flex;
+                            flex-direction: column;
+                        }
+
+                        .pass-text-section {
+                            flex: 1;
+                            display: flex;
+                            padding-top: 10px;
+
+                            @media (min-width: 0px) and (max-width: 1180px) {
+                                padding-bottom: 20px;
+                            }
+                        }
+
+                        .sml-text {
+                            width: 12px;
+                            height: 1px;
+                            background: rgb(74, 74, 74);
+                            margin-top: 10px;
+                            margin-right: 10px;
+                        }
+
+                        .password-text {
+                            font-size: 13px;
+                            color: #4A4A4A;
+                        }
+
+                        .input-Password-section {
+                            margin-top: 13px;
+                            border-radius: 11px;
+                            height: 39px;
+                            font-size: 13px;
+                            font-weight: 500;
+
+                            @media (min-width: 0px) and (max-width: 1180px) {
+                                margin-top: 0;
+                            }
+
+                            &:hover {
+                                border: 1px solid #D5D5D5;
+                            }
+
+                            &:focus {
+                                border: 1px solid #959595;
+                                box-shadow: none;
+                            }
+
+                            &::placeholder {
+                                color: #909090;
+                                font-size: 13px;
+                            }
+                        }
+                    }
+                }
+
+                .edit-password-section-hide {
+                    display: none;
+                }
+
+                .edit-password-section {
+                    @media (min-width: 0px) and (max-width: 1180px) {
+                        display: none;
+                    }
+
+                    flex: 4;
+
+                    .update-password {
+                        padding-top: 8px;
+                        flex: 1;
+                    }
+
+                    .update-password-btn {
+                        display: flex;
+                        justify-content: end;
+                        margin-top: 15px;
+                        margin-bottom: 8px;
+                    }
+
+                    .update-btn {
+                        background-color: #222222;
+                        color: #F5F5F6;
+                        font-size: 13px;
+                        transition: 0.5s;
+                        padding: 19px 16px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        &:hover {
+                            opacity: 0.9;
+                        }
+
+                        &:active {
+                            transform: scale(0.98);
+                        }
+
+                        &:disabled {
+                            opacity: 0.5;
+                            cursor: not-allowed;
+                        }
+                    }
+
+                    .change-password {
+                        display: flex;
+                    }
+
+                    .input-Password-section {
+                        border-radius: 11px;
+                        height: 39px;
+                        font-size: 13px;
+                        font-weight: 500;
+
+                        &:hover {
+                            border: 1px solid #D5D5D5;
+                        }
+
+                        &:focus {
+                            border: 1px solid #959595;
+                            box-shadow: none;
+                        }
+
+                        &::placeholder {
+                            color: #909090;
+                            font-size: 13px;
+                        }
+                    }
+
+                    .pass-text-section {
+                        flex: 1;
+                        display: flex;
+                        padding-top: 40px;
+                        padding-left: 40px;
+                    }
+
+                    .sml-text {
+                        width: 12px;
+                        height: 1px;
+                        background: rgb(74, 74, 74);
+                        margin-top: 10px;
+                        margin-right: 10px;
+                    }
+
+                    .password-text {
+                        font-size: 13px;
+                        color: #4A4A4A;
+                        width: 70%;
+                    }
+
+                    .close-btn {
+                        border: none;
+                        background: none;
+                        cursor: pointer;
+                    }
+
+                }
+            }
+
+            .basic-sub-button {
+                flex: 4;
+                margin-top: 4px;
+
+                @media (min-width: 0px) and (max-width: 768px) {
+                    display: flex;
+                }
+            }
+
+            .basic-sub-button-hide {
+                display: none;
+            }
+
+            .ant-btn {
+                border-radius: 11px;
+                border: 1px solid #B7B7B7;
+                color: black;
+                font-weight: 500;
+                width: 131px;
+                height: 36px;
+                padding: 0px 0px 0px 0px
+            }
+        }
+
+        .group-inf-box {
+            background-color: #FFFFFF;
+            border-radius: 17px;
+            padding: 26px 30px 22px 30px;
+            margin-bottom: 16px;
+
+            .group-name-div {
+                border: 1px solid #DEDEDE;
+                padding: 9px 23px;
+                width: fit-content;
+                border-radius: 19px;
+                margin-top: 18px;
+                margin-right: 15px;
+
+                .name-text {
+                    color: #16191D;
+                    font-size: 14px;
+                    font-weight: 500;
+                }
+            }
+        }
+    }
+}
+
+.delete-user-modal {
+    .ant-modal-content {
+        background-color: rgb(255 255 255);
+        border: 1px solid #B7B7B7;
+        border-radius: 6px;
+
+        .ant-modal-close-x {
+            color: black;
+            font-size: 15px;
+        }
+
+        .ant-modal-body {
+            .delete-btn-section {
+                display: flex;
+                justify-content: end;
+                padding-top: 35px;
+
+                .delete-btn {
+                    background: #f85f59;
+                    border: none;
+                    outline: none;
+                    color: #f5f5f6;
+                    font-size: 13px;
+                    font-weight: 500;
+                    padding: 8px 25px;
+                    border-radius: 6px;
+                    margin-right: 10px;
+                    display: flex;
+                    cursor: pointer;
+                    transition: 0.5s;
+
+                    &:hover {
+                        opacity: 0.8;
+                    }
+
+                    &:active {
+                        transform: scale(0.98);
+                    }
+
+                    &:disabled {
+                        opacity: 0.5;
+                        cursor: not-allowed;
+                    }
+                }
+
+                .cancel-btn {
+                    background: none;
+                    outline: none;
+                    border: 1px solid #707070;
+                    color: black;
+                    padding: 8px 25px;
+                    border-radius: 6px;
+                    font-size: 13px;
+                    font-weight: 500;
+                    display: flex;
+                    cursor: pointer;
+                    transition: 0.5s;
+
+                    &:hover {
+                        opacity: 0.8;
+                    }
+
+                    &:active {
+                        transform: scale(0.98);
+                    }
+
+                    &:disabled {
+                        opacity: 0.5;
+                        cursor: not-allowed;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.assign-group-modal {
+    .ant-modal-content {
+        border-radius: 6px;
+
+        .ant-modal-close-x {
+            padding-right: 20px;
+            color: #151515;
+            font-size: 14px;
+        }
+
+        .ant-modal-header {
+            padding: 16px 27px;
+            border: none;
+            border-radius: 6px;
+
+            .ant-modal-title {
+                color: #151515;
+                font-size: 14px;
+            }
+        }
+
+        .ant-modal-body {
+            padding: 0;
+
+            .ant-form-vertical .ant-form-item-label>label {
+                color: #0F0F0F;
+                font-size: 12px;
+                font-weight: 500;
+            }
+
+            .title-input {
+                border: 1px solid #D5D5D5;
+                border-radius: 11px;
+                padding: 14px;
+                color: #0F0F0F;
+                font-size: 13px;
+
+                &::placeholder {
+                    color: #909090;
+                    font-size: 13px;
+                }
+
+                &:focus {
+                    border: 1px solid #959595;
+                    box-shadow: none;
+                }
+            }
+
+            .ant-input-affix-wrapper {
+                border: 1px solid #D5D5D5;
+                border-radius: 11px;
+                padding: 14px;
+                color: #0F0F0F;
+                font-size: 14px;
+            }
+
+            .ant-input-affix-wrapper:focus,
+            .ant-input-affix-wrapper-focused {
+                border: 1px solid #959595;
+                box-shadow: none;
+            }
+
+            .ant-divider-horizontal {
+                margin-bottom: 10px;
+                margin-top: 23px;
+            }
+
+            .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+                padding: 5px 12px;
+                border: 1px solid #D5D5D5;
+                border-radius: 11px;
+
+                &:focus {
+                    border: 1px solid #959595;
+                    box-shadow: none;
+                }
+            }
+
+            .ant-select-multiple .ant-select-selection-item {
+                background: #F4F4F4 0% 0% no-repeat padding-box;
+                border: 1px solid #DBDBDB;
+                border-radius: 17px;
+                padding: 17px 14px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .ant-select-multiple .ant-select-selection-item-content {
+                margin-right: 16px;
+                color: #0F0F0F;
+                font-size: 12px;
+                font-weight: 500;
+            }
+
+            .ant-select-multiple .ant-select-selection-item-remove {
+                color: #0F0F0F;
+            }
+
+            .create-btn {
+                background-color: #222222;
+                color: #F5F5F6;
+                font-size: 13px;
+                display: flex;
+                padding: 18px 30px;
+                align-items: center;
+                border-radius: 6px;
+                transition: 0.5s;
+
+                &:hover {
+                    opacity: .9;
+                }
+
+                &:disabled {
+                    opacity: .4;
+                    cursor: not-allowed;
+                }
+            }
+        }
+    }
+}

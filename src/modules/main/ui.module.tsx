@@ -3,21 +3,34 @@ import { initialiseToolkit } from "./toolkit";
 import { DataExplorerView } from "./toolkit/views/data-explorer";
 import { Frontend } from "@skyslit/ark-frontend";
 import { initialiseCustomTypes } from "./custom-types";
+import SidebarLayout from "./layouts/sidebar";
 import LoginPage from "../auth/views/login-page";
 import AdminPage from "../auth/views/admin-page";
 import SignUpPage from "../auth/views/sign-up-page";
 import AccountRecoveryPage from "../auth/views/account-recovery-page";
+import AccountSettingsPage from "../auth/views/account-settings-page";
+import AllUsersPage from "../auth/views/all-users-page";
+import UserDetails from "../auth/views/user-details-page";
+import AllGroupsPage from "../auth/views/all-groups-page";
+import GroupDetailsPage from "../auth/views/group-details-page";
 
 initialiseToolkit();
 initialiseCustomTypes();
 
 export default createModule(({ use }) => {
   console.log("ui.module.tsx file loaded");
-  const { useComponent } = use(Frontend);
+  const { useComponent, useLayout } = use(Frontend);
+
+  useLayout("sidebar", SidebarLayout);
 
   useComponent("data-explorer", DataExplorerView);
   useComponent("sign-up-page", SignUpPage);
   useComponent("login-page", LoginPage);
   useComponent("admin-page", AdminPage);
   useComponent("account-recovery-page", AccountRecoveryPage);
+  useComponent("account-settings-page", AccountSettingsPage);
+  useComponent("all-users-page", AllUsersPage);
+  useComponent("user-details-page", UserDetails);
+  useComponent("all-groups-page", AllGroupsPage);
+  useComponent("group-details-page", GroupDetailsPage);
 });
