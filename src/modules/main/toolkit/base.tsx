@@ -4,7 +4,7 @@ import {
   Button,
   Collapse,
   Input,
-  Menu,
+  Result,
   Modal,
   message,
   Layout,
@@ -135,6 +135,22 @@ export function Renderer() {
   const customTypes = React.useMemo(() => {
     return api.namespace.typesArray;
   }, [api.namespace.typesArray]);
+
+  const readUnauthorized = React.useMemo(() => {
+    return api?.dirLoading === false && api?.claims?.read === false;
+  }, [api?.claims?.read, api?.dirLoading]);
+
+  if (readUnauthorized === true) {
+    return (
+      <div style={{ marginTop: 56 }}>
+        <Result
+          status="403"
+          title="403"
+          subTitle="Sorry, you are not authorized to access this page."
+        />
+      </div>
+    );
+  }
 
   return (
     <>
