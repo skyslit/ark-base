@@ -17,6 +17,27 @@ import UserLogout from "../auth/services/logout-user.service";
 import SendCode from "../auth/services/send-code.service";
 import OtpVerification from "../auth/services/otp-verification.service";
 import UpdatePassword from "../auth/services/update-password.service";
+import AddNewGroup from "../auth/services/add-new-group.service";
+import ListUser from "../auth/services/list-user.service";
+import AssignGroup from "../auth/services/assign-group.service";
+import AddNewUser from "../auth/services/add-new-user.service";
+import ListAllGroups from "../auth/services/list-all-groups.service";
+import ListAllUsers from "../auth/services/list-all-users.service";
+import UpdateName from "../auth/services/update-name.service";
+import GetUserById from "../auth/services/get-user-by-id.service";
+import ChangePassword from "../auth/services/change-password.service";
+import VerifyEmail from "../auth/services/verify-email.service";
+import EmailOtpVerification from "../auth/services/email-otp-verification.service";
+import ListGroupService from "../auth/services/list-group.service";
+import GetGroupById from "../auth/services/get-group-by-id.service";
+import DeleteUser from "../auth/services/delete-user.service";
+import AssignGroupToMember from "../auth/services/assign-group-to-user.service";
+import ChangeUserPassword from "../auth/services/change-user-password.service";
+import DeleteGroup from "../auth/services/delete-group.service";
+import ListGroupDetailsService from "../auth/services/list-group-details.service";
+import RemoveMember from "../auth/services/remove-member.service";
+import GroupDetails from "../auth/services/group-details.service";
+import UpdateGroup from "../auth/services/update-group.service";
 
 
 export default createModule(({ use }) => {
@@ -39,7 +60,27 @@ export default createModule(({ use }) => {
   useService(SendCode);
   useService(OtpVerification);
   useService(UpdatePassword);
-
+  useService(AddNewGroup);
+  useService(ListUser);
+  useService(AssignGroup);
+  useService(AddNewUser);
+  useService(ListAllGroups);
+  useService(ListAllUsers);
+  useService(UpdateName);
+  useService(GetUserById);
+  useService(ChangePassword);
+  useService(VerifyEmail);
+  useService(EmailOtpVerification);
+  useService(ListGroupService);
+  useService(GetGroupById);
+  useService(DeleteUser);
+  useService(AssignGroupToMember);
+  useService(ChangeUserPassword);
+  useService(DeleteGroup);
+  useService(ListGroupDetailsService);
+  useService(RemoveMember);
+  useService(GroupDetails);
+  useService(UpdateGroup);
 
   enableDynamicsV2Services();
 });

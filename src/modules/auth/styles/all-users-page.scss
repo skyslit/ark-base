@@ -1,0 +1,162 @@
+.all-users-page-layout{
+    background-color: #FFFFFF;
+    margin-top: 56px;
+    height: calc(100% - 56px);
+    .all-users-main{
+        display:flex;
+        justify-content: space-between;
+        padding-top: 35px;
+        .back-button-div{
+            display: flex;
+            align-items: center;
+            .back-btn{
+                font-size: 14px;
+                 color: black;
+                transition: 0.5s;
+                @media (min-width: 0px) and (max-width: 768px) {
+                    font-size: 20px; 
+                }
+            &:hover {
+                opacity: 0.9;
+            }
+            &:active {
+                transform: scale(0.98);
+            }
+            &:disabled {
+                opacity:0.5;
+                cursor: not-allowed;
+            }
+            }
+            .back-btn-text{
+                margin-left: 11px;
+                @media (min-width: 0px) and (max-width: 768px) {
+                    display: none;
+                }
+            }
+        }
+        .add-button-div{
+            display: flex;
+            align-items: center;
+            .search-input{
+                width: 245px;
+                background: none;
+                border: none;
+                border-bottom: 1px solid #000000;
+                margin-right: 38px;
+                font-weight: 500;
+                color: #060708;
+                &:focus{
+                    box-shadow: none;
+                }
+            }
+            .search-input-hide{
+                display: none;
+            }
+            .close-btn{
+                background-color: transparent;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                transition: 0.5s;
+                position: absolute;
+                right: 137px;
+                 padding-bottom: 12px;
+                 @media (min-width: 0px) and (max-width: 768px) {
+                   position: absolute;
+                    right: 58px;
+                }
+                 &:hover{
+                    opacity: 0.8;
+                }
+            }
+            .close-btn-hide{
+                display: none;
+            }
+            .searchicon{
+                border-color: transparent;
+                background-color: transparent;
+                cursor: pointer;
+                padding: unset;
+                margin-right: 17px;
+                &:hover{
+                    opacity: 0.8;
+                }
+            }
+            .searchicon-hide{
+                display: none;
+            }
+            .add-button{
+                font-weight: 700; 
+                border: 1px solid #B7B7B7;
+                border-radius: 11px;
+                height: 39px;
+                background-color: white;
+                padding: 0 10px;
+                cursor: pointer;
+                 transition: 0.5s;
+                &:hover {
+                opacity: 0.9;
+                }
+                &:active {
+                transform: scale(0.98);
+                }
+                &:disabled {
+                opacity:0.5;
+                cursor: not-allowed;
+                } 
+                 @media (min-width: 0px) and (max-width: 768px) {
+                    padding: 0;
+                    border: none;
+                }
+                .anticon-plus{
+                    margin-right: 10px;
+                    @media (min-width: 0px) and (max-width: 768px) {
+                        font-size: 22px;
+                        margin:0;
+                    }
+                }
+                .add-grp-text{
+                    @media (min-width: 0px) and (max-width: 768px) {
+                        display: none;
+                    } 
+                }
+            }
+        }
+    }
+    .all-users-title{
+        font-size: 22px;
+        color: #222222;
+        font-weight: 700;
+        margin-bottom: 22px;
+            @media (min-width: 0px) and (max-width: 768px) {
+                    font-size: 18px;
+        }
+        @media (min-width: 0px) and (max-width: 512px) {
+                margin-top: 20px;
+        }
+    }
+    .user-icon{
+         width: 30px;
+        margin-right: 12px;
+    }
+    .users-table{
+           .ant-table-thead > tr > th{
+        background-color: #F2F4F7;
+        border-radius: 4px;
+        color: #6B7889;
+    }
+    }
+    .allUserstable-name{
+        transition: 0.5s;
+        &:hover {
+        opacity: 0.9;
+        text-decoration: underline;
+        }
+        &:active {
+        transform: scale(0.98);
+        }
+        &:disabled {
+        opacity:0.5;
+        }
+    } 
+}
