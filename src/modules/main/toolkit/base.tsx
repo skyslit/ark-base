@@ -12,10 +12,13 @@ import {
   Col,
   Divider,
   Typography,
+  Dropdown,
+  Menu,
+  Space,
 } from "antd";
 import { useCatalogue, useFile } from "@skyslit/ark-frontend/build/dynamics-v2";
 import { Link } from "react-router-dom";
-import { HomeOutlined } from "@ant-design/icons";
+import { HomeOutlined, MoreOutlined } from "@ant-design/icons";
 import Item from "./views/data-explorer/components/item";
 import {
   DefaultItemIcon,
@@ -41,10 +44,30 @@ export function GridView() {
             key={item.slug}
             item={item}
             title={item.slug}
-            fullPath={api.getFullUrlFromPath(item.path)}
+            fullPath={api.getFullUrlFromPath(
+              api.getDestinationPathFromItem(item)
+            )}
             onDelete={() => api.deleteItems([item.path])}
             namespace={api.namespace}
-            onRename={(newName: any) => api.renameItem(item.path, newName)}
+            onRename={(newName: any) =>
+              api.renameItem(item.path, item.parentPath, newName)
+            }
+            onCut={() =>
+              api.setClipboard({
+                action: "cut",
+                meta: {
+                  item,
+                },
+              })
+            }
+            onCopyShortcut={() =>
+              api.setClipboard({
+                action: "copy-shortcut",
+                meta: {
+                  item,
+                },
+              })
+            }
           />
         );
       })}
@@ -173,9 +196,55 @@ export function Renderer() {
             </Breadcrumb>
           </Col>
           <Col>
-            <Button onClick={() => setNewFolderModal(true)} type="primary">
-              + New
-            </Button>
+            <Space>
+              <Dropdown
+                trigger={["click"]}
+                overlay={
+                  <Menu
+                    onClick={(e) => {
+                      switch (e.key) {
+                        case "paste": {
+                          api.moveItem(
+                            api.clipboard.meta.item.path,
+                            api.currentDir.path,
+                            api.findNextUniqueName(api.clipboard.meta.item.name)
+                          );
+                          break;
+                        }
+                        case "paste-shortcut": {
+                          api.createShortcut(
+                            api.clipboard.meta.item.path,
+                            api.currentDir.path,
+                            api.findNextUniqueName(api.clipboard.meta.item.name)
+                          );
+                          break;
+                        }
+                      }
+                    }}
+                  >
+                    <Menu.Item
+                      disabled={api?.clipboard?.action !== "cut"}
+                      key="paste"
+                    >
+                      Paste
+                    </Menu.Item>
+                    <Menu.Item
+                      disabled={api?.clipboard?.action !== "copy-shortcut"}
+                      key="paste-shortcut"
+                    >
+                      Paste Shortcut
+                    </Menu.Item>
+                  </Menu>
+                }
+              >
+                <Button>
+                  <MoreOutlined />
+                </Button>
+              </Dropdown>
+              <Button onClick={() => setNewFolderModal(true)} type="primary">
+                + New
+              </Button>
+            </Space>
           </Col>
         </Row>
       </Header>
