@@ -1,15 +1,15 @@
 .account-settings-layout{
-    background: #f0f2f5;
-        margin-top: 64px;
-        height: 100vh;
+    background: #F8F8F8;
+    margin-top: 56px;
+    height: calc(100vh - 56px);
     .content-wrapper{
-        background: #f0f2f5;
+        background: #F8F8F8;
         padding-top: 34px;
         @media (min-width: 0px) and (max-width: 768px) {
         padding-bottom: 150px;
         }
          .main-col{
-             background: #f0f2f5;
+             background: #F8F8F8;
         .profile-wrapper{
             background-image: url(../images/profile-section-bg.png);
             background-size: cover;

@@ -1,7 +1,7 @@
 .user-details-layout {
     background-color: #F8F8F8;
     margin-top: 56px;
-    height: calc(100% - 56px);
+    height: calc(100vh - 56px);
 
     @media (min-width: 0px) and (max-width: 380px) {
         height: unset;

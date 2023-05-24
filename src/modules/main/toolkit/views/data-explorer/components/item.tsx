@@ -11,6 +11,7 @@ import {
   Spin,
   message,
   Divider,
+  Table,
 } from "antd";
 import { Folder } from "../icons/global-icons";
 import { Link } from "react-router-dom";
@@ -20,8 +21,124 @@ import {
   useProperties,
 } from "@skyslit/ark-frontend/build/dynamics-v2";
 import { CustomType } from "@skyslit/ark-frontend/build/dynamics-v2/core/controller";
+import { PlusOutlined } from "@ant-design/icons";
 
 const { TabPane } = Tabs;
+
+const SecurityPolicy = () => {
+
+  const [editable, isEditable] = React.useState(false);
+  const propertiesApi = useProperties();
+
+  /*   const dataSource = [
+      {
+        key: '1',
+        type: 'public',
+        policy: 32,
+        access: 'owner',
+        action: <Button type="text" style={{ border: "unset", background: "transparent", color: "blue" }}>Edit</Button>
+      },
+      {
+        key: '2',
+        type: 'userId',
+        policy: 42,
+        access: 'write',
+        action: <Button type="text" style={{ border: "unset", background: "transparent", color: "blue" }}>Edit</Button>
+      },
+    ]; */
+
+  const columns = [
+    {
+      title: 'Type',
+      dataIndex: 'type',
+      key: 'type',
+      render: (val, row, index) => {
+        return (
+          <Select style={{ width: '100%' }} value={val} onChange={(val) => propertiesApi.cms.updateKey(`security.permissions.${index}.type`, val)}>
+            <Select.Option value="user">User</Select.Option>
+            <Select.Option value="policy">Policy</Select.Option>
+            <Select.Option value="public">Public</Select.Option>
+          </Select>
+        );
+      }
+    },
+    {
+      title: 'User',
+      dataIndex: 'userEmail',
+      key: 'userEmail',
+      render: (val, row, index) => {
+        if (row.type === 'user') {
+          return (
+            <Input value={val} onChange={(e) => propertiesApi.cms.updateKey(`security.permissions.${index}.userEmail`, e.currentTarget.value)} />
+          )
+        }
+
+        return 'N/A'
+      }
+    },
+    {
+      title: 'Policy',
+      dataIndex: 'policy',
+      key: 'policy',
+      render: (val, row, index) => {
+        if (row.type === 'policy') {
+          return (
+            <Input value={val} onChange={(e) => propertiesApi.cms.updateKey(`security.permissions.${index}.policy`, e.currentTarget.value)} />
+          )
+        }
+
+        return 'N/A'
+      }
+    },
+    {
+      title: 'Access',
+      dataIndex: 'access',
+      key: 'access',
+      render: (val, row, index) => {
+        return (
+          <Select style={{ width: '100%' }} value={val} onChange={(val) => propertiesApi.cms.updateKey(`security.permissions.${index}.access`, val)}>
+            <Select.Option value="read">Read</Select.Option>
+            <Select.Option value="write">Write</Select.Option>
+            <Select.Option value="owner">Owner</Select.Option>
+          </Select>
+        );
+      }
+    },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      key: 'action',
+      render: (_, __, i) => {
+        return <Button danger size="small" onClick={() => {
+          Modal.confirm({
+            title: 'Remove Confirmation',
+            okText: "Remove",
+            okButtonProps: {
+              danger: true
+            },
+            onOk: () => {
+              propertiesApi.cms.removeItemAt(`security.permissions`, i);
+            }
+          })
+        }}>Remove</Button>
+      }
+    },
+  ];
+
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
+        <Button onClick={() => propertiesApi.cms.pushItem(`security.permissions`, {
+          type: 'user',
+          policy: '',
+          userEmail: '',
+          access: 'read'
+        })} style={{ padding: "unset", background: "transparent" }} className="secruity-add-btn" type="text"><PlusOutlined style={{ fontSize: 16 }} /></Button>
+      </div>
+      <Table size="small" pagination={false} dataSource={(propertiesApi.cms.content as any).security.permissions} columns={columns} />
+    </div>
+  )
+};
 
 function PropertiesModal(props: {
   customType: CustomType;
@@ -46,6 +163,7 @@ function PropertiesModal(props: {
         </TabPane>
 
         <TabPane tab="Security" key="security">
+          <SecurityPolicy />
           {/* Permissions content goes here */}
         </TabPane>
       </Tabs>
@@ -179,9 +297,8 @@ export default (props: any) => {
         <Link
           title={title}
           to={fullPath}
-          className={`folder-wrapper ${
-            contextMenuVisible || renameMode ? "menu-visible" : ""
-          }`}
+          className={`folder-wrapper ${contextMenuVisible || renameMode ? "menu-visible" : ""
+            }`}
           style={{
             transform: renameMode ? "translateY(-16px)" : undefined,
             position: "relative",

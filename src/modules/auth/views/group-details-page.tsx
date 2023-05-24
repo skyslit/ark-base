@@ -189,155 +189,157 @@ export default createComponent((props) => {
             <Helmet>
                 {`${showGroup ? showGroup.groupTitle : ""} | Groups`}
             </Helmet>
-            <Row className="group-details-row-wrapper" style={{ background: "#F8F8F8" }} justify="center">
-                <Col xl={22} lg={16} md={16} sm={22} xs={22} className="admin-details-main">
-                    <Fade duration={700}>
-                        <div className="header-section">
-                            <div className="back-btn-section">
-                                <Link to={"/groups"} className="back-btn-grp-details">
-                                    <ArrowLeftOutlined style={{ color: "black" }} />
-                                    <span className="all-groups-text"> All Groups / </span>
-                                    <span className="group-details-text"> Group Details</span>
-                                </Link>
+            <div className="group-details-layout">
+                <Row style={{ background: "#F8F8F8" }} justify="center">
+                    <Col xl={22} lg={16} md={16} sm={22} xs={22} className="admin-details-main">
+                        <Fade duration={700}>
+                            <div className="header-section">
+                                <div className="back-btn-section">
+                                    <Link to={"/groups"} className="back-btn-grp-details">
+                                        <ArrowLeftOutlined style={{ color: "black" }} />
+                                        <span className="all-groups-text"> All Groups / </span>
+                                        <span className="group-details-text"> Group Details</span>
+                                    </Link>
+                                </div>
+                                <div style={{ display: "flex" }}>
+                                    {
+                                        isSuperAdmin === true ? (
+                                            <button onClick={showDeleteModal} className={
+                                                editText === false ? "delete-btn" : "delete-btn-hide"}>
+                                                <img src={DeleteIcon} />
+                                                <Typography.Text className="delete-text"> Delete group </Typography.Text>
+                                            </button>
+                                        ) : null}
+                                    {editText === false ? (
+                                        isSuperAdmin === true ? (
+                                            <button className="edit-btn" onClick={triggerEditText}>
+                                                <img src={PencilIcon} />
+                                                <span className="edit-group-text" > Edit group </span>
+                                            </button>
+                                        ) : null) :
+                                        <button className="update-btn" onClick={updateGroupDetails} disabled={updateGroupService.isLoading}>
+                                            {updateGroupService.isLoading === true ? (
+                                                <span style={{ fontSize: 14, color: "green", fontWeight: 500 }}>
+                                                    <LoadingOutlined style={{ marginRight: 5 }} />
+                                                    Updating group
+                                                </span>
+                                            ) : (
+                                                <>
+                                                    <CheckOutlined style={{ color: "green" }} />
+                                                    <span className="edit-group-text" > Update group </span>
+                                                </>
+                                            )}
+                                        </button>}
+                                </div>
                             </div>
-                            <div style={{ display: "flex" }}>
-                                {
-                                    isSuperAdmin === true ? (
-                                        <button onClick={showDeleteModal} className={
-                                            editText === false ? "delete-btn" : "delete-btn-hide"}>
-                                            <img src={DeleteIcon} />
-                                            <Typography.Text className="delete-text"> Delete group </Typography.Text>
-                                        </button>
-                                    ) : null}
+
+                            <div>
                                 {editText === false ? (
-                                    isSuperAdmin === true ? (
-                                        <button className="edit-btn" onClick={triggerEditText}>
-                                            <img src={PencilIcon} />
-                                            <span className="edit-group-text" > Edit group </span>
-                                        </button>
-                                    ) : null) :
-                                    <button className="update-btn" onClick={updateGroupDetails} disabled={updateGroupService.isLoading}>
-                                        {updateGroupService.isLoading === true ? (
-                                            <span style={{ fontSize: 14, color: "green", fontWeight: 500 }}>
-                                                <LoadingOutlined style={{ marginRight: 5 }} />
-                                                Updating group
-                                            </span>
-                                        ) : (
-                                            <>
-                                                <CheckOutlined style={{ color: "green" }} />
-                                                <span className="edit-group-text" > Update group </span>
-                                            </>
-                                        )}
-                                    </button>}
+                                    <span className="group-title"
+                                    >{showGroup ? showGroup.groupTitle : ""}</span>
+                                ) :
+                                    <Input className="edit-group-title" defaultValue={showGroup.groupTitle} onChange={(e) => {
+                                        setGroupTitle(e.target.value)
+                                    }}
+                                    />
+                                }<br />
+                                <span className="member-text">{showGroup ? showGroup.count : ""} Member(s)</span>
                             </div>
-                        </div>
+                            <div className="description-area">
+                                <div style={{ color: "#222222", fontSize: 14, marginBottom: 10, fontWeight: 500 }}><span >Description</span></div>
+                                {editText === false ? (
+                                    <Typography.Text style={{ color: "#393939", fontSize: 14 }}>
+                                        {showGroup ? showGroup.description : ""}
+                                    </Typography.Text>
+                                ) :
+                                    <Input.TextArea autoSize={{ minRows: 3, maxRows: 8 }} className="edit-description"
+                                        defaultValue={showGroup.description} onChange={(e) => {
+                                            setDescription(e.target.value)
+                                        }} />}
 
-                        <div>
-                            {editText === false ? (
-                                <span className="group-title"
-                                >{showGroup ? showGroup.groupTitle : ""}</span>
-                            ) :
-                                <Input className="edit-group-title" defaultValue={showGroup.groupTitle} onChange={(e) => {
-                                    setGroupTitle(e.target.value)
-                                }}
+                            </div>
+                            <div className="table-section">
+                                <div style={{ color: "#222222", fontSize: 14, fontWeight: 500 }}><span>Members</span></div>
+                                <Table dataSource={listAllUsers.dataSource} columns={columns} pagination={false} className="member-table"
+                                    loading={listAllUsers.loading}
                                 />
-                            }<br />
-                            <span className="member-text">{showGroup ? showGroup.count : ""} Member(s)</span>
-                        </div>
-                        <div className="description-area">
-                            <div style={{ color: "#222222", fontSize: 14, marginBottom: 10, fontWeight: 500 }}><span >Description</span></div>
-                            {editText === false ? (
-                                <Typography.Text style={{ color: "#393939", fontSize: 14 }}>
-                                    {showGroup ? showGroup.description : ""}
-                                </Typography.Text>
-                            ) :
-                                <Input.TextArea autoSize={{ minRows: 3, maxRows: 8 }} className="edit-description"
-                                    defaultValue={showGroup.description} onChange={(e) => {
-                                        setDescription(e.target.value)
-                                    }} />}
-
-                        </div>
-                        <div className="table-section">
-                            <div style={{ color: "#222222", fontSize: 14, fontWeight: 500 }}><span>Members</span></div>
-                            <Table dataSource={listAllUsers.dataSource} columns={columns} pagination={false} className="member-table"
-                                loading={listAllUsers.loading}
-                            />
-                            <Modal
-                                className="remove-modal"
-                                footer={null}
-                                width={400}
-                                centered
-                                open={isModalOpen}
-                                onCancel={handleCancel}
-                            >
-                                <div className="remove-wrapper">
-                                    <div className="remove-confirm-section">
-                                        <span style={{ color: "black", fontSize: 14, fontWeight: 500 }}>
-                                            Confirm Remove
-                                        </span>
-                                        <br />
-                                        <span style={{ color: "#8F959D", fontSize: 14 }}>
-                                            Do you want to Remove this Member?
-                                        </span>
+                                <Modal
+                                    className="remove-modal"
+                                    footer={null}
+                                    width={400}
+                                    centered
+                                    open={isModalOpen}
+                                    onCancel={handleCancel}
+                                >
+                                    <div className="remove-wrapper">
+                                        <div className="remove-confirm-section">
+                                            <span style={{ color: "black", fontSize: 14, fontWeight: 500 }}>
+                                                Confirm Remove
+                                            </span>
+                                            <br />
+                                            <span style={{ color: "#8F959D", fontSize: 14 }}>
+                                                Do you want to Remove this Member?
+                                            </span>
+                                        </div>
+                                        <div className="remove-btn-section">
+                                            <button onClick={removeMember} className="remove-btn"
+                                                disabled={removeMemberService.isLoading} >
+                                                {removeMemberService.isLoading === true ? (
+                                                    <span>
+                                                        <LoadingOutlined style={{ marginRight: 5 }} />
+                                                        Removing Member
+                                                    </span>
+                                                ) : (
+                                                    "Remove"
+                                                )}
+                                            </button>
+                                            <button className="cancel-btn" onClick={handleCancel}>
+                                                <span>Cancel</span>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div className="remove-btn-section">
-                                        <button onClick={removeMember} className="remove-btn"
-                                            disabled={removeMemberService.isLoading} >
-                                            {removeMemberService.isLoading === true ? (
-                                                <span>
-                                                    <LoadingOutlined style={{ marginRight: 5 }} />
-                                                    Removing Member
-                                                </span>
-                                            ) : (
-                                                "Remove"
-                                            )}
-                                        </button>
-                                        <button className="cancel-btn" onClick={handleCancel}>
-                                            <span>Cancel</span>
-                                        </button>
+                                </Modal>
+                                <Modal
+                                    className="delete-group-modal"
+                                    footer={null}
+                                    width={400}
+                                    centered
+                                    open={isDeleteModalOpen}
+                                    onCancel={handleDeleteCancel}
+                                >
+                                    <div className="delete-wrapper">
+                                        <div className="delete-confirm-section">
+                                            <span style={{ color: "black", fontSize: 14, fontWeight: 500 }}>
+                                                Confirm delete
+                                            </span>
+                                            <br />
+                                            <span style={{ color: "#8F959D", fontSize: 14 }}>
+                                                Do you want to delete this Group?
+                                            </span>
+                                        </div>
+                                        <div className="delete-btn-section">
+                                            <Link to="/groups" className="delete-btn" onClick={deleteGroup}
+                                                disabled={deleteGroupService.isLoading}>
+                                                {deleteGroupService.isLoading === true ? (
+                                                    <span>
+                                                        <LoadingOutlined style={{ marginRight: 5 }} />
+                                                        Deleting...
+                                                    </span>
+                                                ) : (
+                                                    "Delete"
+                                                )}
+                                            </Link>
+                                            <button className="cancel-btn" onClick={handleDeleteCancel}>
+                                                <span>Cancel</span>
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            </Modal>
-                            <Modal
-                                className="delete-group-modal"
-                                footer={null}
-                                width={400}
-                                centered
-                                open={isDeleteModalOpen}
-                                onCancel={handleDeleteCancel}
-                            >
-                                <div className="delete-wrapper">
-                                    <div className="delete-confirm-section">
-                                        <span style={{ color: "black", fontSize: 14, fontWeight: 500 }}>
-                                            Confirm delete
-                                        </span>
-                                        <br />
-                                        <span style={{ color: "#8F959D", fontSize: 14 }}>
-                                            Do you want to delete this Group?
-                                        </span>
-                                    </div>
-                                    <div className="delete-btn-section">
-                                        <Link to="/groups" className="delete-btn" onClick={deleteGroup}
-                                            disabled={deleteGroupService.isLoading}>
-                                            {deleteGroupService.isLoading === true ? (
-                                                <span>
-                                                    <LoadingOutlined style={{ marginRight: 5 }} />
-                                                    Deleting...
-                                                </span>
-                                            ) : (
-                                                "Delete"
-                                            )}
-                                        </Link>
-                                        <button className="cancel-btn" onClick={handleDeleteCancel}>
-                                            <span>Cancel</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </Modal>
-                        </div>
-                    </Fade>
-                </Col>
-            </Row>
+                                </Modal>
+                            </div>
+                        </Fade>
+                    </Col>
+                </Row>
+            </div>
         </>
     );
 });

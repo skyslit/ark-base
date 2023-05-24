@@ -205,7 +205,7 @@ export default createComponent((props) => {
             </Helmet>
             <div className="user-details-layout">
                 <Fade duration={700}>
-                    <Row justify="center">
+                    <Row style={{ background: "#F8F8F8" }} justify="center">
                         <Col xl={22} lg={16} md={16} sm={22} xs={22} className="user-details-col" >
                             <div className="user-details-wrapper">
                                 <div className="top-section">

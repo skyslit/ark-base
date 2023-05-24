@@ -364,7 +364,7 @@ export default createComponent((props) => {
         return (
             <div
                 style={{
-                    backgroundColor: "white",
+                    backgroundColor: "#F8F8F8",
                     height: "100vh",
                     display: "flex",
                     alignItems: "center",
