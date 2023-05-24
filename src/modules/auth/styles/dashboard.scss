@@ -1,0 +1,23 @@
+.dashboard-wrapper {
+    margin-top: 56px;
+    background-color: #F8F8F8;
+    height: calc(100vh - 56px);
+
+    .dashboard-content-wrapper {
+        display: flex;
+        flex-direction: column;
+        padding-top: 43px;
+
+        .date-text {
+            color: #797979;
+            font-size: 12px;
+            font-family: Almarose-Medium;
+        }
+
+        .dashboard-text {
+            color: #2B2B2B;
+            font-size: 20px;
+            font-family: Almarose-Semibold;
+        }
+    }
+}

@@ -38,6 +38,13 @@ export default createReactApp(({ use, useModule }) => {
       Route: useComponent("authRoute"),
     },
     {
+      path: "/admin/dashboard",
+      hideInMenu: true,
+      layout: useLayout("main/sidebar"), // Use the component address here
+      component: useComponent("main/admin-dashboard-page"),
+      Route: useComponent("protectedRoute"),
+    },
+    {
       path: "/admin/settings",
       hideInMenu: true,
       layout: useLayout("main/sidebar"), // Use the component address here

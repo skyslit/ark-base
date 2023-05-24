@@ -1,7 +1,7 @@
 import React from "react";
 import { createComponent, Frontend } from "@skyslit/ark-frontend";
 import { Catalogue } from "@skyslit/ark-frontend/build/dynamics-v2";
-import { Layout, Divider, Button, message } from "antd";
+import { Layout, Divider, Button, message, Modal } from "antd";
 import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import "../layouts/sidebar.scss";
 import { Link, useLocation } from "react-router-dom";
@@ -16,6 +16,26 @@ const SiderLayout = createComponent((props) => {
 
     const { useService, useContext } = props.use(Frontend);
     const context = useContext();
+
+    const [userDetails, setUserDetails] = React.useState([]);
+
+    const listUserDetailsService = useService({ serviceId: "get-user-by-id" });
+    const listUserDetails = () => {
+        const userId = context.response.meta.currentUser._id;
+        listUserDetailsService.invoke({
+            userId
+        }, { force: true })
+            .then((res) => {
+                setUserDetails(res.data[0])
+            })
+            .catch(() => {
+
+            })
+    }
+
+    React.useEffect(() => {
+        listUserDetails();
+    }, []);
 
     const logoutService = useService({ serviceId: "user-logout" });
     const logoutUser = () => {
@@ -48,12 +68,22 @@ const SiderLayout = createComponent((props) => {
                 <span style={{ color: "black", fontFamily: "Almarose-Bold" }}>Skyslit</span>
                 <div className="username-signout-btn-wrapper">
                     <div className="username-role-wrapper">
-                        <span className="username-text" >John Doe</span>
-                        <span className="role-text">Admin</span>
+                        <span className="username-text" >{userDetails?.name}</span>
+                        <span className="role-text">{userDetails?.email}</span>
                     </div>
                     <Divider type="vertical" />
                     <div className="signout-btn-wrapper">
-                        <Button className="signout-btn" onClick={logoutUser} type="link">
+                        <Button type="link" className="signout-btn" onClick={() => {
+                            Modal.confirm({
+                                maskClosable: true,
+                                title: 'Logout Confirmation',
+                                content: ' Are you sure you want to logout?',
+                                okText: "Logout",
+                                onOk: () => {
+                                    logoutUser()
+                                }
+                            })
+                        }}>
                             <LogoutOutlined className="logout-antd-icon" />
                             Sign Out
                         </Button>
@@ -109,7 +139,7 @@ const SiderLayout = createComponent((props) => {
                                 <Link
                                     type="text"
                                     to="/admin/settings"
-                                    className={`${location.pathname === "/admin/settings"
+                                    className={`${location.pathname === "/admin/settings" || location.pathname.includes("/users") || location.pathname.includes("/groups")
                                         ? "selected-btn"
                                         : "unselected-btn"
                                         }`}
