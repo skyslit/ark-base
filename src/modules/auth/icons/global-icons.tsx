@@ -10,6 +10,8 @@ import SiderLeftChevron from "../icons/sider-left-chevron.svg";
 // @ts-ignore
 import SiderSettings from "../icons/sider-settings.svg";
 // @ts-ignore
+import DashboardAdd from "../icons/dashboard-add-icon.svg";
+// @ts-ignore
 
 export const SiderFolderIcon = (props: any) => {
     return <Icon component={SiderFolder} {...props} />;
@@ -22,4 +24,7 @@ export const SiderLeftChevronIcon = (props: any) => {
 };
 export const SiderSettingsIcon = (props: any) => {
     return <Icon component={SiderSettings} {...props} />;
+};
+export const DashboardAddIcon = (props: any) => {
+    return <Icon component={DashboardAdd} {...props} />;
 };

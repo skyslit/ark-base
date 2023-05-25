@@ -9,7 +9,7 @@ export default defineService("change-password", (props) => {
     let user: UserDocument = {};
     await new Promise(async (operationComplete, error) => {
       const { newPassword, oldPassword } = props.args.input;
-      const accountId = (props.args.user as any).data._id;
+      const accountId = (props.args.user as any)._id;
       user = await AccountModel.findOne({ _id: accountId }).exec();
       user.verifyPassword(oldPassword, async (err: any, isMatch: any) => {
         if (err) {

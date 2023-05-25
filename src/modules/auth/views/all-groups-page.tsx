@@ -140,7 +140,7 @@ export default createComponent((props) => {
             <Fade duration={700}>
                 <div className="all-groups-page-layout">
                     <Row justify="center">
-                        <Col className="all-groups-main" xl={22} lg={16} md={16} sm={22} xs={22}>
+                        <Col className="all-groups-main" span={22}>
                             <div className="back-button-div">
                                 <Link className="groups-back-btn" to={"/admin/settings"}>
                                     <ArrowLeftOutlined />
@@ -174,7 +174,7 @@ export default createComponent((props) => {
                                     ) : null}
                             </div>
                         </Col>
-                        <Col xl={22} lg={16} md={16} sm={22} xs={22}>
+                        <Col span={22}>
                             <h2 className="all-group-title" >{`All Groups (${listAllGroups.dataSource.length})`}</h2>
                             <Table dataSource={listAllGroups.dataSource}
                                 columns={columns}

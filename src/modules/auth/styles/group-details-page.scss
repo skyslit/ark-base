@@ -3,10 +3,6 @@
     margin-top: 56px;
     height: calc(100vh - 56px);
 
-    @media (min-width: 0px) and (max-width: 380px) {
-        height: unset;
-    }
-
     .admin-details-main {
         background: #F8F8F8;
         padding-top: 45px;
