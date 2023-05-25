@@ -13,7 +13,7 @@ import {
   Divider,
   Table,
 } from "antd";
-import { Folder } from "../icons/global-icons";
+import { Folder, Shortcut } from "../icons/global-icons";
 import { Link } from "react-router-dom";
 import FileIcon from "../icons/file-icon.png";
 import {
@@ -26,7 +26,6 @@ import { EnterOutlined, PlusOutlined } from "@ant-design/icons";
 const { TabPane } = Tabs;
 
 const SecurityPolicy = () => {
-  const [editable, isEditable] = React.useState(false);
   const propertiesApi = useProperties();
 
   const columns = [
@@ -225,7 +224,16 @@ function PropertiesModal(props: {
           disabled={propertiesApi.cms.hasChanged === false}
           type="primary"
           onClick={() =>
-            propertiesApi.saveChanges().then(() => handleCloseModal())
+            propertiesApi
+              .saveChanges()
+              .then(() => handleCloseModal())
+              .catch((e) => {
+                message.error(
+                  e?.response?.data?.message
+                    ? e?.response?.data?.message
+                    : e.message
+                );
+              })
           }
         >
           Apply
@@ -280,11 +288,13 @@ export default (props: any) => {
           setIsRenaming(false);
           setRenameMode(false);
         })
-        .catch((e) =>
+        .catch((e) => {
+          setIsRenaming(false);
+          setRenameMode(false);
           message.error(
             e?.response?.data?.message ? e.response.data.message : e.message
-          )
-        );
+          );
+        });
     },
     [onRename]
   );
@@ -327,6 +337,7 @@ export default (props: any) => {
                   setIsRenaming(false);
                   setRenameMode(true);
                   setRenameSource(item.name);
+                  document.execCommand("selectAll", false, undefined);
                   break;
                 }
                 case "properties": {
@@ -349,10 +360,14 @@ export default (props: any) => {
             <Menu.Item key="new-tab">Open in new tab</Menu.Item>
             <Menu.Item key="rename">Rename</Menu.Item>
             <Menu.Item key="delete">Delete</Menu.Item>
-            <Menu.Item key="properties">Properties</Menu.Item>
+            <Menu.Item key="properties" disabled={item?.isSymLink === true}>
+              Properties
+            </Menu.Item>
             <Menu.Divider />
             <Menu.Item key="cut">Cut</Menu.Item>
-            <Menu.Item key="copy-shortcut">Copy Shortcut</Menu.Item>
+            <Menu.Item key="copy-shortcut" disabled={item?.isSymLink === true}>
+              Copy Shortcut
+            </Menu.Item>
           </Menu>
         }
         trigger={["contextMenu"]}
@@ -395,7 +410,8 @@ export default (props: any) => {
                 fontSize: 20,
               }}
             >
-              <EnterOutlined />
+              {/* <EnterOutlined /> */}
+              <Shortcut />
             </div>
           ) : null}
           {renameMode === true ? (
@@ -418,7 +434,6 @@ export default (props: any) => {
                 ref={(e) => {
                   if (e?.focus) {
                     e.focus();
-                    document.execCommand("selectAll", false, undefined);
                   }
                 }}
                 contentEditable={isRenaming === false}

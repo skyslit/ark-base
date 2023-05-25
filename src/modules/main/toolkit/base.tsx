@@ -24,7 +24,6 @@ import {
   DefaultItemIcon,
   FolderItemIcon,
 } from "./views/data-explorer/components/item";
-import Editor from "./views/data-explorer/editor";
 
 const { Header, Content } = Layout;
 const { Panel } = Collapse;
@@ -47,7 +46,15 @@ export function GridView() {
             fullPath={api.getFullUrlFromPath(
               api.getDestinationPathFromItem(item)
             )}
-            onDelete={() => api.deleteItems([item.path])}
+            onDelete={() =>
+              api.deleteItems([item.path]).catch((e) => {
+                message.error(
+                  e?.response?.data?.message
+                    ? e?.response?.data?.message
+                    : e.message
+                );
+              })
+            }
             namespace={api.namespace}
             onRename={(newName: any) =>
               api.renameItem(item.path, item.parentPath, newName)
@@ -196,55 +203,77 @@ export function Renderer() {
             </Breadcrumb>
           </Col>
           <Col>
-            <Space>
-              <Dropdown
-                trigger={["click"]}
-                overlay={
-                  <Menu
-                    onClick={(e) => {
-                      switch (e.key) {
-                        case "paste": {
-                          api.moveItem(
-                            api.clipboard.meta.item.path,
-                            api.currentDir.path,
-                            api.findNextUniqueName(api.clipboard.meta.item.name)
-                          );
-                          break;
+            {api.claims.write === true ? (
+              <Space>
+                <Dropdown
+                  trigger={["click"]}
+                  overlay={
+                    <Menu
+                      onClick={(e) => {
+                        switch (e.key) {
+                          case "paste": {
+                            api
+                              .moveItem(
+                                api.clipboard.meta.item.path,
+                                api.currentDir.path,
+                                api.findNextUniqueName(
+                                  api.clipboard.meta.item.name
+                                )
+                              )
+                              .catch((e) => {
+                                message.error(
+                                  e?.response?.data?.message
+                                    ? e?.response?.data?.message
+                                    : e.message
+                                );
+                              });
+                            break;
+                          }
+                          case "paste-shortcut": {
+                            api
+                              .createShortcut(
+                                api.clipboard.meta.item.path,
+                                api.currentDir.path,
+                                api.findNextUniqueName(
+                                  api.clipboard.meta.item.name
+                                )
+                              )
+                              .catch((e) => {
+                                message.error(
+                                  e?.response?.data?.message
+                                    ? e?.response?.data?.message
+                                    : e.message
+                                );
+                              });
+                            break;
+                          }
                         }
-                        case "paste-shortcut": {
-                          api.createShortcut(
-                            api.clipboard.meta.item.path,
-                            api.currentDir.path,
-                            api.findNextUniqueName(api.clipboard.meta.item.name)
-                          );
-                          break;
-                        }
-                      }
-                    }}
-                  >
-                    <Menu.Item
-                      disabled={api?.clipboard?.action !== "cut"}
-                      key="paste"
+                      }}
                     >
-                      Paste
-                    </Menu.Item>
-                    <Menu.Item
-                      disabled={api?.clipboard?.action !== "copy-shortcut"}
-                      key="paste-shortcut"
-                    >
-                      Paste Shortcut
-                    </Menu.Item>
-                  </Menu>
-                }
-              >
-                <Button>
-                  <MoreOutlined />
+                      <Menu.Item
+                        disabled={api?.clipboard?.action !== "cut"}
+                        key="paste"
+                      >
+                        Paste
+                      </Menu.Item>
+                      <Menu.Item
+                        disabled={api?.clipboard?.action !== "copy-shortcut"}
+                        key="paste-shortcut"
+                      >
+                        Paste Shortcut
+                      </Menu.Item>
+                    </Menu>
+                  }
+                >
+                  <Button>
+                    <MoreOutlined />
+                  </Button>
+                </Dropdown>
+                <Button onClick={() => setNewFolderModal(true)} type="primary">
+                  + New
                 </Button>
-              </Dropdown>
-              <Button onClick={() => setNewFolderModal(true)} type="primary">
-                + New
-              </Button>
-            </Space>
+              </Space>
+            ) : null}
           </Col>
         </Row>
       </Header>
@@ -293,7 +322,7 @@ export function Renderer() {
                   key={type.id}
                   item={type}
                   selected={type.id === selectedNewType}
-                  onClick={() => setSelectedNewType(type.id)}
+                  onClick={() => setSelectedNewType((type as any).id)}
                 />
               ))}
             </div>
