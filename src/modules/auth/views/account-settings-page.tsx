@@ -256,6 +256,7 @@ export default createComponent((props) => {
                 listUserDetails()
                 setEditName(false)
                 listAllUsers.onChange()
+                window.location.reload()
             })
             .catch(() => {
             })
@@ -284,7 +285,7 @@ export default createComponent((props) => {
             .then((res) => {
                 (formRef.current as any).resetFields();
                 setUpdatePassword(false)
-
+                message.success("Password changed successfully")
             })
             .catch(() => {
                 message.error("Failed to change password")
@@ -320,6 +321,7 @@ export default createComponent((props) => {
                 setOtp("")
                 setShowOtp(false)
                 listUserDetails()
+                window.location.reload()
             })
             .catch(() => {
                 message.error("Incorrect OTP")
@@ -386,7 +388,7 @@ export default createComponent((props) => {
                 <div className="account-settings-layout">
                     <div className="content-wrapper">
                         <Row justify="center" >
-                            <Col xl={22} lg={16} md={16} xs={22} sm={22} className="main-col" >
+                            <Col span={22} className="main-col" >
                                 <div className="profile-wrapper">
                                     <div className="profile-img-section">
                                         <div className="profile-div">

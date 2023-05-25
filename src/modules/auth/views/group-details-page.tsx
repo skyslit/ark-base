@@ -191,7 +191,7 @@ export default createComponent((props) => {
             </Helmet>
             <div className="group-details-layout">
                 <Row style={{ background: "#F8F8F8" }} justify="center">
-                    <Col xl={22} lg={16} md={16} sm={22} xs={22} className="admin-details-main">
+                    <Col span={22} className="admin-details-main">
                         <Fade duration={700}>
                             <div className="header-section">
                                 <div className="back-btn-section">

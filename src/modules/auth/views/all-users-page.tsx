@@ -149,7 +149,7 @@ export default createComponent((props) => {
             <Fade duration={700}>
                 <div className="all-users-page-layout">
                     <Row style={{ paddingBottom: 50 }} justify="center">
-                        <Col className="all-users-main" xl={22} lg={16} md={16} sm={22} xs={22}>
+                        <Col className="all-users-main" span={22}>
                             <div className="back-button-div">
                                 <Link to={"/admin/settings"} className="back-btn">
                                     <ArrowLeftOutlined />
@@ -284,7 +284,7 @@ export default createComponent((props) => {
                                 </Modal>
                             </div>
                         </Col>
-                        <Col xl={22} lg={16} md={16} sm={22} xs={22} >
+                        <Col span={22} >
                             <h2 className="all-users-title" >{`All Users (${listAllUsers.dataSource.length})`}</h2>
                             <Table
                                 dataSource={listAllUsers.dataSource}

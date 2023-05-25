@@ -109,7 +109,7 @@ export default createComponent((props) => {
             .then((res) => {
                 (formRef.current as any).resetFields();
                 setUpdatePassword(false)
-
+                message.success("Password changed successfully")
             })
             .catch(() => {
                 message.error("Failed to change password")
@@ -133,7 +133,8 @@ export default createComponent((props) => {
 
     const updateNameService = useService({ serviceId: "update-name-service" });
     const updateName = (data) => {
-        const userId = context.response.meta.currentUser._id;
+        // const userId = context.response.meta.currentUser._id;
+        const userId = (params as any).id;
         updateNameService.invoke({
             userId,
             name: data.name
@@ -141,6 +142,7 @@ export default createComponent((props) => {
             .then((res) => {
                 listAccountDetails()
                 setEditName(false)
+                window.location.reload()
             })
             .catch(() => {
 
@@ -206,7 +208,7 @@ export default createComponent((props) => {
             <div className="user-details-layout">
                 <Fade duration={700}>
                     <Row style={{ background: "#F8F8F8" }} justify="center">
-                        <Col xl={22} lg={16} md={16} sm={22} xs={22} className="user-details-col" >
+                        <Col span={22} className="user-details-col" >
                             <div className="user-details-wrapper">
                                 <div className="top-section">
                                     <div className="back-btn-section">
