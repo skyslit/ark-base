@@ -170,6 +170,18 @@ export function Renderer() {
     return api?.dirLoading === false && api?.claims?.read === false;
   }, [api?.claims?.read, api?.dirLoading]);
 
+  const accessMode = React.useMemo(() => {
+    if (api?.claims?.owner === true) {
+      return "Owner";
+    } else if (api?.claims?.write === true) {
+      return "Write";
+    } else if (api?.claims?.read === true) {
+      return "Read";
+    } else {
+      return "No Access";
+    }
+  }, [api.claims]);
+
   if (readUnauthorized === true) {
     return (
       <div style={{ marginTop: 56 }}>
@@ -188,11 +200,6 @@ export function Renderer() {
         <Row align="middle" style={{ width: "100%" }}>
           <Col flex={1}>
             <Breadcrumb separator=">">
-              <Breadcrumb.Item>
-                <Link to={api.basePath}>
-                  <HomeOutlined />
-                </Link>
-              </Breadcrumb.Item>
               {paths.map((p) => (
                 <Breadcrumb.Item key={p.folderName}>
                   <Link to={api.getFullUrlFromPath(p.fullPath)}>
@@ -201,6 +208,17 @@ export function Renderer() {
                 </Breadcrumb.Item>
               ))}
             </Breadcrumb>
+            <p
+              style={{
+                margin: 0,
+                lineHeight: "10px",
+                paddingTop: 4,
+                fontSize: 12,
+                color: "#adadad",
+              }}
+            >
+              Access: {accessMode}
+            </p>
           </Col>
           <Col>
             {api.claims.write === true ? (

@@ -16,6 +16,7 @@ import {
 } from "../../auth/icons/global-icons";
 import { Content } from "antd/lib/layout/layout";
 import NoSSR from "../../auth/reusables/NoSSR";
+import { Shortcut } from "../toolkit/views/data-explorer/icons/global-icons";
 const { Header, Sider } = Layout;
 
 const SiderLayout = createComponent((props) => {
@@ -31,27 +32,18 @@ const SiderLayout = createComponent((props) => {
   );
   const context = useContext();
 
-  const [userDetails, setUserDetails] = React.useState([]);
-
-  const listUserDetailsService = useService({ serviceId: "get-user-by-id" });
-  const listUserDetails = () => {
-    const userId = context.response.meta.currentUser._id;
-    listUserDetailsService
-      .invoke(
-        {
-          userId,
-        },
-        { force: true }
-      )
-      .then((res) => {
-        setUserDetails(res.data[0]);
-      })
-      .catch(() => {});
-  };
-
-  React.useEffect(() => {
-    listUserDetails();
-  }, []);
+  const isUserSuperAdmin = React.useMemo(() => {
+    if (context?.response?.meta?.currentUser) {
+      try {
+        return (
+          context.response.meta.currentUser.policies.indexOf("SUPER_ADMIN") > -1
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return false;
+  }, [context?.response?.meta?.currentUser]);
 
   const logoutService = useService({ serviceId: "user-logout" });
   const logoutUser = () => {
@@ -86,8 +78,12 @@ const SiderLayout = createComponent((props) => {
         </span>
         <div className="username-signout-btn-wrapper">
           <div className="username-role-wrapper">
-            <span className="username-text">{userDetails?.name}</span>
-            <span className="role-text">{userDetails?.email}</span>
+            <span className="username-text">
+              {context?.response?.meta?.currentUser?.name}
+            </span>
+            <span className="role-text">
+              {context?.response?.meta?.currentUser?.emailAddress}
+            </span>
           </div>
           <Divider type="vertical" />
           <div className="signout-btn-wrapper">
@@ -156,36 +152,6 @@ const SiderLayout = createComponent((props) => {
                   <span className="btn-text">Dashboard</span>
                 </Link>
               </div>
-              <div className="button-wrapper">
-                <Link
-                  type="text"
-                  to="/admin/files"
-                  className={`${
-                    location.pathname === "/admin/files"
-                      ? "selected-btn"
-                      : "unselected-btn"
-                  }`}
-                >
-                  <SiderFolderIcon style={{ fontSize: 18 }} />
-                  <span className="btn-text">Files</span>
-                </Link>
-              </div>
-              <div className="button-wrapper">
-                <Link
-                  type="text"
-                  to="/admin/settings"
-                  className={`${
-                    location.pathname === "/admin/settings" ||
-                    location.pathname.includes("/users") ||
-                    location.pathname.includes("/groups")
-                      ? "selected-btn"
-                      : "unselected-btn"
-                  }`}
-                >
-                  <SiderSettingsIcon style={{ fontSize: 18 }} />
-                  <span className="btn-text">Settings</span>
-                </Link>
-              </div>
               {Array.isArray(sidebarItems?.response?.items)
                 ? sidebarItems?.response?.items.map((item) => {
                     return (
@@ -202,13 +168,48 @@ const SiderLayout = createComponent((props) => {
                               : "unselected-btn"
                           }`}
                         >
-                          <EnterOutlined style={{ fontSize: 18 }} />
+                          <Shortcut />
                           <span className="btn-text">{item.name}</span>
                         </Link>
                       </div>
                     );
                   })
                 : null}
+              <div className="button-wrapper">
+                <Link
+                  type="text"
+                  to="/admin/settings"
+                  className={`${
+                    location.pathname === "/admin/settings" ||
+                    location.pathname.includes("/users") ||
+                    location.pathname.includes("/groups")
+                      ? "selected-btn"
+                      : "unselected-btn"
+                  }`}
+                >
+                  <SiderSettingsIcon style={{ fontSize: 18 }} />
+                  <span className="btn-text">Users & Groups</span>
+                </Link>
+              </div>
+              {isUserSuperAdmin === true ? (
+                <>
+                  <Divider />
+                  <div className="button-wrapper">
+                    <Link
+                      type="text"
+                      to="/admin/files"
+                      className={`${
+                        location.pathname === "/admin/files"
+                          ? "selected-btn"
+                          : "unselected-btn"
+                      }`}
+                    >
+                      <SiderFolderIcon style={{ fontSize: 18 }} />
+                      <span className="btn-text">Root</span>
+                    </Link>
+                  </div>
+                </>
+              ) : null}
             </div>
           </div>
         </Sider>
