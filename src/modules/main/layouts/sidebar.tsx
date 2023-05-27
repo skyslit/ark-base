@@ -74,7 +74,7 @@ const SiderLayout = createComponent((props) => {
     <Layout className="homepage-wrapper">
       <Header className="main-header">
         <span style={{ color: "black", fontFamily: "Almarose-Bold" }}>
-          Skyslit
+          {`%COMP_NAME%`}
         </span>
         <div className="username-signout-btn-wrapper">
           <div className="username-role-wrapper">
