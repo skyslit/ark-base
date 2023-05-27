@@ -3,8 +3,8 @@
   "description": "Cloud Application powered by Skyslit Ark",
   "version": "0.0.1",
   "scripts": {
-    "start": "fpz start",
-    "build": "fpz build",
+    "start": "ark start",
+    "build": "ark build",
     "build-image": "docker build . -t dynamics-base:latest",
     "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@ant-design/icons": "^4.8.0",
+    "@skyslit/ark": "^2.36.0",
     "@skyslit/ark-backend": "^2.36.0",
     "@skyslit/ark-core": "^2.31.7",
     "@skyslit/ark-frontend": "^2.36.0",
@@ -20,7 +21,6 @@
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "express": "^4.18.2",
-    "fpz": "^2.36.0",
     "joi": "^17.9.2",
     "mongoose": "^5.13.17",
     "react": "^16.14.0",
