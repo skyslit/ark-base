@@ -12,6 +12,12 @@ import SiderSettings from "../icons/sider-settings.svg";
 // @ts-ignore
 import DashboardAdd from "../icons/dashboard-add-icon.svg";
 // @ts-ignore
+import PieDiagram from "../icons/pie-diagram.svg";
+// @ts-ignore
+import LeftArrow from "../icons/left-arrow.svg";
+// @ts-ignore
+import Search from "../icons/search-icon.svg";
+// @ts-ignore
 
 export const SiderFolderIcon = (props: any) => {
     return <Icon component={SiderFolder} {...props} />;
@@ -27,4 +33,13 @@ export const SiderSettingsIcon = (props: any) => {
 };
 export const DashboardAddIcon = (props: any) => {
     return <Icon component={DashboardAdd} {...props} />;
+};
+export const PieDiagramIcon = (props: any) => {
+    return <Icon component={PieDiagram} {...props} />;
+};
+export const LeftArrowIcon = (props: any) => {
+    return <Icon component={LeftArrow} {...props} />;
+};
+export const SearchIcon = (props: any) => {
+    return <Icon component={Search} {...props} />;
 };
