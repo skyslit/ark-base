@@ -1,6 +1,6 @@
 import { createModule } from "@skyslit/ark-core";
 import { Data } from "@skyslit/ark-backend";
-import { Backend, Security } from "@skyslit/ark-backend";
+import { Backend } from "@skyslit/ark-backend";
 
 import AccountSchema from "../auth/schema/account.schema";
 import GroupSchema from "../auth/schema/group.schema";
@@ -39,17 +39,16 @@ import RemoveMember from "../auth/services/remove-member.service";
 import GroupDetails from "../auth/services/group-details.service";
 import UpdateGroup from "../auth/services/update-group.service";
 
-
 export default createModule(({ use }) => {
   const { useModel } = use(Data);
   const { enableDynamicsV2Services, useService } = use(Backend);
   console.log("api.module.ts loaded");
 
   useModel("account", AccountSchema);
-  useModel('group', GroupSchema);
-  useModel('member-assignment', MemberAssignmentSchema);
-  useModel('app', AppSchema);
-  useModel('blacklisted_token', BlackListedTokenSchema);
+  useModel("group", GroupSchema);
+  useModel("member-assignment", MemberAssignmentSchema);
+  useModel("app", AppSchema);
+  useModel("blacklisted_token", BlackListedTokenSchema);
 
   useService(AdminValidation);
   useService(UserLogin);

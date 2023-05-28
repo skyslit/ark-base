@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Symlink Ark Core
+rm -Rf node_modules/@skyslit/ark-core
+ln -s "/Users/dameemshahabaz/Documents/ark-source-code/ark/packages/ark-core" "node_modules/@skyslit/ark-core"
+
 # Symlink Ark Backend
 rm -Rf node_modules/@skyslit/ark-backend
 ln -s "/Users/dameemshahabaz/Documents/ark-source-code/ark/packages/ark-backend" "node_modules/@skyslit/ark-backend"
