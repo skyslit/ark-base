@@ -12,7 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@ant-design/icons": "^4.8.0",
-    "@skyslit/ark": "^2.36.0",
+    "@skyslit/ark": "^2.38.2",
     "@skyslit/ark-backend": "^2.36.0",
     "@skyslit/ark-core": "^2.31.7",
     "@skyslit/ark-frontend": "^2.36.0",
