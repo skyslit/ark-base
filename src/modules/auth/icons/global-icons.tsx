@@ -18,6 +18,10 @@ import LeftArrow from "../icons/left-arrow.svg";
 // @ts-ignore
 import Search from "../icons/search-icon.svg";
 // @ts-ignore
+import SiderShortcutFolder from "../icons/sider-folder-shortcut.svg";
+// @ts-ignore
+import HamburgerMenu from "../icons/hamburger-menu.svg";
+// @ts-ignore
 
 export const SiderFolderIcon = (props: any) => {
     return <Icon component={SiderFolder} {...props} />;
@@ -42,4 +46,10 @@ export const LeftArrowIcon = (props: any) => {
 };
 export const SearchIcon = (props: any) => {
     return <Icon component={Search} {...props} />;
+};
+export const SiderShortcutFolderIcon = (props: any) => {
+    return <Icon component={SiderShortcutFolder} {...props} />;
+};
+export const HamburgerMenuIcon = (props: any) => {
+    return <Icon component={HamburgerMenu} {...props} />;
 };
