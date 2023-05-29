@@ -1,5 +1,5 @@
 .dashboard-wrapper {
-    margin-top: 56px;
+    // margin-top: 56px;
     background-color: #F8F8F8;
     height: calc(100vh - 56px);
 
@@ -39,7 +39,9 @@
                 display: flex;
                 justify-content: center;
                 border-radius: 3px;
-
+                @media (min-width: 0px) and (max-width: 576px) {
+                display: none;
+                }
                 .dashboard-add-icon-btn {
                     padding: unset;
                     background-color: unset;
