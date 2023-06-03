@@ -125,7 +125,7 @@ function NewItem(props: any) {
           alignItems: "center",
         }}
       >
-        <Icon style={{ fontSize: 50, width: 50, height: 50 }} item={item} />
+        <Icon style={{ fontSize: 50, width: 50, height: 50 }} />
       </div>
       <Typography.Text
         ellipsis={true}

@@ -398,7 +398,10 @@ export default (props: any) => {
               alignItems: "center",
             }}
           >
-            <Icon style={{ fontSize: 100, width: 100, height: 100 }} />
+            <Icon
+              style={{ fontSize: 100, width: 100, height: 100 }}
+              item={item}
+            />
           </div>
           {isSymLink === true ? (
             <div
