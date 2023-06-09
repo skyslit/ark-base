@@ -39,8 +39,8 @@ import RemoveMember from "../auth/services/remove-member.service";
 import GroupDetails from "../auth/services/group-details.service";
 import UpdateGroup from "../auth/services/update-group.service";
 
-export default createModule(({ use }) => {
-  const { useModel } = use(Data);
+export default createModule(({ use, run }) => {
+  const { useModel, useFolderOperations } = use(Data);
   const { enableDynamicsV2Services, useService } = use(Backend);
   console.log("api.module.ts loaded");
 
@@ -82,4 +82,9 @@ export default createModule(({ use }) => {
   useService(UpdateGroup);
 
   enableDynamicsV2Services();
+
+  run(async () => {
+    const { ensurePaths } = useFolderOperations();
+    await ensurePaths("default", []);
+  });
 });

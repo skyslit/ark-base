@@ -163,8 +163,18 @@ export function Renderer() {
   }, [api.path]);
 
   const customTypes = React.useMemo(() => {
-    return api.namespace.typesArray;
-  }, [api.namespace.typesArray]);
+    const allowedTypeIds = api?.currentCustomType?.allowedChildCustomTypes;
+    let result = api.namespace.typesArray;
+
+    if (Array.isArray(allowedTypeIds)) {
+      result = result.filter((type) => {
+        // @ts-ignore
+        return allowedTypeIds.indexOf(type.id) > -1;
+      });
+    }
+
+    return result;
+  }, [api.namespace.typesArray, api.currentCustomType]);
 
   const readUnauthorized = React.useMemo(() => {
     return api?.dirLoading === false && api?.claims?.read === false;
