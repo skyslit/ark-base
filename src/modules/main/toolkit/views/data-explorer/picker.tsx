@@ -5,7 +5,6 @@ import {
   useCatalogueItemPicker,
 } from "@skyslit/ark-frontend/build/dynamics-v2/widgets/catalogue";
 import { Modal } from "antd";
-import { MemoryRouter, useParams } from "react-router-dom";
 
 function Picker(props: any) {
   const picker = useCatalogueItemPicker();
