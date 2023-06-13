@@ -18,6 +18,7 @@ import { Link } from "react-router-dom";
 import FileIcon from "../icons/file-icon.png";
 import {
   PropetriesProvider,
+  useCatalogue,
   useProperties,
 } from "@skyslit/ark-frontend/build/dynamics-v2";
 import { CustomType } from "@skyslit/ark-frontend/build/dynamics-v2/core/controller";
@@ -247,6 +248,7 @@ export default (props: any) => {
   const { title, item, fullPath, onDelete, onRename, onCut, onCopyShortcut } =
     props;
   const { selected } = props;
+  const api = useCatalogue();
   const [contextMenuVisible, setContextMenuVisible] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [renameMode, setRenameMode] = React.useState(false);
@@ -358,17 +360,26 @@ export default (props: any) => {
               }
             }}
           >
-            <Menu.Item key="new-tab">Open in new tab</Menu.Item>
+            {api?.meta?.mode === "picker" ? null : (
+              <Menu.Item key="new-tab">Open in new tab</Menu.Item>
+            )}
             <Menu.Item key="rename">Rename</Menu.Item>
             <Menu.Item key="delete">Delete</Menu.Item>
-            <Menu.Item key="properties" disabled={item?.isSymLink === true}>
-              Properties
-            </Menu.Item>
-            <Menu.Divider />
-            <Menu.Item key="cut">Cut</Menu.Item>
-            <Menu.Item key="copy-shortcut" disabled={item?.isSymLink === true}>
-              Copy Shortcut
-            </Menu.Item>
+            {api?.meta?.mode === "picker" ? null : (
+              <>
+                <Menu.Item key="properties" disabled={item?.isSymLink === true}>
+                  Properties
+                </Menu.Item>
+                <Menu.Divider />
+                <Menu.Item key="cut">Cut</Menu.Item>
+                <Menu.Item
+                  key="copy-shortcut"
+                  disabled={item?.isSymLink === true}
+                >
+                  Copy Shortcut
+                </Menu.Item>
+              </>
+            )}
           </Menu>
         }
         trigger={["contextMenu"]}

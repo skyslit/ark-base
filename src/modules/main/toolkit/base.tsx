@@ -26,13 +26,14 @@ import {
   DefaultItemIcon,
   FolderItemIcon,
 } from "./views/data-explorer/components/item";
+import { useCatalogueItemPicker } from "@skyslit/ark-frontend/build/dynamics-v2/widgets/catalogue";
 
 const { Header, Content } = Layout;
 const { Panel } = Collapse;
 
 export function GridView() {
-  const [selectedPaths, setSelectedPaths] = React.useState<string[]>([]);
   const api = useCatalogue();
+  const picker = useCatalogueItemPicker();
   const history = useHistory();
 
   if (!Array.isArray(api.items)) {
@@ -53,10 +54,34 @@ export function GridView() {
               //   return paths;
               // });
 
-              setSelectedPaths([item.path]);
+              api.setSelectedItems([item]);
             }}
-            onDoubleClick={(fullPath: string) => history.push(fullPath)}
-            selected={selectedPaths.indexOf(item.path) > -1}
+            onDoubleClick={(fullPath: string) => {
+              if (api?.meta?.mode === "picker") {
+                const customType =
+                  api.controller.namespaces[item.namespace].types[item.type];
+                const hasCustomRenderer = Boolean(
+                  customType?.toolkit?.Renderer
+                );
+                let isAFile = Boolean(hasCustomRenderer);
+
+                if (isAFile === true) {
+                  if (picker) {
+                    picker.settle({
+                      items: [item],
+                    });
+                  }
+                  return;
+                }
+
+                api.setPath(item.path);
+              } else {
+                history.push(fullPath);
+              }
+            }}
+            selected={
+              api.selectedItems.findIndex((i) => i.path === item.path) > -1
+            }
             key={item.slug}
             item={item}
             title={item.slug}
@@ -161,6 +186,7 @@ export function Renderer() {
   const [newFolderName, setnewFolderName] = React.useState("");
   const [selectedNewType, setSelectedNewType] = React.useState(null);
   const api = useCatalogue();
+  const picker = useCatalogueItemPicker();
 
   React.useEffect(() => {
     setnewFolderName("");
@@ -218,6 +244,21 @@ export function Renderer() {
           status="403"
           title="403"
           subTitle="Sorry, you are not authorized to access this page."
+          extra={[
+            (() => {
+              if (api.initialPath) {
+                return (
+                  <Button
+                    onClick={() => api.setPath(api.initialPath)}
+                    key="reset"
+                  >
+                    Go back to initial path
+                  </Button>
+                );
+              }
+              return null;
+            })(),
+          ].filter(Boolean)}
         />
       </div>
     );
@@ -236,13 +277,30 @@ export function Renderer() {
         <Row align="middle" style={{ width: "100%" }}>
           <Col flex={1}>
             <Breadcrumb separator=">">
-              {paths.map((p) => (
-                <Breadcrumb.Item key={p.folderName}>
-                  <Link to={api.getFullUrlFromPath(p.fullPath)}>
-                    {p.folderName}
-                  </Link>
+              {api?.meta?.mode === "picker" ? (
+                <Breadcrumb.Item onClick={() => api.setPath(`/`)}>
+                  Root
                 </Breadcrumb.Item>
-              ))}
+              ) : null}
+              {paths.map((p) => {
+                if (api?.meta?.mode === "picker") {
+                  return (
+                    <Breadcrumb.Item
+                      key={p.folderName}
+                      onClick={() => api.setPath(`/${p.fullPath}`)}
+                    >
+                      {p.folderName}
+                    </Breadcrumb.Item>
+                  );
+                }
+                return (
+                  <Breadcrumb.Item key={p.folderName}>
+                    <Link to={api.getFullUrlFromPath(p.fullPath)}>
+                      {p.folderName}
+                    </Link>
+                  </Breadcrumb.Item>
+                );
+              })}
             </Breadcrumb>
             <p
               style={{
@@ -329,9 +387,27 @@ export function Renderer() {
                 >
                   Upload File(s)
                 </Button>
-                <Button onClick={() => setNewFolderModal(true)} type="primary">
+                <Button
+                  onClick={() => setNewFolderModal(true)}
+                  type={api?.meta?.mode === "picker" ? "default" : "primary"}
+                >
                   + New
                 </Button>
+                {api?.meta?.mode === "picker" ? (
+                  <Button
+                    disabled={api.selectedItems.length < 1}
+                    onClick={() => {
+                      if (picker) {
+                        picker.settle({
+                          items: api.selectedItems,
+                        });
+                      }
+                    }}
+                    type={"primary"}
+                  >
+                    Choose this file
+                  </Button>
+                ) : null}
               </Space>
             ) : null}
           </Col>
@@ -406,14 +482,21 @@ export function Renderer() {
         <Collapse defaultActiveKey={["1"]}>
           <Panel header="General" key="1">
             <div>
-              {customTypes.map((type) => (
-                <NewItem
-                  key={type.id}
-                  item={type}
-                  selected={type.id === selectedNewType}
-                  onClick={() => setSelectedNewType((type as any).id)}
-                />
-              ))}
+              {customTypes
+                .filter((type) => {
+                  if (type.id === "binary") {
+                    return false;
+                  }
+                  return true;
+                })
+                .map((type) => (
+                  <NewItem
+                    key={type.id}
+                    item={type}
+                    selected={type.id === selectedNewType}
+                    onClick={() => setSelectedNewType((type as any).id)}
+                  />
+                ))}
             </div>
           </Panel>
         </Collapse>

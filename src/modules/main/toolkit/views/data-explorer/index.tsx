@@ -3,9 +3,9 @@ import { createComponent } from "@skyslit/ark-frontend";
 import { Catalogue } from "@skyslit/ark-frontend/build/dynamics-v2";
 import { useParams } from "react-router-dom";
 import "./styles/index.scss";
+import { PickerProvider } from "./picker";
 
 export const DataExplorerView = createComponent((props) => {
-
   const params = useParams<any>();
 
   const path = React.useMemo(() => {
@@ -13,6 +13,8 @@ export const DataExplorerView = createComponent((props) => {
   }, [params?.dynamics_path]);
 
   return (
-    <Catalogue path={path} basePath="/admin/files" />
+    <PickerProvider>
+      <Catalogue path={path} basePath="/admin/files" />
+    </PickerProvider>
   );
 });
