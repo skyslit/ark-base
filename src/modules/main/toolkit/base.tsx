@@ -15,10 +15,12 @@ import {
   Dropdown,
   Menu,
   Space,
+  Upload,
+  Drawer,
 } from "antd";
 import { useCatalogue, useFile } from "@skyslit/ark-frontend/build/dynamics-v2";
-import { Link } from "react-router-dom";
-import { HomeOutlined, MoreOutlined } from "@ant-design/icons";
+import { Link, useHistory } from "react-router-dom";
+import { HomeOutlined, InboxOutlined, MoreOutlined } from "@ant-design/icons";
 import Item from "./views/data-explorer/components/item";
 import {
   DefaultItemIcon,
@@ -29,7 +31,9 @@ const { Header, Content } = Layout;
 const { Panel } = Collapse;
 
 export function GridView() {
+  const [selectedPaths, setSelectedPaths] = React.useState<string[]>([]);
   const api = useCatalogue();
+  const history = useHistory();
 
   if (!Array.isArray(api.items)) {
     return <div>Loading items...</div>;
@@ -40,6 +44,19 @@ export function GridView() {
       {api.items.map((item) => {
         return (
           <Item
+            onClick={() => {
+              /** Select multiple items */
+              // setSelectedPaths((paths) => {
+              //   if (paths.indexOf(item.path) < 0) {
+              //     return [...paths, item.path];
+              //   }
+              //   return paths;
+              // });
+
+              setSelectedPaths([item.path]);
+            }}
+            onDoubleClick={(fullPath: string) => history.push(fullPath)}
+            selected={selectedPaths.indexOf(item.path) > -1}
             key={item.slug}
             item={item}
             title={item.slug}
@@ -138,6 +155,8 @@ function NewItem(props: any) {
 }
 
 export function Renderer() {
+  const [uploadModalVisible, setUploadModalVisible] =
+    React.useState<boolean>(false);
   const [newFolderModal, setNewFolderModal] = React.useState<boolean>(false);
   const [newFolderName, setnewFolderName] = React.useState("");
   const [selectedNewType, setSelectedNewType] = React.useState(null);
@@ -205,8 +224,15 @@ export function Renderer() {
   }
 
   return (
-    <>
-      <Header className="second-header">
+    <div
+      style={{
+        position: "relative",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <Header style={{ flexShrink: 0 }} className="second-header">
         <Row align="middle" style={{ width: "100%" }}>
           <Col flex={1}>
             <Breadcrumb separator=">">
@@ -297,6 +323,12 @@ export function Renderer() {
                     <MoreOutlined />
                   </Button>
                 </Dropdown>
+                <Button
+                  onClick={() => setUploadModalVisible(true)}
+                  type="default"
+                >
+                  Upload File(s)
+                </Button>
                 <Button onClick={() => setNewFolderModal(true)} type="primary">
                   + New
                 </Button>
@@ -305,13 +337,42 @@ export function Renderer() {
           </Col>
         </Row>
       </Header>
-      <Layout className="content-wrapper">
+      <Layout className="content-wrapper" style={{ flex: 1 }}>
         <Content>
           <div className="list-folder-wrapper">
             <api.namespaceUI.ItemGrid />
           </div>
         </Content>
       </Layout>
+      <Drawer
+        title="Upload files"
+        open={uploadModalVisible}
+        getContainer={false}
+        onClose={() => setUploadModalVisible(false)}
+      >
+        <div style={{ height: "50%" }}>
+          <Upload.Dragger
+            action={`/___service/main/powerserver___upload-files?namespace=default&parentPath=${api.path}`}
+            multiple={true}
+            maxCount={30}
+            onChange={(info) => {
+              if (info.event?.percent === 100) {
+                api.refresh(true);
+              }
+            }}
+          >
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">
+              Click or drag file to this area to upload
+            </p>
+            <p className="ant-upload-hint">
+              Support for a single or bulk upload
+            </p>
+          </Upload.Dragger>
+        </div>
+      </Drawer>
       <Modal
         title="Add new item"
         visible={Boolean(newFolderModal)}
@@ -364,6 +425,6 @@ export function Renderer() {
           onChange={(e) => setnewFolderName(e.currentTarget.value)}
         />
       </Modal>
-    </>
+    </div>
   );
 }

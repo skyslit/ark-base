@@ -246,6 +246,7 @@ function PropertiesModal(props: {
 export default (props: any) => {
   const { title, item, fullPath, onDelete, onRename, onCut, onCopyShortcut } =
     props;
+  const { selected } = props;
   const [contextMenuVisible, setContextMenuVisible] = React.useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [renameMode, setRenameMode] = React.useState(false);
@@ -269,7 +270,7 @@ export default (props: any) => {
   }, [item?.type]);
 
   const Icon = React.useMemo(() => {
-    if (customType.id === "folder") {
+    if (customType?.id === "folder") {
       return FolderItemIcon;
     }
 
@@ -373,12 +374,16 @@ export default (props: any) => {
         trigger={["contextMenu"]}
         placement={"bottomRight"}
       >
-        <Link
+        <div
           title={title}
-          to={fullPath}
+          // to={fullPath}
+          onDoubleClick={() => {
+            props.onDoubleClick && props.onDoubleClick(fullPath);
+          }}
+          onClick={props.onClick}
           className={`folder-wrapper ${
             contextMenuVisible || renameMode ? "menu-visible" : ""
-          }`}
+          } ${selected === true ? "selected" : ""}`}
           style={{
             transform: renameMode ? "translateY(-16px)" : undefined,
             position: "relative",
@@ -413,7 +418,6 @@ export default (props: any) => {
                 fontSize: 20,
               }}
             >
-              {/* <EnterOutlined /> */}
               <Shortcut />
             </div>
           ) : null}
@@ -462,7 +466,7 @@ export default (props: any) => {
           ) : (
             <Typography.Text ellipsis={true}>{item.name}</Typography.Text>
           )}
-        </Link>
+        </div>
       </Dropdown>
       <Modal
         bodyStyle={{ padding: "0px 18px" }}

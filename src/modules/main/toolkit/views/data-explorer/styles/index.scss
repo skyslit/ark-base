@@ -5,7 +5,9 @@
   display: inline-block;
   cursor: pointer;
   text-align: center;
+  user-select: none;
 
+  &.selected,
   &.menu-visible,
   &:hover,
   &:active {
@@ -24,5 +26,20 @@
 
   &:hover {
     background: none;
+  }
+}
+
+#root {
+  height: 100%;
+
+  .homepage-wrapper {
+    height: 100%;
+    .ant-layout.ant-layout-has-sider {
+      flex-direction: row !important;
+    }
+
+    .ark__catalogue {
+      height: 100%;
+    }
   }
 }

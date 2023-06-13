@@ -12,7 +12,9 @@ import {
   SiderFolderIcon,
   SiderAnalyticsChartIcon,
   SiderLeftChevronIcon,
-  SiderSettingsIcon, SiderShortcutFolderIcon, HamburgerMenuIcon
+  SiderSettingsIcon,
+  SiderShortcutFolderIcon,
+  HamburgerMenuIcon,
 } from "../../auth/icons/global-icons";
 import { Content } from "antd/lib/layout/layout";
 import NoSSR from "../../auth/reusables/NoSSR";
@@ -48,14 +50,16 @@ const SiderLayout = createComponent((props) => {
   const logoutUser = () => {
     logoutService
       .invoke()
-      .then((res) => { })
+      .then((res) => {})
       .catch((e) => {
         message.error("Try again!");
       })
       .finally(() => context.invoke(null, { force: true }));
   };
 
-  const [collapsed, setCollapsed] = React.useState(window.localStorage.getItem("collapsed"));
+  const [collapsed, setCollapsed] = React.useState(
+    window.localStorage.getItem("collapsed")
+  );
   const [visible, setVisible] = React.useState(false);
 
   const openSider = () => {
@@ -77,7 +81,11 @@ const SiderLayout = createComponent((props) => {
       <Layout className="homepage-wrapper">
         <Header className="main-header">
           <div style={{ display: "flex", alignItems: "center" }}>
-            <Button onClick={() => toggleHamburgerDrawer()} type="text" className="hamburger-menu-btn">
+            <Button
+              onClick={() => toggleHamburgerDrawer()}
+              type="text"
+              className="hamburger-menu-btn"
+            >
               <HamburgerMenuIcon className="hamburger-icon" />
             </Button>
             <span style={{ color: "black", fontFamily: "Almarose-Bold" }}>
@@ -119,7 +127,9 @@ const SiderLayout = createComponent((props) => {
         <Layout>
           <Sider
             className={
-              collapsed === "close" ? "sider-wrapper-collapsed" : "sider-wrapper"
+              collapsed === "close"
+                ? "sider-wrapper-collapsed"
+                : "sider-wrapper"
             }
           >
             <div className="sider-content-wrapper">
@@ -130,7 +140,11 @@ const SiderLayout = createComponent((props) => {
                     className="hamburger-button"
                   >
                     <SiderLeftChevronIcon
-                      style={{ fontSize: 12, display: "flex", rotate: "180deg" }}
+                      style={{
+                        fontSize: 12,
+                        display: "flex",
+                        rotate: "180deg",
+                      }}
                     />
                   </button>
                 ) : (
@@ -150,10 +164,11 @@ const SiderLayout = createComponent((props) => {
                   <Link
                     type="text"
                     to="/admin/dashboard"
-                    className={`${location.pathname === "/admin/dashboard"
-                      ? "selected-btn"
-                      : "unselected-btn"
-                      }`}
+                    className={`${
+                      location.pathname === "/admin/dashboard"
+                        ? "selected-btn"
+                        : "unselected-btn"
+                    }`}
                   >
                     <SiderAnalyticsChartIcon style={{ fontSize: 18 }} />
                     <span className="btn-text">Dashboard</span>
@@ -161,35 +176,38 @@ const SiderLayout = createComponent((props) => {
                 </div>
                 {Array.isArray(sidebarItems?.response?.items)
                   ? sidebarItems?.response?.items.map((item) => {
-                    return (
-                      <div key={item.slug} className="button-wrapper">
-                        <Link
-                          type="text"
-                          to={`/admin/files${item.destinationPath || item.path
+                      return (
+                        <div key={item.slug} className="button-wrapper">
+                          <Link
+                            type="text"
+                            to={`/admin/files${
+                              item.destinationPath || item.path
                             }`}
-                          className={`${location.pathname ===
-                            `/admin/files${item.destinationPath || item.path}`
-                            ? "selected-btn"
-                            : "unselected-btn"
+                            className={`${
+                              location.pathname ===
+                              `/admin/files${item.destinationPath || item.path}`
+                                ? "selected-btn"
+                                : "unselected-btn"
                             }`}
-                        >
-                          <SiderShortcutFolderIcon style={{ fontSize: 19 }} />
-                          <span className="btn-text">{item.name}</span>
-                        </Link>
-                      </div>
-                    );
-                  })
+                          >
+                            <SiderShortcutFolderIcon style={{ fontSize: 19 }} />
+                            <span className="btn-text">{item.name}</span>
+                          </Link>
+                        </div>
+                      );
+                    })
                   : null}
                 <div className="button-wrapper">
                   <Link
                     type="text"
                     to="/admin/settings"
-                    className={`${location.pathname === "/admin/settings" ||
+                    className={`${
+                      location.pathname === "/admin/settings" ||
                       location.pathname.includes("/users") ||
                       location.pathname.includes("/groups")
-                      ? "selected-btn"
-                      : "unselected-btn"
-                      }`}
+                        ? "selected-btn"
+                        : "unselected-btn"
+                    }`}
                   >
                     <SiderSettingsIcon style={{ fontSize: 18 }} />
                     <span className="btn-text">Users & Groups</span>
@@ -202,10 +220,11 @@ const SiderLayout = createComponent((props) => {
                       <Link
                         type="text"
                         to="/admin/files"
-                        className={`${location.pathname === "/admin/files"
-                          ? "selected-btn"
-                          : "unselected-btn"
-                          }`}
+                        className={`${
+                          location.pathname === "/admin/files"
+                            ? "selected-btn"
+                            : "unselected-btn"
+                        }`}
                       >
                         <SiderFolderIcon style={{ fontSize: 18 }} />
                         <span className="btn-text">Root</span>
@@ -216,10 +235,17 @@ const SiderLayout = createComponent((props) => {
               </div>
             </div>
           </Sider>
+          <Content
+            style={{ marginTop: 56 }}
+            className={
+              collapsed === "close"
+                ? "sidebar-content-wrapper-collapsed"
+                : "sidebar-content-wrapper"
+            }
+          >
+            {props.children}
+          </Content>
         </Layout>
-        <Content style={{marginTop:56}} className={collapsed === "close" ? "sidebar-content-wrapper-collapsed" : "sidebar-content-wrapper"} >
-          {props.children}
-        </Content>
       </Layout>
 
       <Drawer
@@ -229,7 +255,14 @@ const SiderLayout = createComponent((props) => {
         closable={false}
         visible={visible}
         width={"100%"}
-        bodyStyle={{ background: "#F8F8F8", padding: "unset", justifyContent: "space-between", display: "flex", flexDirection: "column", paddingBottom: 26 }}
+        bodyStyle={{
+          background: "#F8F8F8",
+          padding: "unset",
+          justifyContent: "space-between",
+          display: "flex",
+          flexDirection: "column",
+          paddingBottom: 26,
+        }}
       >
         <div className="hamburger-drawer-content-wrapper">
           <div className="sider-content-wrapper">
@@ -238,10 +271,11 @@ const SiderLayout = createComponent((props) => {
                 <Link
                   type="text"
                   to="/admin/dashboard"
-                  className={`${location.pathname === "/admin/dashboard"
-                    ? "selected-btn"
-                    : "unselected-btn"
-                    }`}
+                  className={`${
+                    location.pathname === "/admin/dashboard"
+                      ? "selected-btn"
+                      : "unselected-btn"
+                  }`}
                 >
                   <SiderAnalyticsChartIcon style={{ fontSize: 18 }} />
                   <span className="btn-text">Dashboard</span>
@@ -249,35 +283,38 @@ const SiderLayout = createComponent((props) => {
               </div>
               {Array.isArray(sidebarItems?.response?.items)
                 ? sidebarItems?.response?.items.map((item) => {
-                  return (
-                    <div key={item.slug} className="button-wrapper">
-                      <Link
-                        type="text"
-                        to={`/admin/files${item.destinationPath || item.path
+                    return (
+                      <div key={item.slug} className="button-wrapper">
+                        <Link
+                          type="text"
+                          to={`/admin/files${
+                            item.destinationPath || item.path
                           }`}
-                        className={`${location.pathname ===
-                          `/admin/files${item.destinationPath || item.path}`
-                          ? "selected-btn"
-                          : "unselected-btn"
+                          className={`${
+                            location.pathname ===
+                            `/admin/files${item.destinationPath || item.path}`
+                              ? "selected-btn"
+                              : "unselected-btn"
                           }`}
-                      >
-                        <SiderShortcutFolderIcon style={{ fontSize: 19 }} />
-                        <span className="btn-text">{item.name}</span>
-                      </Link>
-                    </div>
-                  );
-                })
+                        >
+                          <SiderShortcutFolderIcon style={{ fontSize: 19 }} />
+                          <span className="btn-text">{item.name}</span>
+                        </Link>
+                      </div>
+                    );
+                  })
                 : null}
               <div className="button-wrapper">
                 <Link
                   type="text"
                   to="/admin/settings"
-                  className={`${location.pathname === "/admin/settings" ||
+                  className={`${
+                    location.pathname === "/admin/settings" ||
                     location.pathname.includes("/users") ||
                     location.pathname.includes("/groups")
-                    ? "selected-btn"
-                    : "unselected-btn"
-                    }`}
+                      ? "selected-btn"
+                      : "unselected-btn"
+                  }`}
                 >
                   <SiderSettingsIcon style={{ fontSize: 18 }} />
                   <span className="btn-text">Users & Groups</span>
@@ -290,10 +327,11 @@ const SiderLayout = createComponent((props) => {
                     <Link
                       type="text"
                       to="/admin/files"
-                      className={`${location.pathname === "/admin/files"
-                        ? "selected-btn"
-                        : "unselected-btn"
-                        }`}
+                      className={`${
+                        location.pathname === "/admin/files"
+                          ? "selected-btn"
+                          : "unselected-btn"
+                      }`}
                     >
                       <SiderFolderIcon style={{ fontSize: 18 }} />
                       <span className="btn-text">Root</span>
@@ -304,11 +342,18 @@ const SiderLayout = createComponent((props) => {
             </div>
           </div>
         </div>
-        <span style={{ fontSize: 12, color: "#9F9F9F", fontFamily: "Almarose-Medium", paddingLeft: 24 }}>v1.0.1</span>
+        <span
+          style={{
+            fontSize: 12,
+            color: "#9F9F9F",
+            fontFamily: "Almarose-Medium",
+            paddingLeft: 24,
+          }}
+        >
+          v1.0.1
+        </span>
       </Drawer>
-
     </>
-
   );
 });
 
