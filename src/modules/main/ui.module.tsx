@@ -14,9 +14,11 @@ import UserDetails from "../auth/views/user-details-page";
 import AllGroupsPage from "../auth/views/all-groups-page";
 import GroupDetailsPage from "../auth/views/group-details-page";
 import AdminDashboardPage from "../auth/views/dashboard";
+import { initialiseWidgets } from "./widgets";
 
 initialiseToolkit();
 initialiseCustomTypes();
+initialiseWidgets();
 
 export default createModule(({ use }) => {
   console.log("ui.module.tsx file loaded");

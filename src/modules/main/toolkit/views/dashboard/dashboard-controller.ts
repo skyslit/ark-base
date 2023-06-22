@@ -6,7 +6,6 @@ export type WidgetPreferences = {
     label: string;
     description: string;
   };
-  data: any;
   options: any;
   filtersAvailable: any;
 };
@@ -30,13 +29,10 @@ export type WidgetApi<T> = {
 
 export type EditorProp = {
   preferences: WidgetPreferences;
-  setDataOptions: (opts: any) => void;
   setOptions: (opts: any) => void;
 } & GlobalServicesApi;
 
-export type WidgetProp = {
-  preference: WidgetPreferences;
-} & EditorProp;
+export type WidgetProp = {} & EditorProp;
 
 export type GetDataApi = {
   preferences: WidgetPreferences;
@@ -58,6 +54,7 @@ export type Plugin = {
   handleGlobalFilterChange?: (
     api: { preferences: WidgetPreferences } & GlobalServicesApi
   ) => Promise<void> | void;
+  optionSchema?: () => any;
 };
 
 export type WidgetConfiguration = {
@@ -173,6 +170,10 @@ export class ExplorerController {
   /* -------------------------------------------------------------------------- */
   /*                                 Bridge End                                 */
   /* -------------------------------------------------------------------------- */
+}
+
+export function createWidget(widget: Plugin): Plugin {
+  return widget;
 }
 
 export default ExplorerController.getInstance();

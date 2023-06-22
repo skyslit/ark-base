@@ -17,7 +17,7 @@ import {
   Menu,
   Drawer,
 } from "antd";
-import GridLayout, { WidthProvider, Responsive } from "react-grid-layout";
+import { WidthProvider, Responsive } from "react-grid-layout";
 import "../../../../../../node_modules/react-grid-layout/css/styles.css";
 import "../../../../../../node_modules/react-resizable/css/styles.css";
 import {
@@ -28,28 +28,30 @@ import {
   WidgetPreferences,
   EditorProp,
   GlobalServicesApi,
-} from "./explorer-controller";
+} from "./dashboard-controller";
 import "./style.scss";
 import {
   EditOutlined,
   WarningOutlined,
   DragOutlined,
-  MinusCircleFilled,
   DeleteFilled,
   SyncOutlined,
-  PushpinOutlined,
   MoreOutlined,
-  FilterOutlined,
   PlusOutlined,
   AppstoreOutlined,
 } from "@ant-design/icons";
-import GeneralInfo from "./components/general-info";
 import { Bridge } from "./Bridge";
-import axios from "axios";
 import { cloneDeep } from "lodash";
-import { createSchema, useFile } from "@skyslit/ark-frontend/build/dynamics-v2";
-
-const { Panel } = Collapse;
+import {
+  compile,
+  createSchema,
+  useFile,
+} from "@skyslit/ark-frontend/build/dynamics-v2";
+import {
+  ContentHook,
+  Frontend,
+  useArkReactServices,
+} from "@skyslit/ark-frontend";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -405,8 +407,8 @@ function WidgetRuntime(props: {
       const Widget = plugin.Widget;
       result = (
         <Widget
-          preference={contentConfiguration.preferences as any}
           {...props.editorProp}
+          preferences={contentConfiguration.preferences as any}
         />
       );
     }
@@ -482,6 +484,27 @@ export function TestWidgetRenderer(props: { width: number; height: number }) {
   );
 }
 
+type OptionsEditorApi = {
+  cms: ReturnType<ContentHook>;
+};
+
+export function createWidgetOptionsEditor(): OptionsEditorApi {
+  const { use } = useArkReactServices();
+  const { useContent } = use(Frontend);
+
+  const cms: ReturnType<ContentHook> = useContent({}) as any;
+
+  return {
+    cms,
+  };
+}
+
+const OptionsEditorContext = React.createContext<OptionsEditorApi>(null as any);
+
+export function useOptionsEditor() {
+  return React.useContext(OptionsEditorContext);
+}
+
 function WidgetContainer(props: {
   contentConfiguration: WidgetConfiguration;
   savePreferencesToCloud: (widgetId: string, preferences: any) => Promise<any>;
@@ -489,6 +512,7 @@ function WidgetContainer(props: {
   isTestMode?: boolean;
   bridge?: Bridge;
 }) {
+  const optionsEditorApi = createWidgetOptionsEditor();
   const { contentConfiguration, savePreferencesToCloud } = props;
   const { engine, tenantId } = React.useContext(ExplorerContext);
   const dashboardControlPane = React.useContext(DashboardControlPane);
@@ -518,13 +542,30 @@ function WidgetContainer(props: {
     ];
   }, [engine?.registeredPlugins, contentConfiguration.widgetPluginKey]);
 
+  const preferenceSchema = React.useMemo(() => {
+    return createSchema({
+      general: createSchema({
+        label: "",
+        description: "",
+      }),
+      options: plugin?.optionSchema ? plugin?.optionSchema : createSchema({}),
+      filtersAvailable: null,
+    });
+  }, [plugin?.optionSchema]);
+
   /**
    * Use this to attach preferences from the widget configuration
    */
   React.useEffect(() => {
-    setPreferences(contentConfiguration.preferences as any);
+    setPreferences(
+      compile(preferenceSchema, contentConfiguration.preferences) as any
+    );
     attachPreferences(true);
-  }, [contentConfiguration]);
+  }, [contentConfiguration, preferenceSchema]);
+
+  React.useEffect(() => {
+    optionsEditorApi.cms.setContent(preferences?.options);
+  }, [preferences]);
 
   const effectivePreferencs = React.useMemo(() => {
     if (props.isTestMode === true) {
@@ -679,7 +720,6 @@ function WidgetContainer(props: {
 
   const savePreferences = React.useCallback(
     (options?: any) => {
-      setPreferencesSaving(true);
       attachPreferences(false);
 
       Promise.resolve(true)
@@ -700,7 +740,6 @@ function WidgetContainer(props: {
             })()
           )
         )
-        .then(() => setPreferencesSaving(false))
         .then(() =>
           Promise.resolve<any>(
             plugin.handleGlobalFilterChange
@@ -714,8 +753,6 @@ function WidgetContainer(props: {
         .then(() => closeEditModal())
         .catch((err) => {
           console.error(err);
-          setPreferencesSaving(false);
-
           /**
            * TODO: Handle error, may be show in notification or something?
            */
@@ -755,23 +792,16 @@ function WidgetContainer(props: {
   const editorProp = React.useMemo<EditorProp>(() => {
     return {
       preferences,
-      setDataOptions: (opts) =>
-        setPreferences((v) => {
-          return {
-            ...v,
-            data: { ...(v?.data || {}), ...opts },
-          };
-        }),
       setOptions: (opts) =>
         setPreferences((v) => {
-          return {
+          return compile(preferenceSchema, {
             ...v,
             options: { ...(v?.options || {}), ...opts },
-          };
+          });
         }),
       ...globalServiceApi,
     };
-  }, [preferences, globalServiceApi]);
+  }, [preferences, globalServiceApi, preferenceSchema]);
 
   const dataEditor = React.useMemo(() => {
     if (plugin.DataEditor) {
@@ -818,7 +848,7 @@ function WidgetContainer(props: {
             zIndex: 10,
           }}
         >
-          {contentConfiguration.preferences?.options?.title || "Metrics"}
+          {contentConfiguration.preferences?.options?.title || "Widget"}
         </Typography.Text>
         {_isTestMode === false ? (
           <div
@@ -886,7 +916,7 @@ function WidgetContainer(props: {
       </div>
       {_isTestMode === false ? (
         <Modal
-          title="Update widget"
+          title="Configure Options"
           visible={showEditModal}
           width="800px"
           footer={false}
@@ -903,9 +933,6 @@ function WidgetContainer(props: {
                   general: {
                     ...preferences?.general,
                   },
-                  data: {
-                    ...preferences?.data,
-                  },
                   options: {
                     ...preferences?.options,
                   },
@@ -914,58 +941,65 @@ function WidgetContainer(props: {
               bridge: null as any,
             }}
           >
-            <div style={{ position: "relative" }}>
-              {preferencesSaving === true ? (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    left: 0,
-                    backgroundColor: "rgb(33 38 43 / 67%)",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    zIndex: 100,
-                  }}
-                >
-                  <Spin />
-                </div>
-              ) : null}
-              <Row>
-                <Col xs={24}>
-                  <Tabs defaultActiveKey="general">
-                    {dataEditor ? (
-                      <Tabs.TabPane tab="Data" key="data" tabKey="data">
-                        {dataEditor}
-                      </Tabs.TabPane>
-                    ) : null}
-                    {optionsEditor ? (
-                      <Tabs.TabPane
-                        tab="Options"
-                        key="options"
-                        tabKey="options"
+            <OptionsEditorContext.Provider value={optionsEditorApi}>
+              <div style={{ position: "relative" }}>
+                {preferencesSaving === true ? (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      bottom: 0,
+                      left: 0,
+                      backgroundColor: "rgb(33 38 43 / 67%)",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      zIndex: 100,
+                    }}
+                  >
+                    <Spin />
+                  </div>
+                ) : null}
+                <Row>
+                  <Col xs={24}>
+                    <Tabs defaultActiveKey="general">
+                      {dataEditor ? (
+                        <Tabs.TabPane tab="Data" key="data" tabKey="data">
+                          {dataEditor}
+                        </Tabs.TabPane>
+                      ) : null}
+                      {optionsEditor ? (
+                        <Tabs.TabPane
+                          tab="Options"
+                          key="options"
+                          tabKey="options"
+                        >
+                          {optionsEditor}
+                        </Tabs.TabPane>
+                      ) : null}
+                    </Tabs>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={24}>
+                    <Space size="small">
+                      <Button
+                        onClick={() =>
+                          savePreferences(optionsEditorApi.cms?.content as any)
+                        }
+                        type="primary"
                       >
-                        {optionsEditor}
-                      </Tabs.TabPane>
-                    ) : null}
-                  </Tabs>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={24}>
-                  <Space size="small">
-                    <Button onClick={savePreferences} type="primary">
-                      Save
-                    </Button>
-                    <Button type="text" onClick={closeEditModal}>
-                      Cancel
-                    </Button>
-                  </Space>
-                </Col>
-              </Row>
-            </div>
+                        Update
+                      </Button>
+                      <Button type="text" onClick={closeEditModal}>
+                        Hide
+                      </Button>
+                    </Space>
+                  </Col>
+                </Row>
+              </div>
+            </OptionsEditorContext.Provider>
           </TestWidgetRendererContext.Provider>
         </Modal>
       ) : null}
@@ -1161,6 +1195,7 @@ export function DashboardCore(props: ExplorerPropType) {
     registerGlobalFilter,
     unregisterGlobalFilterForThisWidget,
     getAllGlobalFiltersByWidgetId,
+    setWidgets,
   ]);
 
   const savePreferencesToCloud = React.useCallback(
@@ -1180,16 +1215,12 @@ export function DashboardCore(props: ExplorerPropType) {
             return w;
           });
         });
-
-        // await axios.put(`/api/erp/v1/tenants/${props.tenantId}/explorer/dashboards/${_dashboardKey}/widgets/${widgetId}/preferences`, {
-        //   preferences
-        // });
       } catch (e) {
         console.error(e);
         message.error(`Dashboard changes not saved`);
       }
     },
-    []
+    [setWidgets]
   );
 
   const saveLayout = React.useCallback(
@@ -1248,7 +1279,6 @@ export function DashboardCore(props: ExplorerPropType) {
 
   const processedWidgets = React.useMemo(() => {
     if (layoutData) {
-      console.log("widgets", widgets);
       return widgets.map((w) => {
         let widgetLayout = null;
 
