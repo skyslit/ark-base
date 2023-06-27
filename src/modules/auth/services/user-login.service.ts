@@ -57,7 +57,7 @@ export default defineService("user-login-service", (props) => {
                     },
                     false,
                     undefined,
-                    "resolve",
+                    "supress",
                     true
                   )
                   .then(() => {
