@@ -79,6 +79,8 @@ class GridController extends React.Component<any, any> {
     return (
       <ResponsiveGridLayout
         className="layout"
+        isDraggable={this.props.isDraggable}
+        isResizable={this.props.isResizable}
         layouts={this.props.layout}
         cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
         breakpoints={{ lg: 2400, md: 0, sm: 0, xs: 0, xxs: 0 }}
@@ -109,6 +111,7 @@ type ExplorerPropType = {
   dashboardGlobalId?: string;
   dashboardUserId?: string;
   defaultWidgets?: WidgetConfiguration[];
+  mode?: 'presenter' | 'editor'
 };
 
 // @ts-ignore
@@ -141,49 +144,6 @@ const DashboardControlPane =
 /* -------------------------------------------------------------------------- */
 /*                                   Gallery                                  */
 /* -------------------------------------------------------------------------- */
-
-function GalleryItem(props: { engine: ExplorerController; itemKey: string }) {
-  const { addWidget } = React.useContext(DashboardControlPane);
-  const { itemKey } = props;
-
-  const plugin = React.useMemo(() => {
-    return props.engine.registeredPlugins[itemKey];
-  }, [itemKey, props.engine]);
-
-  const pluginExists = React.useMemo(() => Boolean(plugin), [plugin]);
-
-  const handleAddWidget = React.useCallback(() => {
-    addWidget([
-      {
-        id: idGenerator.next().value,
-        label: plugin.title,
-        widgetPluginKey: itemKey,
-        widgetSettings: {},
-        layout: plugin.defaultLayout,
-      },
-    ]);
-  }, [addWidget, plugin]);
-
-  return (
-    <div style={{ height: 100, backgroundColor: "rgb(42 47 51)", padding: 10 }}>
-      <Row justify="space-between" style={{ height: "100%" }}>
-        <Col>
-          <Typography.Title ellipsis={true} level={4}>
-            {pluginExists === true ? plugin.title : "N/A"}
-          </Typography.Title>
-          <Typography.Text>{itemKey}</Typography.Text>
-        </Col>
-        <Col>
-          <Row align="bottom" style={{ height: "100%" }}>
-            <Col>
-              <Button onClick={handleAddWidget}>Add to Dashboard</Button>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-    </div>
-  );
-}
 
 const GalleryItemV2 = (props: any) => {
   const [uiState, setUiState] = React.useState<"ready" | "adding" | "added">(
@@ -261,10 +221,10 @@ const GalleryItemV2 = (props: any) => {
           {uiState === "adding"
             ? "Adding..."
             : uiState === "added"
-            ? "Added"
-            : uiState === "ready"
-            ? "Add to Dashboard"
-            : ""}
+              ? "Added"
+              : uiState === "ready"
+                ? "Add to Dashboard"
+                : ""}
         </Button>
       </div>
     </div>
@@ -350,14 +310,14 @@ function GallerV2() {
         >
           {selectedItems
             ? selectedItems.items.map((widgetPackageId) => {
-                return (
-                  <GalleryItemV2
-                    key={widgetPackageId}
-                    widgetPackageId={widgetPackageId}
-                    engine={engine}
-                  />
-                );
-              })
+              return (
+                <GalleryItemV2
+                  key={widgetPackageId}
+                  widgetPackageId={widgetPackageId}
+                  engine={engine}
+                />
+              );
+            })
             : null}
         </div>
       </div>
@@ -475,8 +435,8 @@ export function TestWidgetRenderer(props: { width: number; height: number }) {
     >
       <WidgetContainer
         contentConfiguration={testRendererContext.configuration}
-        onRemove={() => {}}
-        savePreferencesToCloud={async () => {}}
+        onRemove={() => { }}
+        savePreferencesToCloud={async () => { }}
         isTestMode={true}
         bridge={testRendererContext.bridge}
       />
@@ -514,7 +474,7 @@ function WidgetContainer(props: {
 }) {
   const optionsEditorApi = createWidgetOptionsEditor();
   const { contentConfiguration, savePreferencesToCloud } = props;
-  const { engine, tenantId } = React.useContext(ExplorerContext);
+  const { engine, tenantId, mode } = React.useContext(ExplorerContext);
   const dashboardControlPane = React.useContext(DashboardControlPane);
   const [controlsActive, setControlsActive] = React.useState(true);
   const [showBusyLayer, setShowBusyLayer] = React.useState(false);
@@ -744,9 +704,9 @@ function WidgetContainer(props: {
           Promise.resolve<any>(
             plugin.handleGlobalFilterChange
               ? plugin.handleGlobalFilterChange({
-                  preferences,
-                  ...globalServiceApi,
-                })
+                preferences,
+                ...globalServiceApi,
+              })
               : true
           )
         )
@@ -859,13 +819,17 @@ function WidgetContainer(props: {
             <Dropdown
               overlay={
                 <Menu className="widgetMenu text-neutral-2" theme="dark">
-                  <Menu.Item
-                    key={"edit"}
-                    onClick={updateWidget}
-                    icon={<EditOutlined />}
-                  >
-                    <span className="text-neutral-2">Edit</span>
-                  </Menu.Item>
+                  {
+                    mode === 'editor' ? (
+                      <Menu.Item
+                        key={"edit"}
+                        onClick={updateWidget}
+                        icon={<EditOutlined />}
+                      >
+                        <span className="text-neutral-2">Edit</span>
+                      </Menu.Item>
+                    ) : null
+                  }
                   <Menu.Item
                     key={"refresh"}
                     onClick={() => refreshData()}
@@ -873,13 +837,17 @@ function WidgetContainer(props: {
                   >
                     <span className="text-neutral-2">Refresh</span>
                   </Menu.Item>
-                  <Menu.Item
-                    key={"delete"}
-                    onClick={removeWidget}
-                    icon={<DeleteFilled />}
-                  >
-                    <span className="text-neutral-2">Remove</span>
-                  </Menu.Item>
+                  {
+                    mode === 'editor' ? (
+                      <Menu.Item
+                        key={"delete"}
+                        onClick={removeWidget}
+                        icon={<DeleteFilled />}
+                      >
+                        <span className="text-neutral-2">Remove</span>
+                      </Menu.Item>
+                    ) : null
+                  }
                 </Menu>
               }
               placement="bottom"
@@ -892,11 +860,15 @@ function WidgetContainer(props: {
                 icon={<MoreOutlined />}
               />
             </Dropdown>
-            <Button type="ghost" className="__explorer-widget-dragger">
-              <Tooltip title="Drag">
-                <DragOutlined />
-              </Tooltip>
-            </Button>
+            {
+              mode === 'editor' ? (
+                <Button type="ghost" className="__explorer-widget-dragger">
+                  <Tooltip title="Drag">
+                    <DragOutlined />
+                  </Tooltip>
+                </Button>
+              ) : null
+            }
           </div>
         ) : null}
         {showBusyLayer === true || preferencesAttached === false ? (
@@ -1028,7 +1000,7 @@ type GlobalFilterRefMapType = {
 };
 
 export function DashboardCore(props: ExplorerPropType) {
-  const { dashboardGlobalId, dashboardUserId, dashboardKey, defaultWidgets } =
+  const { dashboardGlobalId, dashboardUserId, dashboardKey, defaultWidgets, mode } =
     props;
   const { widgets, setWidgets, layoutData, setLayoutData } = props;
   // const [widgets, setWidgets] = React.useState<Array<WidgetConfiguration>>([]);
@@ -1164,6 +1136,7 @@ export function DashboardCore(props: ExplorerPropType) {
       setWidgets: props.setWidgets,
       layoutData: props.layoutData,
       setLayoutData: props.layoutData,
+      mode: mode
     };
   }, [
     _dashboardGlobalId,
@@ -1174,6 +1147,7 @@ export function DashboardCore(props: ExplorerPropType) {
     props?.setWidgets,
     props?.layoutData,
     props?.layoutData,
+    mode
   ]);
 
   const controlPane = React.useMemo<DashboardControlPaneType>(() => {
@@ -1356,13 +1330,17 @@ export function DashboardCore(props: ExplorerPropType) {
                           </Tooltip>
                         </Badge>
                       </Popover> */}
-                      <Tooltip placement="topLeft" title="Add widget">
-                        <Button
-                          icon={<PlusOutlined />}
-                          type="ghost"
-                          onClick={showGallery}
-                        />
-                      </Tooltip>
+                      {
+                        mode === 'editor' ? (
+                          <Tooltip placement="topLeft" title="Add widget">
+                            <Button
+                              icon={<PlusOutlined />}
+                              type="ghost"
+                              onClick={showGallery}
+                            />
+                          </Tooltip>
+                        ) : null
+                      }
                     </Space>
                   </Col>
                 </Row>
@@ -1370,6 +1348,8 @@ export function DashboardCore(props: ExplorerPropType) {
               <GridController
                 layout={layoutData}
                 width={wrapperWidth}
+                isDraggable={mode === 'editor'}
+                isResizable={mode === 'editor'}
                 onLayoutChange={(l, allLayouts) => {
                   saveLayout(allLayouts, widgets);
                 }}
@@ -1420,8 +1400,9 @@ export const DashboardFileContentSchema = createSchema({
 export function DashboardView(props: {
   dashboardFileContent: DashboardFileContentType;
   onChange: any;
+  mode?: 'presenter' | 'editor'
 }) {
-  const { onChange, dashboardFileContent } = props;
+  const { onChange, dashboardFileContent, mode } = props;
 
   const setWidgets = React.useCallback(
     (w: any) => {
@@ -1455,6 +1436,7 @@ export function DashboardView(props: {
       layoutData={dashboardFileContent.layoutData}
       setWidgets={setWidgets}
       setLayoutData={setLayoutData}
+      mode={mode || 'editor'}
     />
   );
 }

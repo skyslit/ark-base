@@ -85,6 +85,41 @@ export default createModule(({ use, run }) => {
 
   run(async () => {
     const { ensurePaths } = useFolderOperations();
-    await ensurePaths("default", []);
+    await ensurePaths("default", [
+      {
+        parentPath: '/',
+        name: 'quick links',
+        type: 'folder',
+        meta: {},
+        security: {
+          // @ts-ignore
+          permissions: [
+            {
+              "type": "user",
+              "policy": "",
+              "userEmail": "",
+              "access": "read"
+            }
+          ]
+        }
+      },
+      {
+        parentPath: '/',
+        name: 'dashboards',
+        type: 'folder',
+        meta: {},
+        security: {
+          // @ts-ignore
+          permissions: [
+            {
+              "type": "user",
+              "policy": "",
+              "userEmail": "",
+              "access": "read"
+            }
+          ]
+        }
+      },
+    ]);
   });
 });

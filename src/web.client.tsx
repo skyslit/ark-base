@@ -10,7 +10,7 @@ export default createReactApp(({ use, useModule }) => {
     use(Frontend);
 
   configureAuth({
-    defaultProtectedUrl: "/admin/files",
+    defaultProtectedUrl: "/app/files",
     loginPageUrl: "/auth/login",
   });
 
@@ -37,22 +37,9 @@ export default createReactApp(({ use, useModule }) => {
       component: useComponent("main/account-recovery-page"),
       Route: useComponent("authRoute"),
     },
+
     {
-      path: "/admin/dashboard",
-      hideInMenu: true,
-      layout: useLayout("main/sidebar"), // Use the component address here
-      component: useComponent("main/admin-dashboard-page"),
-      Route: useComponent("protectedRoute"),
-    },
-    {
-      path: "/admin/settings",
-      hideInMenu: true,
-      layout: useLayout("main/sidebar"), // Use the component address here
-      component: useComponent("main/account-settings-page"),
-      Route: useComponent("protectedRoute"),
-    },
-    {
-      path: "/admin/files/:dynamics_path*",
+      path: "/app/files/:dynamics_path*",
       hideInMenu: true,
       component: useComponent("main/data-explorer"),
       Route: useComponent("protectedRoute"),
@@ -65,31 +52,45 @@ export default createReactApp(({ use, useModule }) => {
       Route: useComponent("authRoute"),
     },
     {
-      path: "/users/:id",
-      hideInMenu: true,
-      layout: useLayout("main/sidebar"),
-      component: useComponent("main/user-details-page"),
-      Route: useComponent("protectedRoute"),
-    },
-    {
-      path: "/users",
+      path: "/app/users/all",
       hideInMenu: true,
       layout: useLayout("main/sidebar"),
       component: useComponent("main/all-users-page"),
       Route: useComponent("protectedRoute"),
     },
     {
-      path: "/groups/:id",
+      path: "/app/users/:id",
+      hideInMenu: true,
+      layout: useLayout("main/sidebar"),
+      component: useComponent("main/user-details-page"),
+      Route: useComponent("protectedRoute"),
+    },
+    {
+      path: "/app/users",
+      hideInMenu: true,
+      layout: useLayout("main/sidebar"), // Use the component address here
+      component: useComponent("main/account-settings-page"),
+      Route: useComponent("protectedRoute"),
+    },
+    {
+      path: "/app/groups/all",
+      hideInMenu: true,
+      layout: useLayout("main/sidebar"),
+      component: useComponent("main/all-groups-page"),
+      Route: useComponent("protectedRoute"),
+    },
+    {
+      path: "/app/groups/:id",
       hideInMenu: true,
       layout: useLayout("main/sidebar"),
       component: useComponent("main/group-details-page"),
       Route: useComponent("protectedRoute"),
     },
     {
-      path: "/groups",
+      path: "/app/viewport/:dynamics_path*",
       hideInMenu: true,
       layout: useLayout("main/sidebar"),
-      component: useComponent("main/all-groups-page"),
+      component: useComponent("main/dashboard-page"),
       Route: useComponent("protectedRoute"),
     },
     {

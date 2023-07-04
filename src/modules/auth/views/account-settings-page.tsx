@@ -29,7 +29,7 @@ export default createComponent((props) => {
                 <>
                     <div style={{ display: "flex", alignItems: "center" }}>
                         <img className="user-icon" src={UserIcon} />
-                        <Link className="usertable-name" to={`/users/${(row as any)._id}`} style={{ color: "black" }}>{user.name}</Link>
+                        <Link className="usertable-name" to={`/app/users/${(row as any)._id}`} style={{ color: "black" }}>{user.name}</Link>
                     </div>
                 </>
         },
@@ -51,7 +51,7 @@ export default createComponent((props) => {
             key: 'groupTitle',
             render: (user, row: any) =>
                 <>
-                    <Link className="grouptable-name" to={`/groups/${(row as any)._id}`} style={{ color: "black" }}>{user}</Link>
+                    <Link className="grouptable-name" to={`/app/groups/${(row as any)._id}`} style={{ color: "black" }}>{user}</Link>
                 </>
         },
         {
@@ -230,11 +230,11 @@ export default createComponent((props) => {
 
     const listAllGroups = useTableService
         ({
-        serviceId: "list-all-groups",
-        columns1,
-        defaultPageSize: 10,
-        disableSelect: true,
-    })
+            serviceId: "list-all-groups",
+            columns1,
+            defaultPageSize: 10,
+            disableSelect: true,
+        })
 
     const listAllUsers = useTableService({
         serviceId: "list-all-users",
@@ -398,7 +398,6 @@ export default createComponent((props) => {
                                             <span className="name-span">{userDetails ? userDetails.name : ""}</span>
                                             <div className="user-email-grp-section">
                                                 <span className="gmail-span">  {userDetails ? userDetails.email : ""}</span>
-                                                {/* <div style={{ marginTop: 17 }}><img src={SuperAdminIcon}></img></div> */}
                                             </div>
                                         </div>
                                     </div>
@@ -843,7 +842,7 @@ export default createComponent((props) => {
                                         >
                                             <Table dataSource={listAllUsers.dataSource} columns={columns} onChange={listAllUsers.onChange} pagination={false} />
                                             <div className="seeAll-text">
-                                                <Link to="/users" className="seeAll-button" >See All</Link>
+                                                <Link to="/app/users/all" className="seeAll-button" >See All</Link>
                                             </div>
                                         </Panel>
                                     </Collapse >
@@ -852,7 +851,7 @@ export default createComponent((props) => {
                                     <Panel key="1" header={`Groups (${items.length})`} extra={genExtra1()}>
                                         <Table dataSource={listAllGroups.dataSource} columns={columns1} onChange={listAllGroups.onChange} pagination={false} />
                                         <div className="seeAll-groups">
-                                            <Link to="/groups" className="seeAllGroupLink">See All</Link>
+                                            <Link to="/app/groups/all" className="seeAllGroupLink">See All</Link>
                                         </div>
                                     </Panel>
                                 </Collapse>

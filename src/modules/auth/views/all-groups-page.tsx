@@ -39,7 +39,7 @@ export default createComponent((props) => {
             render: (user: any, row: any) => {
                 return (
                     <>
-                        <Link className="allGroupsTable-name" to={`/groups/${(row as any)._id}`} style={{ color: "black" }}>
+                        <Link className="allGroupsTable-name" to={`/app/groups/${(row as any)._id}`} style={{ color: "black" }}>
                             {user ? user : <span style={{ fontStyle: "italic", color: "red" }}>Untitled*</span>}
                         </Link>
                     </>
@@ -142,7 +142,7 @@ export default createComponent((props) => {
                     <Row justify="center">
                         <Col className="all-groups-main" span={22}>
                             <div className="back-button-div">
-                                <Link className="groups-back-btn" to={"/admin/settings"}>
+                                <Link className="groups-back-btn" to={"/app/users"}>
                                     <ArrowLeftOutlined />
                                     <span className="back-btn-text">Back to Dashboard</span>
                                 </Link>

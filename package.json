@@ -12,8 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "@ant-design/icons": "^4.8.0",
-    "@skyslit/ark": "^2.43.0",
-    "@skyslit/ark-backend": "^2.43.0",
+    "@skyslit/ark": "^2.47.3",
+    "@skyslit/ark-backend": "^2.47.3",
     "@skyslit/ark-core": "^2.38.0",
     "@skyslit/ark-frontend": "^2.41.0",
     "antd": "^4.24.10",

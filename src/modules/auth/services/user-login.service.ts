@@ -60,6 +60,36 @@ export default defineService("user-login-service", (props) => {
                     "supress",
                     true
                   )
+                  .then((userRoot) => {
+                    return folderApi.addItem(
+                      "default",
+                      userRoot.path,
+                      'dashboards',
+                      "folder",
+                      {},
+                      {
+                        permissions: [],
+                      },
+                      false,
+                      undefined,
+                      "supress",
+                      true
+                    ).then(() => userRoot)
+                  })
+                  .then((userRoot) => folderApi.addItem(
+                    "default",
+                    userRoot.path,
+                    'quick links',
+                    "folder",
+                    {},
+                    {
+                      permissions: [],
+                    },
+                    false,
+                    undefined,
+                    "supress",
+                    true
+                  ))
                   .then(() => {
                     if (external_auth === true) {
                       redirectUri = (
@@ -79,7 +109,7 @@ export default defineService("user-login-service", (props) => {
         } else {
           error({ message: "Email/Password does not match" });
         }
-      } catch (error) {}
+      } catch (error) { }
     });
     return props.success({ message: "Login Success", redirectUri }, []);
   });
