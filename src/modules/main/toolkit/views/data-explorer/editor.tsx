@@ -20,7 +20,7 @@ export default (props: any) => {
     <>
       <Layout.Header className="file-editor-header">
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ marginLeft: 5 }}>
+          <div style={{ display: "flex" }}>
             <Icon style={{ fontSize: 25, width: 25, height: 25 }} />
           </div>
           <h5>{api?.currentDir?.name}</h5>

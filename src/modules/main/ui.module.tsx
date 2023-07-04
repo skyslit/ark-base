@@ -36,5 +36,5 @@ export default createModule(({ use }) => {
   useComponent("user-details-page", UserDetails);
   useComponent("all-groups-page", AllGroupsPage);
   useComponent("group-details-page", GroupDetailsPage);
-  useComponent("admin-dashboard-page", AdminDashboardPage);
+  useComponent("dashboard-page", AdminDashboardPage);
 });

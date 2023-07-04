@@ -86,7 +86,7 @@ export default createComponent((props) => {
             .then((res) => {
                 message.success("Group deleted")
                 setIsDeleteModalOpen(false);
-                history.push("/groups");
+                history.push("/app/groups/all");
             })
             .catch(() => {
                 message.error("Failed to delete Group")
@@ -195,7 +195,7 @@ export default createComponent((props) => {
                         <Fade duration={700}>
                             <div className="header-section">
                                 <div className="back-btn-section">
-                                    <Link to={"/groups"} className="back-btn-grp-details">
+                                    <Link to={"/app/groups/all"} className="back-btn-grp-details">
                                         <ArrowLeftOutlined style={{ color: "black" }} />
                                         <span className="all-groups-text"> All Groups / </span>
                                         <span className="group-details-text"> Group Details</span>
@@ -318,7 +318,7 @@ export default createComponent((props) => {
                                             </span>
                                         </div>
                                         <div className="delete-btn-section">
-                                            <Link to="/groups" className="delete-btn" onClick={deleteGroup}
+                                            <Link to="/app/groups/all" className="delete-btn" onClick={deleteGroup}
                                                 disabled={deleteGroupService.isLoading}>
                                                 {deleteGroupService.isLoading === true ? (
                                                     <span>

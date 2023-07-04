@@ -14,7 +14,7 @@ export const DataExplorerView = createComponent((props) => {
 
   return (
     <PickerProvider>
-      <Catalogue path={path} basePath="/admin/files" />
+      <Catalogue path={path} basePath="/app/files" />
     </PickerProvider>
   );
 });

@@ -13,9 +13,8 @@ import {
   Divider,
   Table,
 } from "antd";
-import { Folder, Shortcut } from "../icons/global-icons";
+import { Folder, Shortcut, FileIcon } from "../icons/global-icons";
 import { Link } from "react-router-dom";
-import FileIcon from "../icons/file-icon.png";
 import {
   PropetriesProvider,
   useCatalogue,
@@ -511,8 +510,8 @@ export default (props: any) => {
   );
 };
 
-export const DefaultItemIcon = () => {
-  return <img src={FileIcon} style={{ height: 50 }} className="file-icon" />;
+export const DefaultItemIcon = (props: any) => {
+  return <FileIcon {...props} />;
 };
 
 export const FolderItemIcon = (props: any) => {

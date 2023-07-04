@@ -151,7 +151,7 @@ export default createComponent((props) => {
                     <Row style={{ paddingBottom: 50 }} justify="center">
                         <Col className="all-users-main" span={22}>
                             <div className="back-button-div">
-                                <Link to={"/admin/settings"} className="back-btn">
+                                <Link to={"app/users"} className="back-btn">
                                     <ArrowLeftOutlined />
                                     <span className="back-btn-text">Back to Dashboard</span>
                                 </Link>
