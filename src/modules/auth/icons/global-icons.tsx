@@ -22,6 +22,8 @@ import SiderShortcutFolder from "../icons/sider-folder-shortcut.svg";
 // @ts-ignore
 import HamburgerMenu from "../icons/hamburger-menu.svg";
 // @ts-ignore
+import SiderUsers from "./sider-users-icon.svg";
+
 
 export const SiderFolderIcon = (props: any) => {
     return <Icon component={SiderFolder} {...props} />;
@@ -52,4 +54,7 @@ export const SiderShortcutFolderIcon = (props: any) => {
 };
 export const HamburgerMenuIcon = (props: any) => {
     return <Icon component={HamburgerMenu} {...props} />;
+};
+export const SiderUsersIcon = (props: any) => {
+    return <Icon component={SiderUsers} {...props} />;
 };

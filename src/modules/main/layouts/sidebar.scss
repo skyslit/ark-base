@@ -6,7 +6,6 @@
         min-width: 264px !important;
         width: 264px !important;
         background: #F8F8F8;
-        height: 100vh;
         position: fixed;
         left: 0px;
         top: 56px;
@@ -79,7 +78,9 @@
             }
 
             .top-content-section {
-                padding-top: 65px;
+                // margin-top: 65px;
+                margin-top: 15px;
+                overflow: auto;
 
                 .button-wrapper {
                     .selected-btn {
@@ -162,7 +163,6 @@
         min-width: 66px !important;
         width: 66px !important;
         background: #F8F8F8;
-        height: 100vh;
         position: fixed;
         left: 0px;
         top: 56px;
@@ -227,7 +227,9 @@
             }
 
             .top-content-section {
-                padding-top: 62px;
+                // margin-top: 62px;
+                margin-top: 43px;
+                overflow: auto;
 
                 .button-wrapper {
                     .selected-btn {
@@ -531,8 +533,6 @@
                     }
                 }
             }
-
-
         }
     }
 }

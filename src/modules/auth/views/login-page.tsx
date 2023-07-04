@@ -2,11 +2,9 @@ import React from "react";
 import { createComponent, Frontend } from "@skyslit/ark-frontend";
 import "../styles/login-page.scss";
 import { Col, Row, Typography, Form, Button, Input, message, Spin } from "antd";
-import SkyslitLogo from "../assets/images/skyslit.jpg";
 import AuthenticationLogo from "../images/authentication-logo.png";
 import RecoveryImage from "../assets/images/recovery-image.png";
-import { useHistory } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import Fade from "react-reveal/Fade";
 import { Helmet } from "react-helmet-async";
@@ -35,7 +33,7 @@ export default createComponent((props) => {
             : history.push(`/auth/login${history.location.search}`);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   };
   const loginService = useService({ serviceId: "user-login-service" });
   const _login = (data: any) => {
@@ -56,7 +54,7 @@ export default createComponent((props) => {
           // history.push("/account/settings")
         }
       })
-      .catch((e) => {});
+      .catch((e) => { });
   };
 
   React.useEffect(() => {
@@ -91,7 +89,6 @@ export default createComponent((props) => {
       <Fade duration={700}>
         <Row className="main-wrapper">
           <Col xs={24} sm={24} md={24} lg={12} xl={12} className="main-login">
-            {/*  <img src={SkyslitLogo} style={{ width: "77px", height: "20px" }} /> */}
             <div className="main-div">
               <div>
                 <Form
@@ -131,11 +128,11 @@ export default createComponent((props) => {
                   <div style={{ color: "#D03535", height: 0, fontWeight: 500 }}>
                     {loginService.err ? loginService.err.message : ""}
                   </div>
-                  <div style={{ display: "flex", justifyContent: "end" }}>
+                  {/* <div style={{ display: "flex", justifyContent: "end" }}>
                     <Link className="forgot-pass-btn" to="/account/recovery">
                       Forgot password?
                     </Link>
-                  </div>
+                  </div> */}
                   <Form.Item>
                     <Button
                       type="primary"
@@ -151,7 +148,7 @@ export default createComponent((props) => {
                   </Form.Item>
                 </Form>
               </div>
-              <div
+              {/* <div
                 className="dont-text"
                 style={{ flexDirection: "row", display: "flex" }}
               >
@@ -159,7 +156,7 @@ export default createComponent((props) => {
                 <Link to="/auth/account/register" className="register-link">
                   Register
                 </Link>
-              </div>
+              </div> */}
             </div>
           </Col>
           <Col className="main-right" xs={0} sm={0} md={0} lg={12} xl={12}>

@@ -17,6 +17,7 @@ import Fade from "react-reveal/Fade";
 import { Helmet } from "react-helmet-async";
 
 export default createComponent((props) => {
+    const { useService, useContext, useTableService } = props.use(Frontend);
     const { Panel } = Collapse;
     const { TextArea } = Input;
     const { Option } = Select;
@@ -74,14 +75,31 @@ export default createComponent((props) => {
     const [items, setItems] = React.useState([]);
     const [forUserCount, setforUserCount] = React.useState([]);
     const [userDetails, setUserDetails] = React.useState([]);
-    const [email, setEmail] = React.useState("");
-    const [hash, setHash] = React.useState("");
-    const [otp, setOtp] = React.useState("");
     const [nameDisabled, setNameDisabled] = React.useState(true);
     const [emailDisabled, setEmailDisabled] = React.useState(true);
     const [passwordDisabled, setPasswordDisabled] = React.useState(true);
     const [groupTitleDisabled, setGroupTitleDisabled] = React.useState(true);
     const [groups, setGroups] = React.useState(null)
+
+
+    const context = useContext();
+    const formRef = React.useRef();
+    const userRef = React.useRef();
+    const groupRef = React.useRef();
+    const [nameForm] = Form.useForm();
+    const userId = context.response.meta.currentUser._id;
+
+
+    const addGroupService = useService({ serviceId: "add-new-group" });
+    const showAllUsersService = useService({ serviceId: "list-user-service" });
+    const showAllGroupsService = useService({ serviceId: "assign-group" });
+    const addNewUserService = useService({ serviceId: "add-user" });
+    const updateEmailService = useService({ serviceId: "email-otp-verification" });
+    const updateNameService = useService({ serviceId: "update-name-service" });
+    const listUserDetailsService = useService({ serviceId: "get-user-by-id" });
+    const allGroupsService = useService({ serviceId: "list-group-service" });
+    const changePasswordService = useService({ serviceId: "change-password" });
+
 
 
     const showModal = () => {
@@ -128,16 +146,7 @@ export default createComponent((props) => {
         ) : <div className="new-user-btn-hide"></div>
     );
 
-    const { useService, useContext, useTableService } = props.use(Frontend);
-    const context = useContext();
-    const formRef = React.useRef();
-    const userRef = React.useRef();
-    const groupRef = React.useRef();
-    const [nameForm] = Form.useForm();
 
-    const addGroupService = useService({ serviceId: "add-new-group" });
-    const showAllUsersService = useService({ serviceId: "list-user-service" });
-    const showAllGroupsService = useService({ serviceId: "assign-group" });
 
     const getGroupIds = React.useMemo(() => {
         if (groups) {
@@ -209,7 +218,6 @@ export default createComponent((props) => {
         setUpdatePassword(!updatePassword)
     }
 
-    const addNewUserService = useService({ serviceId: "add-user" });
     const addNewUser = (data) => {
         addNewUserService.invoke({
             name: data.name,
@@ -244,10 +252,7 @@ export default createComponent((props) => {
     });
 
 
-    const updateNameService = useService({ serviceId: "update-name-service" });
     const updateName = (data) => {
-        const userId = context.response.meta.currentUser._id;
-
         updateNameService.invoke({
             userId,
             name: data.name
@@ -256,15 +261,12 @@ export default createComponent((props) => {
                 listUserDetails()
                 setEditName(false)
                 listAllUsers.onChange()
-                window.location.reload()
             })
             .catch(() => {
             })
     }
 
-    const listUserDetailsService = useService({ serviceId: "get-user-by-id" });
     const listUserDetails = () => {
-        const userId = context.response.meta.currentUser._id;
         listUserDetailsService.invoke({
             userId
         }, { force: true })
@@ -276,7 +278,6 @@ export default createComponent((props) => {
             })
     }
 
-    const changePasswordService = useService({ serviceId: "change-password" });
     const changePassword = (data) => {
         changePasswordService.invoke({
             oldPassword: data.oldPassword,
@@ -292,46 +293,23 @@ export default createComponent((props) => {
             })
     }
 
-    const verifyEmailService = useService({ serviceId: "verify-email" });
-    const verifyEmail = (data) => {
-        setEmail(data.newEmail)
-        verifyEmailService.invoke({
-            email: data.newEmail,
-        }, { force: true })
-            .then((res) => {
-                setShowEditEmail(false)
-                setShowOtp(true)
-                setHash(res.data);
-            })
-            .catch(() => {
-                message.error("Email already in use")
-            })
-    }
 
-    const verifyOtpService = useService({ serviceId: "email-otp-verification" });
-    const verifyOtp = () => {
-        const userId = context.response.meta.currentUser._id;
-        verifyOtpService.invoke({
-            otp: otp,
-            hash: hash,
-            email: email,
+
+    const updateEmail = (data) => {
+        updateEmailService.invoke({
+            email: data.newEmail,
             userId
         }, { force: true })
             .then((res) => {
-                setOtp("")
+                setShowEditEmail(false)
                 setShowOtp(false)
                 listUserDetails()
-                window.location.reload()
             })
-            .catch(() => {
-                message.error("Incorrect OTP")
+            .catch((e) => {
+                message.error(e.message)
             })
     }
-    const hideOtp = () => {
-        setShowOtp(false)
-        setShowEditEmail(true)
-    }
-    const allGroupsService = useService({ serviceId: "list-group-service" });
+
     const allGroups = () => {
         allGroupsService
             .invoke()
@@ -355,13 +333,17 @@ export default createComponent((props) => {
     }, []);
 
     React.useEffect(() => {
-        listUserDetails();
         showAllGroups();
+    }, []);
+
+    React.useEffect(() => {
+        listUserDetails();
     }, []);
 
     const antIcon = (
         <LoadingOutlined style={{ fontSize: 30, color: "#4c91c9" }} spin />
     );
+
     if (showAllGroupsService && listUserDetailsService.isLoading) {
         return (
             <div
@@ -486,6 +468,7 @@ export default createComponent((props) => {
                                             </button>
                                         </div>
                                     </div>
+
                                     <div className="basic-info-email-section">
                                         <div className="basic-sub">
                                             <div style={{ display: "flex" }}>
@@ -496,10 +479,7 @@ export default createComponent((props) => {
                                                 showEditEmail === true ? "edit-email-section-sm" : "edit-email-section-hide-sm"
                                             }>
                                                 <div>
-                                                    <Typography.Text style={{ color: "#4A4A4A", fontSize: 13 }}>
-                                                        A verification code will be sent to the new email address
-                                                    </Typography.Text><br />
-                                                    <Form name="newEmail" onFinish={verifyEmail}
+                                                    <Form name="newEmail" onFinish={updateEmail}
                                                         onValuesChange={(changedFields, allFields) => {
                                                             if (
                                                                 allFields.newEmail !== "" &&
@@ -527,56 +507,31 @@ export default createComponent((props) => {
                                                 </div>
                                                 <div style={{ display: "flex", justifyContent: "end", marginTop: 18 }}>
                                                     <button form="newEmail" className="send-verfication-btn-sm"
-                                                        disabled={verifyEmailService.isLoading || emailDisabled}>
-                                                        {verifyEmailService.isLoading === true ? (
+                                                        disabled={updateEmailService.isLoading || emailDisabled}>
+                                                        {updateEmailService.isLoading === true ? (
                                                             <>
                                                                 <LoadingOutlined style={{ marginRight: 5 }} />
-                                                                Sending verification...
+                                                                Updating...
                                                             </>
                                                         ) : (
-                                                            "Send verification"
+                                                            "Update"
                                                         )}</button></div>
                                                 <button className="close-btn-sm" onClick={triggerEditEmail}> <CloseOutlined className="close-icon" /> </button>
                                             </div>
-                                            <div className={
-                                                showOtp === true ? "otp-section-sm" : "otp-section-hide-sm"
-                                            }>
-                                                <div>
-                                                    <Typography.Text className="otp-description">
-                                                        Enter the One-Time-Password (6-digit code) sent to <i>johndoe@example.com</i>
-                                                    </Typography.Text><br />
-                                                    <Input type="number" onChange={(e) => { setOtp(e.target.value) }} value={otp} className="input-section" />
-                                                </div>
-                                                <div style={{ display: "flex", justifyContent: "end", marginTop: 18 }}>
-                                                    <button onClick={verifyOtp} className="verify-btn" disabled={verifyOtpService.isLoading || otp === ""}>
-                                                        {verifyOtpService.isLoading === true ? (
-                                                            <>
-                                                                <LoadingOutlined style={{ marginRight: 5 }} />
-                                                                Verifying...
-                                                            </>
-                                                        ) : (
-                                                            "Verify"
-                                                        )}
-                                                    </button></div>
-                                                <button className="close-btn-sm" onClick={hideOtp} > <CloseOutlined className="close-icon" /> </button>
-                                            </div>
                                         </div>
-                                        <div className={
+                                         <div className={
                                             showEditEmail === false && showOtp === false ? "basic-sub2" : "basic-sub2-hide"
                                         }>
                                             <Typography.Text ellipsis={true} className="user-email">
                                                 {userDetails ? userDetails.email : ""}
                                             </Typography.Text>
                                             <button className="edit-btn" onClick={triggerEditEmail}><img className="edit-img" src={EditIcon}></img></button>
-                                        </div>
+                                        </div> 
                                         <div className={
                                             showEditEmail === true ? "edit-email-section" : "edit-email-section-hide"
                                         }>
                                             <div>
-                                                <Typography.Text className="email-description">
-                                                    A verification code will be sent to the new email address
-                                                </Typography.Text><br />
-                                                <Form name="newEmail" onFinish={verifyEmail}
+                                                <Form name="newEmail" onFinish={updateEmail}
                                                     onValuesChange={(changedFields, allFields) => {
                                                         if (
                                                             allFields.newEmail !== "" &&
@@ -603,42 +558,21 @@ export default createComponent((props) => {
                                                 </Form>
                                             </div>
                                             <div style={{ width: "60%", display: "flex", justifyContent: "end", marginTop: 18 }}>
-                                                <button onClick={verifyEmail} className="send-verfication-btn"
-                                                    disabled={verifyEmailService.isLoading || emailDisabled}>
-                                                    {verifyEmailService.isLoading === true ? (
+                                                <button onClick={updateEmail} className="send-verfication-btn"
+                                                    disabled={updateEmailService.isLoading || emailDisabled}>
+                                                    {updateEmailService.isLoading === true ? (
                                                         <>
                                                             <LoadingOutlined style={{ marginRight: 5 }} />
-                                                            Sending verification...
+                                                            Updating...
                                                         </>
                                                     ) : (
-                                                        "Send verification"
+                                                        "Update"
                                                     )}
                                                 </button></div>
                                             <button className="close-btn" onClick={triggerEditEmail}> <CloseOutlined className="close-icon" /> </button>
                                         </div>
-                                        <div className={
-                                            showOtp === true ? "otp-section" : "otp-section-hide"
-                                        }>
-                                            <div>
-                                                <Typography.Text className="otp-description">
-                                                    Enter the One-Time-Password (6-digit code) sent to <i>{email}</i>
-                                                </Typography.Text><br />
-                                                <Input type="number" onChange={(e) => { setOtp(e.target.value) }} value={otp} className="input-section" />
-                                            </div>
-                                            <div style={{ width: "60%", display: "flex", justifyContent: "end", marginTop: 18 }}>
-                                                <button onClick={verifyOtp} className="verify-btn" disabled={verifyOtpService.isLoading || otp === ""}>
-                                                    {verifyOtpService.isLoading === true ? (
-                                                        <>
-                                                            <LoadingOutlined style={{ marginRight: 5 }} />
-                                                            Verifying...
-                                                        </>
-                                                    ) : (
-                                                        "Verify"
-                                                    )}
-                                                </button></div>
-                                            <button className="close-btn" onClick={hideOtp} > <CloseOutlined className="close-icon" /> </button>
-                                        </div>
                                     </div>
+
                                     <div className="basic-password" >
                                         <div className="basic-sub">
                                             <img className="name-img" src={PasswordIcon} style={{ height: "40px", width: "40px" }}></img>

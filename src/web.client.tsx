@@ -32,24 +32,11 @@ export default createReactApp(({ use, useModule }) => {
       Route: useComponent("authRoute"),
     },
     {
-      path: "/account/recovery",
-      hideInMenu: true,
-      component: useComponent("main/account-recovery-page"),
-      Route: useComponent("authRoute"),
-    },
-
-    {
       path: "/app/files/:dynamics_path*",
       hideInMenu: true,
       component: useComponent("main/data-explorer"),
       Route: useComponent("protectedRoute"),
       layout: useLayout("main/sidebar"), // Use the component address here
-    },
-    {
-      path: "/auth/account/register",
-      hideInMenu: true,
-      component: useComponent("main/sign-up-page"),
-      Route: useComponent("authRoute"),
     },
     {
       path: "/app/users/all",

@@ -120,6 +120,23 @@ export default createModule(({ use, run }) => {
           ]
         }
       },
+      {
+        parentPath: '/',
+        name: 'info',
+        type: 'property',
+        meta: {},
+        security: {
+          // @ts-ignore
+          permissions: [
+            {
+              "type": "public",
+              "policy": "",
+              "userEmail": "",
+              "access": "read"
+            }
+          ]
+        }
+      },
     ]);
   });
 });

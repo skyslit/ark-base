@@ -18,6 +18,9 @@ import {
   DashboardView,
 } from "./views/dashboard/index";
 import dashboard from "./views/dashboard/dashboard-controller";
+import { PropertyRenderer, PropertySchema } from "../PropertyEditor"
+import BinaryView from "./views/data-explorer/components/binary-view"
+
 
 export function initialiseToolkit() {
   controller.registerUI("default", {
@@ -45,35 +48,25 @@ export function initialiseToolkit() {
     name: "Binary File",
     toolkit: {
       Renderer() {
-        const api = useCatalogue();
         return (
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Button
-              href={generateFileLink(
-                api?.currentDir?.path,
-                "stream",
-                api?.currentDir?.namespace
-              )}
-              target="_blank"
-              icon={<DownloadOutlined />}
-            >
-              Open or Download File
-            </Button>
-            <p
-              style={{ marginTop: 20 }}
-            >{`Binary file "${api?.currentDir?.name}"`}</p>
-          </div>
+          <BinaryView />
         );
       },
     },
+  });
+
+  controller.defineType("property", {
+    name: "Property",
+    toolkit: {
+      Renderer() {
+        return (
+          <FileEditor>
+            <PropertyRenderer />
+          </FileEditor>
+        );
+      },
+    },
+    fileCollectionName: "property",
+    fileSchema: PropertySchema,
   });
 }

@@ -1,0 +1,132 @@
+.property-editor-row-wrapper {
+    height: calc(100% - 58px);
+
+    .property-editor-col-wrapper {
+        .tab-wrapper {
+            height: 100%;
+
+            .ant-tabs-nav {
+                width: 266px;
+                background-color: #FFFFFF;
+                padding-top: 15px;
+
+                .ant-tabs-nav-list {
+
+                    .ant-tabs-tab-active {
+                        padding: 11px 21px;
+                        text-align: center;
+                        font-size: 12px;
+                        font-family: Almarose-Medium;
+                        background-color: #F8F8F8;
+
+                    }
+
+                    .ant-tabs-ink-bar {
+                        background-color: #6143C6;
+                        width: 2px;
+                    }
+
+                    .ant-tabs-tab-active .ant-tabs-tab-btn {
+                        color: #6143C6;
+                        text-shadow: 0 0 0.25px currentcolor;
+
+                    }
+
+                    .ant-tabs-tab {
+                        padding: 11px 21px;
+                        text-align: center;
+                        font-size: 12px;
+                        font-family: Almarose-Medium;
+                        color: #363434;
+                        margin: 10px 0 0 0;
+                    }
+                }
+
+            }
+
+            .ant-tabs-content-holder {
+                margin-left: unset;
+                border-left: 1px solid #DEDEDE;
+
+                .ant-tabs-tabpane {
+                    padding-left: unset;
+                    height: 100%;
+                }
+
+                .ant-tabs-content-left {
+                    height: 100%;
+                }
+            }
+        }
+
+        .basic-information-editor-row-wrapper {
+            background-color: #FFFFFF;
+            height: 100%;
+            padding-top: 33px;
+
+            .basic-information-editor-col-wrapper {
+                .basic-information-editor-wrapper {
+                    .heading-wrapper {
+                        .heading-text {
+                            font-size: 18px;
+                            font-family: Almarose-Bold;
+                            color: #292929;
+                        }
+                    }
+
+                    .content-wrapper {
+                        display: flex;
+                        flex-direction: column;
+                        padding-top: 44px;
+                        gap: 25px;
+
+                        .input-wrapper {
+                            display: flex;
+                            flex-direction: column;
+
+                            label {
+                                font-size: 12px;
+                                font-family: Almarose-Medium;
+                                color: #1C1C1C;
+                                margin-bottom: 12px;
+                            }
+
+                            Input {
+                                width: 60%;
+                                height: 39px;
+                                background: #FFFFFF;
+                                border: 1px solid #D6D6D6;
+                                border-radius: 4px;
+                                background: #ffffff;
+
+                                &:hover {
+                                    border: 1px solid #555555;
+                                }
+
+                                &:active {
+                                    box-shadow: unset;
+                                    border: 1px solid #555555;
+                                }
+
+                                &:focus {
+                                    box-shadow: unset;
+                                    border: 1px solid #555555;
+                                }
+
+                                &:disabled {
+                                    cursor: not-allowed;
+                                }
+
+                                &::placeholder {
+                                    font-family: Almarose-Medium;
+                                    color: #7C7C7C;
+                                    font-size: 12px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -15,6 +15,7 @@ import {
   SiderSettingsIcon,
   SiderShortcutFolderIcon,
   HamburgerMenuIcon,
+  SiderUsersIcon
 } from "../../auth/icons/global-icons";
 import { Content } from "antd/lib/layout/layout";
 import NoSSR from "../../auth/reusables/NoSSR";
@@ -183,7 +184,7 @@ const SiderLayout = createComponent((props) => {
                   </button>
                 )}
               </div>
-              <span className="version-text">v1.0.1</span>
+              {/* <span className="version-text">v1.0.1</span> */}
               <div className="top-content-section">
                 {Array.isArray(userDashboardItems?.response?.items)
                   ? userDashboardItems?.response?.items.map((item) => {
@@ -271,8 +272,6 @@ const SiderLayout = createComponent((props) => {
                   })
                   : null}
                 <Divider />
-
-
                 <div className="button-wrapper">
                   <Link
                     type="text"
@@ -284,10 +283,27 @@ const SiderLayout = createComponent((props) => {
                       : "unselected-btn"
                       }`}
                   >
-                    <SiderSettingsIcon style={{ fontSize: 18 }} />
+                    <SiderUsersIcon style={{ fontSize: 18 }} />
                     <span className="btn-text">Users & Groups</span>
                   </Link>
                 </div>
+                {isUserSuperAdmin === true ? (
+                  <>
+                    <div className="button-wrapper">
+                      <Link
+                        type="text"
+                        to="/app/files/info"
+                        className={`${location.pathname === "/app/files/info"
+                          ? "selected-btn"
+                          : "unselected-btn"
+                          }`}
+                      >
+                        <SiderSettingsIcon style={{ fontSize: 18 }} />
+                        <span className="btn-text">Settings</span>
+                      </Link>
+                    </div>
+                  </>
+                ) : null}
                 {isUserSuperAdmin === true ? (
                   <>
                     <div className="button-wrapper">
@@ -300,7 +316,7 @@ const SiderLayout = createComponent((props) => {
                           }`}
                       >
                         <SiderFolderIcon style={{ fontSize: 18 }} />
-                        <span className="btn-text">Root</span>
+                        <span className="btn-text">Files</span>
                       </Link>
                     </div>
                   </>
@@ -389,7 +405,7 @@ const SiderLayout = createComponent((props) => {
                         }`}
                     >
                       <SiderFolderIcon style={{ fontSize: 18 }} />
-                      <span className="btn-text">Root</span>
+                      <span className="btn-text">Files</span>
                     </Link>
                   </div>
                 </>

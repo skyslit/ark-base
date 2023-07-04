@@ -43,7 +43,6 @@ const DashboardPresenter = (props: { dashboardFilePath: string }) => {
 
 export default createComponent((props) => {
     const { dynamics_path } = useParams<any>();
-    console.log('dynamics_path', dynamics_path);
     return (
         <>
             <Helmet>
