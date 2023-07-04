@@ -20,7 +20,7 @@ export default createContext(async ({ use, useModule, useDataFromContext }) => {
     {
       resolver: webspaceCredentials,
       keys: Object.keys(getRuntimeVars()).filter((key) =>
-        key.startsWith("ws-cred://")
+        key.startsWith("ws-cred_._")
       ),
     },
   ]);

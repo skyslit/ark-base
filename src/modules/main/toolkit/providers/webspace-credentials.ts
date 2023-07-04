@@ -43,11 +43,10 @@ export default createEnvVariableResolver({
       }
 
       result = keys.reduce((acc, key) => {
-        const url = new URL(key.original);
         const val = resolvedValues.find((r) => r.credId === key.value);
         if (val) {
           acc[key.original] = val.value;
-          acc[url.host] = val.value;
+          acc[String(key.original).replace("ws-cred_._", "")] = val.value;
         }
         return acc;
       }, {});
@@ -60,6 +59,8 @@ export default createEnvVariableResolver({
         console.error(e);
       }
     }
+
+    console.log("result", result);
 
     return result;
   },
