@@ -9,6 +9,14 @@
                 width: 266px;
                 background-color: #FFFFFF;
                 padding-top: 15px;
+                border-right: 1px solid #DEDEDE;
+
+                @media (min-width: 0px) and (max-width: 768px) {
+                    width: unset;
+                    padding-top: unset;
+                    border-right: unset;
+                    margin: unset;
+                }
 
                 .ant-tabs-nav-list {
 
@@ -39,14 +47,22 @@
                         font-family: Almarose-Medium;
                         color: #363434;
                         margin: 10px 0 0 0;
+
+                        @media (min-width: 0px) and (max-width: 768px) {
+                            margin: unset;
+                        }
                     }
                 }
 
             }
 
+            .ant-tabs-content {
+                height: 100%;
+            }
+
             .ant-tabs-content-holder {
                 margin-left: unset;
-                border-left: 1px solid #DEDEDE;
+                border-left: unset;
 
                 .ant-tabs-tabpane {
                     padding-left: unset;
@@ -77,7 +93,7 @@
                     .content-wrapper {
                         display: flex;
                         flex-direction: column;
-                        padding-top: 44px;
+                        padding-top: 39px;
                         gap: 25px;
 
                         .input-wrapper {

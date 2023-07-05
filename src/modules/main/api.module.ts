@@ -124,7 +124,7 @@ export default createModule(({ use, run }) => {
         parentPath: '/',
         name: 'info',
         type: 'property',
-        meta: {},
+        meta: { fileCollectionName: 'property' },
         security: {
           // @ts-ignore
           permissions: [

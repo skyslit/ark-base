@@ -41,21 +41,33 @@ const SiderLayout = createComponent((props) => {
   const userDashboardItems = usePath(
     "user-dashboard-items-ref",
     `/users/${emailSlug}/dashboards`,
+    {
+      useRedux: true
+    }
   );
 
   const systemDashboardItems = usePath(
     "system-dashboard-items-ref",
     '/dashboards',
+    {
+      useRedux: true
+    }
   );
 
   const userQuicklinkItems = usePath(
     "user-quick-link-items-ref",
     `/users/${emailSlug}/quick-links`,
+    {
+      useRedux: true
+    }
   );
 
   const systemQuicklinkItems = usePath(
     "system-quick-link-items-ref",
     '/quick-links',
+    {
+      useRedux: true
+    }
   );
 
   const isUserSuperAdmin = React.useMemo(() => {
