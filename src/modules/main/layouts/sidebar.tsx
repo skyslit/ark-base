@@ -340,7 +340,7 @@ const SiderLayout = createComponent((props) => {
                           }`}
                       >
                         <SiderFolderIcon style={{ fontSize: 18 }} />
-                        <span className="btn-text">Files</span>
+                        <span className="btn-text">File Manager</span>
                       </Link>
                     </div>
                   </>
@@ -429,7 +429,7 @@ const SiderLayout = createComponent((props) => {
                         }`}
                     >
                       <SiderFolderIcon style={{ fontSize: 18 }} />
-                      <span className="btn-text">Files</span>
+                      <span className="btn-text">File Manager</span>
                     </Link>
                   </div>
                 </>
