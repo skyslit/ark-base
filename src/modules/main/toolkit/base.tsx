@@ -17,16 +17,19 @@ import {
   Space,
   Upload,
   Drawer,
+  Tabs,
+  TabsProps,
 } from "antd";
 import { useCatalogue, useFile } from "@skyslit/ark-frontend/build/dynamics-v2";
 import { Link, useHistory } from "react-router-dom";
-import { HomeOutlined, InboxOutlined, MoreOutlined } from "@ant-design/icons";
+import { HomeOutlined, InboxOutlined, MoreOutlined, PlusOutlined } from "@ant-design/icons";
 import Item from "./views/data-explorer/components/item";
 import {
   DefaultItemIcon,
   FolderItemIcon,
 } from "./views/data-explorer/components/item";
 import { useCatalogueItemPicker } from "@skyslit/ark-frontend/build/dynamics-v2/widgets/catalogue";
+import "./base.scss";
 
 const { Header, Content } = Layout;
 const { Panel } = Collapse;
@@ -264,6 +267,42 @@ export function Renderer() {
     );
   }
 
+
+  const GeneralItems = ((props) => {
+
+    return (
+      <Row justify="center" >
+        <Col span={24}>
+          <div>
+            {customTypes
+              .filter((type) => {
+                if (type.id === "binary") {
+                  return false;
+                }
+                return true;
+              })
+              .map((type) => (
+                <NewItem
+                  key={type.id}
+                  item={type}
+                  selected={type.id === selectedNewType}
+                  onClick={() => setSelectedNewType((type as any).id)}
+                />
+              ))}
+          </div>
+        </Col>
+      </Row>
+    )
+  })
+
+  const items: TabsProps['items'] = [
+    {
+      key: '1',
+      label: `All`,
+      children: <GeneralItems />
+    },
+  ];
+
   return (
     <div
       style={{
@@ -384,14 +423,16 @@ export function Renderer() {
                 <Button
                   onClick={() => setUploadModalVisible(true)}
                   type="default"
+                  icon={<PlusOutlined />}
                 >
-                  Upload File(s)
+                  Upload Files
                 </Button>
                 <Button
                   onClick={() => setNewFolderModal(true)}
                   type={api?.meta?.mode === "picker" ? "default" : "primary"}
+                  icon={<PlusOutlined />}
                 >
-                  + New
+                  Create
                 </Button>
                 {api?.meta?.mode === "picker" ? (
                   <Button
@@ -450,8 +491,9 @@ export function Renderer() {
         </div>
       </Drawer>
       <Modal
-        title="Add new item"
-        visible={Boolean(newFolderModal)}
+        className="add-new-item-modal"
+        title="Create New Item"
+        open={Boolean(newFolderModal)}
         onCancel={() => setNewFolderModal(false)}
         okText="Create"
         onOk={() => {
@@ -477,36 +519,42 @@ export function Renderer() {
               )
             );
         }}
-        width={1000}
-      >
-        <Collapse defaultActiveKey={["1"]}>
-          <Panel header="General" key="1">
-            <div>
-              {customTypes
-                .filter((type) => {
-                  if (type.id === "binary") {
-                    return false;
-                  }
+        width={1080}
+        footer={[
+          <div className="modal-footer-wrapper">
+            <span className="footer-text">Filename:</span>
+            <Input value={newFolderName}
+              onChange={(e) => setnewFolderName(e.currentTarget.value)}
+              className="footer-input" placeholder="Enter filename" />
+            <Button className="footer-add-btn" type="text" onClick={() => {
+              if (!newFolderName) {
+                message.error("Name must not be empty");
+                return;
+              }
+              if (!selectedNewType) {
+                message.error("Please select the type");
+                return;
+              }
+              return api
+                .createItem(newFolderName, selectedNewType, {})
+                .then(() => {
+                  setNewFolderModal(false);
                   return true;
                 })
-                .map((type) => (
-                  <NewItem
-                    key={type.id}
-                    item={type}
-                    selected={type.id === selectedNewType}
-                    onClick={() => setSelectedNewType((type as any).id)}
-                  />
-                ))}
-            </div>
-          </Panel>
-        </Collapse>
-        <Divider />
-        <label>Name</label>
-        <Input
-          placeholder="e.g. my item"
-          value={newFolderName}
-          onChange={(e) => setnewFolderName(e.currentTarget.value)}
-        />
+                .catch((e) =>
+                  message.error(
+                    e?.response?.data?.message
+                      ? e?.response?.data?.message
+                      : e.message
+                  )
+                );
+            }}>Add</Button>
+          </div>
+        ]}
+      >
+        <div className="add-new-item-modal-wrapper">
+          <Tabs className="tab-wrapper" defaultActiveKey="1" tabPosition='left' items={items} />
+        </div>
       </Modal>
     </div>
   );

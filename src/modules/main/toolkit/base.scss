@@ -1,0 +1,191 @@
+.add-new-item-modal {
+    .ant-modal-content {
+        border-radius: 6px;
+    }
+
+    .ant-modal-header {
+        padding: 15px 20px 15px 16px;
+        border-bottom: 1px solid #E8E8E8;
+        border-radius: 6px 6px 0 0;
+
+        .ant-modal-title {
+            color: #454545;
+            font-size: 14px;
+            font-family: Almarose-Semibold;
+        }
+    }
+
+    .ant-modal-body {
+        padding: unset;
+        height: 460px;
+
+        @media (min-width: 0px) and (max-width: 768px) {
+            height: 277px;
+        }
+    }
+
+    .ant-modal-footer {
+        padding: 14px 18px 12px 23px;
+        border-top: 1px solid #E8E8E8;
+        border-radius: 0 0 6px 6px;
+
+        .modal-footer-wrapper {
+            display: flex;
+            align-items: center;
+
+            @media (min-width: 0px) and (max-width: 768px) {
+                gap: 10px;
+                flex-direction: column;
+                align-items: start;
+            }
+
+            .footer-text {
+                color: #434343;
+                font-size: 12px;
+                font-family: Almarose-Medium;
+            }
+
+            .footer-input {
+                background: #FFFFFF;
+                height: 41px;
+                border: 1px solid #D6D6D6;
+                border-radius: 4px;
+                margin: 0px 28px 0px 16px;
+
+                @media (min-width: 0px) and (max-width: 768px) {
+                    margin: unset;
+                }
+
+                &:hover {
+                    border: 1px solid #555555;
+                }
+
+                &:active {
+                    box-shadow: unset;
+                    border: 1px solid #555555;
+                }
+
+                &:focus {
+                    box-shadow: unset;
+                    border: 1px solid #555555;
+                }
+
+                &:disabled {
+                    cursor: not-allowed;
+                }
+
+                &::placeholder {
+                    font-family: Almarose-Medium;
+                    color: #9A9A9A;
+                    font-size: 12px;
+                }
+            }
+
+            .footer-add-btn {
+                background: #6143C6;
+                border-radius: 6px;
+                opacity: 1;
+                color: #FFFFFF;
+                font-size: 12px;
+                font-family: Almarose-Semibold;
+                padding: 0px 45px;
+                height: 41px;
+
+                @media (min-width: 0px) and (max-width: 768px) {
+                    width: 100%;
+                }
+
+                &:hover {
+                    opacity: 0.9;
+                }
+
+                &:active {
+                    transform: scale(0.98);
+                }
+
+                &:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+            }
+        }
+    }
+
+    .add-new-item-modal-wrapper {
+        height: 100%;
+
+        .tab-wrapper {
+            height: 100%;
+
+            .ant-tabs-nav {
+                width: 231px;
+                background-color: #FFFFFF;
+                border-right: 1px solid #DEDEDE;
+
+                @media (min-width: 0px) and (max-width: 768px) {
+                    width: unset;
+                    padding-top: unset;
+                    border-right: unset;
+                    margin: unset;
+                }
+
+                .ant-tabs-nav-list {
+
+                    .ant-tabs-tab-active {
+                        padding: 11px 21px;
+                        text-align: center;
+                        font-size: 12px;
+                        font-family: Almarose-Medium;
+                        background-color: #F8F8F8;
+
+                    }
+
+                    .ant-tabs-ink-bar {
+                        background-color: #6143C6;
+                        width: 2px;
+                    }
+
+                    .ant-tabs-tab-active .ant-tabs-tab-btn {
+                        color: #6143C6;
+                        text-shadow: 0 0 0.25px currentcolor;
+
+                    }
+
+                    .ant-tabs-tab {
+                        padding: 11px 21px;
+                        text-align: center;
+                        font-size: 12px;
+                        font-family: Almarose-Medium;
+                        color: #363434;
+                        margin: 10px 0 0 0;
+
+                        @media (min-width: 0px) and (max-width: 768px) {
+                            margin: unset;
+                        }
+                    }
+                }
+
+            }
+
+            .ant-tabs-content {
+                height: 100%;
+            }
+
+            .ant-tabs-content-holder {
+                margin-left: unset;
+                border-left: unset;
+                padding: 20px 32px;
+
+                .ant-tabs-tabpane {
+                    padding-left: unset;
+                    height: 100%;
+                    overflow: auto;
+                }
+
+                .ant-tabs-content-left {
+                    height: 100%;
+                }
+            }
+        }
+    }
+}
