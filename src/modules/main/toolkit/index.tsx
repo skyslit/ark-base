@@ -20,6 +20,7 @@ import {
 import dashboard from "./views/dashboard/dashboard-controller";
 import { PropertyRenderer, PropertySchema } from "../PropertyEditor"
 import BinaryView from "./views/data-explorer/components/binary-view"
+import { BinaryFileIcon } from "../toolkit/views/data-explorer/icons/global-icons"
 
 
 export function initialiseToolkit() {
@@ -53,6 +54,7 @@ export function initialiseToolkit() {
         );
       },
     },
+    icon: BinaryFileIcon,
   });
 
   controller.defineType("property", {

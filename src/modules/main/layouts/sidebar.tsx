@@ -26,7 +26,9 @@ const SiderLayout = createComponent((props) => {
 
   const location = useLocation();
   const context = useContext();
-  const { usePath } = useFolder();
+  const { usePath, readFile  } = useFolder();
+
+  const [organisationDetails, setOrganisationDetails] = React.useState();
 
   const emailAddress = context?.response?.meta?.currentUser?.emailAddress;
   const emailSlug = React.useMemo(() => {
@@ -113,6 +115,12 @@ const SiderLayout = createComponent((props) => {
     setVisible(!visible);
   };
 
+  React.useEffect (() => {
+    readFile("/info").then((res)=>{
+      setOrganisationDetails(res.meta.content)
+   })
+  },[])
+
 
   return (
     <>
@@ -127,7 +135,7 @@ const SiderLayout = createComponent((props) => {
               <HamburgerMenuIcon className="hamburger-icon" />
             </Button>
             <span style={{ color: "black", fontFamily: "Almarose-Bold" }}>
-              {`%COMP_NAME%`}
+              {organisationDetails?.orgName}
             </span>
           </div>
           <div className="username-signout-btn-wrapper">
@@ -240,7 +248,9 @@ const SiderLayout = createComponent((props) => {
                     );
                   })
                   : null}
-                <Divider />
+                {userDashboardItems?.response?.items.length > 0 || systemDashboardItems?.response?.items.length > 0 ?
+                  <Divider />
+                  : null}
                 {Array.isArray(userQuicklinkItems?.response?.items)
                   ? userQuicklinkItems?.response?.items.map((item) => {
                     return (
@@ -283,7 +293,9 @@ const SiderLayout = createComponent((props) => {
                     );
                   })
                   : null}
-                <Divider />
+                {userQuicklinkItems?.response?.items.length > 0 || systemQuicklinkItems?.response?.items.length > 0 ?
+                  <Divider />
+                  : null}
                 <div className="button-wrapper">
                   <Link
                     type="text"
@@ -328,7 +340,7 @@ const SiderLayout = createComponent((props) => {
                           }`}
                       >
                         <SiderFolderIcon style={{ fontSize: 18 }} />
-                        <span className="btn-text">Files</span>
+                        <span className="btn-text">File Manager</span>
                       </Link>
                     </div>
                   </>
@@ -417,7 +429,7 @@ const SiderLayout = createComponent((props) => {
                         }`}
                     >
                       <SiderFolderIcon style={{ fontSize: 18 }} />
-                      <span className="btn-text">Files</span>
+                      <span className="btn-text">File Manager</span>
                     </Link>
                   </div>
                 </>

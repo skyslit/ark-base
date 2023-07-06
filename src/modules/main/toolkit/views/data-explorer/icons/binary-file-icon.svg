@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="67.294" height="87.588" viewBox="0 0 67.294 87.588">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#f2f2f2"/>
+      <stop offset="1" stop-color="#d8d8d8"/>
+    </linearGradient>
+  </defs>
+  <g id="_774684_pdf_document_extension_file_format_icon" data-name="774684_pdf_document_extension_file_format_icon" transform="translate(0.5 0.5)">
+    <path id="Path_1369" data-name="Path 1369" d="M66.294,22.786V79.752a6.847,6.847,0,0,1-6.858,6.836H6.858A6.847,6.847,0,0,1,0,79.752V6.836A6.847,6.847,0,0,1,6.858,0H43.434Z" stroke="#d9d9d9" stroke-width="1" fill-rule="evenodd" fill="unset"/>
+    <path id="Path_1370" data-name="Path 1370" d="M55.35,21.51v2.836H36.662c-3.869,0-5.654-3.139-5.654-7.01V0h2.83Z" transform="translate(10.944)" fill="#0000004f" fill-rule="evenodd"/>
+  </g>
+</svg>
