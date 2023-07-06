@@ -32,6 +32,7 @@
     "react-lottie": "^1.2.3",
     "react-reveal": "^1.2.2",
     "react-router-dom": "^5.3.4",
+    "request": "^2.88.2",
     "typescript": "^3.9.7"
   },
   "devDependencies": {
@@ -49,6 +50,7 @@
     "@types/react": "^16.14.41",
     "@types/react-dom": "^16.9.19",
     "@types/react-router-dom": "^5.3.3",
+    "@types/request": "^2.48.8",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
