@@ -270,6 +270,7 @@ export default (props: any) => {
     return null;
   }, [item?.type]);
 
+
   const Icon = React.useMemo(() => {
     if (customType?.id === "folder") {
       return FolderItemIcon;
@@ -308,6 +309,7 @@ export default (props: any) => {
 
     return false;
   }, [item]);
+
 
   return (
     <>
@@ -391,9 +393,8 @@ export default (props: any) => {
             props.onDoubleClick && props.onDoubleClick(fullPath);
           }}
           onClick={props.onClick}
-          className={`folder-wrapper ${
-            contextMenuVisible || renameMode ? "menu-visible" : ""
-          } ${selected === true ? "selected" : ""}`}
+          className={`folder-wrapper ${contextMenuVisible || renameMode ? "menu-visible" : ""
+            } ${selected === true ? "selected" : ""}`}
           style={{
             transform: renameMode ? "translateY(-16px)" : undefined,
             position: "relative",

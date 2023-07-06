@@ -1,5 +1,4 @@
 import React from "react";
-import { createComponent } from "@skyslit/ark-frontend";
 import { useFile } from '@skyslit/ark-frontend/build/dynamics-v2';
 import { Input, Row, Col, Button, Tabs } from 'antd';
 import { createSchema } from '@skyslit/ark-frontend/build/dynamics-v2';
@@ -11,8 +10,6 @@ export const PropertySchema = createSchema({
 })
 
 export function PropertyRenderer() {
-
-
     const BasicInformation = ((props) => {
 
         const file = useFile();
@@ -27,7 +24,7 @@ export function PropertyRenderer() {
                         <div className="content-wrapper">
                             <div className="input-wrapper">
                                 <label>Business Name:</label>
-                                <Input placeholder="Give a name for this app (Eg: John’s Online Store)"
+                                <Input className="input" placeholder="Give a name for this app (Eg: John’s Online Store)"
                                     onChange={(e) => file.cms.updateKey("orgName", e.target.value)}
                                     value={(file.cms.content as any).orgName}
                                 />
