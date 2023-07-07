@@ -60,8 +60,6 @@ export default createEnvVariableResolver({
       }
     }
 
-    console.log("result", result);
-
     return result;
   },
 });
