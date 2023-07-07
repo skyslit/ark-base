@@ -164,7 +164,6 @@
                         }
                     }
                 }
-
             }
 
             .ant-tabs-content {
@@ -175,11 +174,11 @@
                 margin-left: unset;
                 border-left: unset;
                 padding: 20px 32px;
+                overflow: auto;
 
                 .ant-tabs-tabpane {
                     padding-left: unset;
                     height: 100%;
-                    overflow: auto;
                 }
 
                 .ant-tabs-content-left {

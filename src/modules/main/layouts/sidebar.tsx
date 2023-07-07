@@ -21,6 +21,8 @@ import { Content } from "antd/lib/layout/layout";
 import NoSSR from "../../auth/reusables/NoSSR";
 const { Header, Sider } = Layout;
 
+let orgDetails: string = null;
+
 const SiderLayout = createComponent((props) => {
   const { useService, useContext, useFolder } = props.use(Frontend);
 
@@ -28,7 +30,7 @@ const SiderLayout = createComponent((props) => {
   const context = useContext();
   const { usePath, readFile } = useFolder();
 
-  const [organisationDetails, setOrganisationDetails] = React.useState();
+  const [organisationDetails, setOrganisationDetails] = React.useState(orgDetails);
 
   const emailAddress = context?.response?.meta?.currentUser?.emailAddress;
   const emailSlug = React.useMemo(() => {
@@ -89,7 +91,7 @@ const SiderLayout = createComponent((props) => {
   const logoutUser = () => {
     logoutService
       .invoke()
-      .then((res) => {})
+      .then((res) => { })
       .catch((e) => {
         message.error("Try again!");
       })
@@ -116,9 +118,12 @@ const SiderLayout = createComponent((props) => {
   };
 
   React.useEffect(() => {
-    readFile("/info").then((res) => {
-      setOrganisationDetails(res.meta.content);
-    });
+    if (!orgDetails) {
+      readFile("/info").then((res) => {
+        orgDetails = res?.meta?.content;
+        setOrganisationDetails(res?.meta?.content);
+      });
+    }
   }, []);
 
   return (
@@ -207,119 +212,108 @@ const SiderLayout = createComponent((props) => {
               <div className="top-content-section">
                 {Array.isArray(userDashboardItems?.response?.items)
                   ? userDashboardItems?.response?.items.map((item) => {
-                      return (
-                        <div key={item.slug} className="button-wrapper">
-                          <Link
-                            type="text"
-                            to={`/app/viewport${
-                              item.destinationPath || item.path
+                    return (
+                      <div key={item.slug} className="button-wrapper">
+                        <Link
+                          type="text"
+                          to={`/app/viewport${item.destinationPath || item.path
                             }`}
-                            className={`${
-                              location.pathname ===
-                              `/app/viewport${
-                                item.destinationPath || item.path
+                          className={`${location.pathname ===
+                              `/app/viewport${item.destinationPath || item.path
                               }`
-                                ? "selected-btn"
-                                : "unselected-btn"
+                              ? "selected-btn"
+                              : "unselected-btn"
                             }`}
-                          >
-                            <SiderAnalyticsChartIcon style={{ fontSize: 18 }} />
-                            <span className="btn-text">{item.name}</span>
-                          </Link>
-                        </div>
-                      );
-                    })
+                        >
+                          <SiderAnalyticsChartIcon style={{ fontSize: 18 }} />
+                          <span className="btn-text">{item.name}</span>
+                        </Link>
+                      </div>
+                    );
+                  })
                   : null}
                 {Array.isArray(systemDashboardItems?.response?.items)
                   ? systemDashboardItems?.response?.items.map((item) => {
-                      return (
-                        <div key={item.slug} className="button-wrapper">
-                          <Link
-                            type="text"
-                            to={`/app/viewport${
-                              item.destinationPath || item.path
+                    return (
+                      <div key={item.slug} className="button-wrapper">
+                        <Link
+                          type="text"
+                          to={`/app/viewport${item.destinationPath || item.path
                             }`}
-                            className={`${
-                              location.pathname ===
-                              `/app/viewport${
-                                item.destinationPath || item.path
+                          className={`${location.pathname ===
+                              `/app/viewport${item.destinationPath || item.path
                               }`
-                                ? "selected-btn"
-                                : "unselected-btn"
+                              ? "selected-btn"
+                              : "unselected-btn"
                             }`}
-                          >
-                            <SiderAnalyticsChartIcon style={{ fontSize: 18 }} />
-                            <span className="btn-text">{item.name}</span>
-                          </Link>
-                        </div>
-                      );
-                    })
+                        >
+                          <SiderAnalyticsChartIcon style={{ fontSize: 18 }} />
+                          <span className="btn-text">{item.name}</span>
+                        </Link>
+                      </div>
+                    );
+                  })
                   : null}
                 {userDashboardItems?.response?.items.length > 0 ||
-                systemDashboardItems?.response?.items.length > 0 ? (
+                  systemDashboardItems?.response?.items.length > 0 ? (
                   <Divider />
                 ) : null}
                 {Array.isArray(userQuicklinkItems?.response?.items)
                   ? userQuicklinkItems?.response?.items.map((item) => {
-                      return (
-                        <div key={item.slug} className="button-wrapper">
-                          <Link
-                            type="text"
-                            to={`/app/files${
-                              item.destinationPath || item.path
+                    return (
+                      <div key={item.slug} className="button-wrapper">
+                        <Link
+                          type="text"
+                          to={`/app/files${item.destinationPath || item.path
                             }`}
-                            className={`${
-                              location.pathname ===
+                          className={`${location.pathname ===
                               `/app/files${item.destinationPath || item.path}`
-                                ? "selected-btn"
-                                : "unselected-btn"
+                              ? "selected-btn"
+                              : "unselected-btn"
                             }`}
-                          >
-                            <SiderShortcutFolderIcon style={{ fontSize: 19 }} />
-                            <span className="btn-text">{item.name}</span>
-                          </Link>
-                        </div>
-                      );
-                    })
+                        >
+                          <SiderShortcutFolderIcon style={{ fontSize: 19 }} />
+                          <span className="btn-text">{item.name}</span>
+                        </Link>
+                      </div>
+                    );
+                  })
                   : null}
                 {Array.isArray(systemQuicklinkItems?.response?.items)
                   ? systemQuicklinkItems?.response?.items.map((item) => {
-                      return (
-                        <div key={item.slug} className="button-wrapper">
-                          <Link
-                            type="text"
-                            to={`/app/files${
-                              item.destinationPath || item.path
+                    return (
+                      <div key={item.slug} className="button-wrapper">
+                        <Link
+                          type="text"
+                          to={`/app/files${item.destinationPath || item.path
                             }`}
-                            className={`${
-                              location.pathname ===
+                          className={`${location.pathname ===
                               `/app/files${item.destinationPath || item.path}`
-                                ? "selected-btn"
-                                : "unselected-btn"
+                              ? "selected-btn"
+                              : "unselected-btn"
                             }`}
-                          >
-                            <SiderShortcutFolderIcon style={{ fontSize: 19 }} />
-                            <span className="btn-text">{item.name}</span>
-                          </Link>
-                        </div>
-                      );
-                    })
+                        >
+                          <SiderShortcutFolderIcon style={{ fontSize: 19 }} />
+                          <span className="btn-text">{item.name}</span>
+                        </Link>
+                      </div>
+                    );
+                  })
                   : null}
                 {userQuicklinkItems?.response?.items?.length > 0 ||
-                systemQuicklinkItems?.response?.items?.length > 0 ? (
+                  systemQuicklinkItems?.response?.items?.length > 0 ? (
                   <Divider />
                 ) : null}
                 <div className="button-wrapper">
                   <Link
                     type="text"
                     to="/app/users"
-                    className={`${
-                      location.pathname === "/app/users" ||
-                      location.pathname.includes("/app/users") ||
-                      location.pathname.includes("/app/groups")
+                    className={`${location.pathname === "/app/users" ||
+                        location.pathname.includes("/app/users") ||
+                        location.pathname.includes("/app/groups")
                         ? "selected-btn"
                         : "unselected-btn"
-                    }`}
+                      }`}
                   >
                     <SiderUsersIcon style={{ fontSize: 18 }} />
                     <span className="btn-text">Users & Groups</span>
@@ -331,11 +325,10 @@ const SiderLayout = createComponent((props) => {
                       <Link
                         type="text"
                         to="/app/files/info"
-                        className={`${
-                          location.pathname === "/app/files/info"
+                        className={`${location.pathname === "/app/files/info"
                             ? "selected-btn"
                             : "unselected-btn"
-                        }`}
+                          }`}
                       >
                         <SiderSettingsIcon style={{ fontSize: 18 }} />
                         <span className="btn-text">Settings</span>
@@ -349,11 +342,10 @@ const SiderLayout = createComponent((props) => {
                       <Link
                         type="text"
                         to="/app/files"
-                        className={`${
-                          location.pathname === "/app/files"
+                        className={`${location.pathname === "/app/files"
                             ? "selected-btn"
                             : "unselected-btn"
-                        }`}
+                          }`}
                       >
                         <SiderFolderIcon style={{ fontSize: 18 }} />
                         <span className="btn-text">File Manager</span>
@@ -398,38 +390,35 @@ const SiderLayout = createComponent((props) => {
             <div className="top-content-section">
               {Array.isArray(userDashboardItems?.response?.items)
                 ? userDashboardItems?.response?.items.map((item) => {
-                    return (
-                      <div key={item.slug} className="button-wrapper">
-                        <Link
-                          type="text"
-                          to={`/app/viewport${
-                            item.destinationPath || item.path
+                  return (
+                    <div key={item.slug} className="button-wrapper">
+                      <Link
+                        type="text"
+                        to={`/app/viewport${item.destinationPath || item.path
                           }`}
-                          className={`${
-                            location.pathname ===
+                        className={`${location.pathname ===
                             `/app/viewport${item.destinationPath || item.path}`
-                              ? "selected-btn"
-                              : "unselected-btn"
+                            ? "selected-btn"
+                            : "unselected-btn"
                           }`}
-                        >
-                          <SiderShortcutFolderIcon style={{ fontSize: 19 }} />
-                          <span className="btn-text">{item.name}</span>
-                        </Link>
-                      </div>
-                    );
-                  })
+                      >
+                        <SiderShortcutFolderIcon style={{ fontSize: 19 }} />
+                        <span className="btn-text">{item.name}</span>
+                      </Link>
+                    </div>
+                  );
+                })
                 : null}
               <div className="button-wrapper">
                 <Link
                   type="text"
                   to="/app/users"
-                  className={`${
-                    location.pathname === "/app/users" ||
-                    location.pathname.includes("/app/users") ||
-                    location.pathname.includes("/app/groups")
+                  className={`${location.pathname === "/app/users" ||
+                      location.pathname.includes("/app/users") ||
+                      location.pathname.includes("/app/groups")
                       ? "selected-btn"
                       : "unselected-btn"
-                  }`}
+                    }`}
                 >
                   <SiderSettingsIcon style={{ fontSize: 18 }} />
                   <span className="btn-text">Users & Groups</span>
@@ -442,11 +431,10 @@ const SiderLayout = createComponent((props) => {
                     <Link
                       type="text"
                       to="/app/files"
-                      className={`${
-                        location.pathname === "/app/files"
+                      className={`${location.pathname === "/app/files"
                           ? "selected-btn"
                           : "unselected-btn"
-                      }`}
+                        }`}
                     >
                       <SiderFolderIcon style={{ fontSize: 18 }} />
                       <span className="btn-text">File Manager</span>

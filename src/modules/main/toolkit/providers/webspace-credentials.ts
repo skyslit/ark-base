@@ -1,5 +1,6 @@
 import { createEnvVariableResolver, useEnv } from "@skyslit/ark-core";
 import axios from "axios";
+import https from 'https';
 
 export default createEnvVariableResolver({
   id: "webspace-resolver",
@@ -34,6 +35,9 @@ export default createEnvVariableResolver({
           clientSecret: CLIENT_SECRET,
           credentialIds,
         },
+        httpsAgent: new https.Agent({
+          rejectUnauthorized: false
+        }),
       });
 
       let resolvedValues: any[] = [];

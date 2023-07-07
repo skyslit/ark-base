@@ -81,7 +81,8 @@
             .top-content-section {
                 // margin-top: 65px;
                 margin-top: 15px;
-                overflow: auto;
+                overflow-y: auto;
+                overflow-x: hidden;
 
                 .button-wrapper {
                     .selected-btn {
@@ -231,7 +232,8 @@
             .top-content-section {
                 // margin-top: 62px;
                 margin-top: 43px;
-                overflow: auto;
+                overflow-y: auto;
+                overflow-x: hidden;
 
                 .button-wrapper {
                     .selected-btn {
