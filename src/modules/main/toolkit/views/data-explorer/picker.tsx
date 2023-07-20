@@ -19,7 +19,7 @@ function Picker(props: any) {
       width={1000}
       footer={null}
     >
-      <div className="homepage-wrapper" style={{ width: "100%", height: 450 }}>
+      <div className="homepage-wrapper" style={{ width: "100%", height: 465 }}>
         <Catalogue
           style={{ height: "100%" }}
           namespace="default"

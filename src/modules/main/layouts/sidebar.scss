@@ -450,6 +450,8 @@
         .list-folder-wrapper {
             display: flex;
             flex-wrap: wrap;
+            overflow: auto;
+            height: 100%;
         }
     }
 }
