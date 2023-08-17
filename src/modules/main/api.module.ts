@@ -1,6 +1,5 @@
 import { createModule, useEnv } from "@skyslit/ark-core";
-import { Data, FileVolume } from "@skyslit/ark-backend";
-import { Backend } from "@skyslit/ark-backend";
+import { Data, Backend } from "@skyslit/ark-backend";
 
 import AccountSchema from "../auth/schema/account.schema";
 import GroupSchema from "../auth/schema/group.schema";
@@ -38,9 +37,12 @@ import ListGroupDetailsService from "../auth/services/list-group-details.service
 import RemoveMember from "../auth/services/remove-member.service";
 import GroupDetails from "../auth/services/group-details.service";
 import UpdateGroup from "../auth/services/update-group.service";
+import CrossCheckEmailService from '../auth/services/cross-check-email.service';
+import AvailabilityCheckOfTenantId from "../auth/services/availability-check-of-tenantId.service";
+import ListAllTenants from "../auth/services/list-all-tenants-table.service.ts";
+
 import createS3Volume from "./toolkit/providers/s3-volume";
 import createWebspaceVolume from "./toolkit/providers/webspace-blob";
-import path from "path";
 
 export default createModule(({ use, run }) => {
   const { useModel, useVolume, useFolderOperations } = use(Data);
@@ -83,6 +85,10 @@ export default createModule(({ use, run }) => {
   useService(RemoveMember);
   useService(GroupDetails);
   useService(UpdateGroup);
+  useService(CrossCheckEmailService);
+  useService(AvailabilityCheckOfTenantId);
+  useService(ListAllTenants);
+
 
   if (useEnv("AWS_ACCESS_KEY_ID")) {
     useVolume(

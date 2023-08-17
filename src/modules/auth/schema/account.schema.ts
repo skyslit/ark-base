@@ -23,6 +23,11 @@ const AccountSchema = new Schema(
       type:[String],
       required: false,
       defaultValue: "",
+    },
+    tenantId: {
+      type:String,
+      required: false,
+      defaultValue: "",
     }
   },
   {

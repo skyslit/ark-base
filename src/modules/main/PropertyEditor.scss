@@ -144,5 +144,163 @@
                 }
             }
         }
+
+        .tenant-editor-row-wrapper {
+            background-color: #FFFFFF;
+            height: 100%;
+            padding-top: 33px;
+
+            .tenant-editor-col-wrapper {
+                .tenant-editor-wrapper {
+                    .heading-settings-user-wrapper {
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 0px 0px 20px 0px;
+                        border-bottom: 1px solid #E7E7E7;
+
+                        .header-text-wrapper {
+                            display: flex;
+                            flex-direction: column;
+
+                            .heading-settings {
+                                color: #848484;
+                                font-size: 13px;
+                                font-family: Almarose-Medium;
+                            }
+
+                            .heading-text {
+                                font-size: 18px;
+                                font-family: Almarose-Bold;
+                                color: #292929;
+                            }
+                        }
+
+                        .heading-button-wrapper {
+                            display: flex;
+                            .top-add-btn {
+                                color: #6143C6;
+                                border: 1px solid #6143C6;
+                                background-color: #FFFFFF;
+                                border-radius: 8px;
+                                height: 35px;
+                                transition: 0.5s;
+                                font-size: 13px;
+                                padding: 0px 34px;
+                                font-family: Almarose-Semibold;
+
+                                &:hover {
+                                    opacity: 0.9;
+                                }
+
+                                &:active {
+                                    transform: scale(0.98);
+                                }
+
+                                &:disabled {
+                                    opacity: 0.5;
+                                    cursor: not-allowed;
+                                }
+                            }
+                        }
+                    }
+
+                    .ant-table-thead>tr>th {
+                        border-bottom: 1px solid #f0f0f0;
+                        font-family: "Almarose-Regular";
+                    }
+
+                    .table-wrapper {
+                        display: flex;
+                        flex-direction: column;
+                        padding-top: 39px;
+                        gap: 25px;
+
+                        .table-class {
+                            border-radius: 4px;
+
+                            .ant-table table {
+                                border: 1px solid #DBDBDB;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+.custom-confirm-modal-wrapper{
+    .ant-modal-content {
+        border-radius: 8px;
+    }
+    
+    .ant-modal-confirm-title {
+        font-size: 14px;
+        font-family: Almarose-Semibold;
+        color: #242424;
+    }
+    
+    .ant-modal-confirm-content {
+        font-size: 14px;
+        font-family: Almarose-Regular;
+        color: #242424;
+        margin-top: 14px;
+    }
+    
+    .ant-modal-confirm-btns {
+        display: flex;
+        justify-content: flex-end;
+        gap: 5px;
+    
+        .ant-btn-default {
+            background: #ffffff;
+            border: 1px solid #d3d3d3;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            transition: 0.5s;
+            color: #313131;
+            font-size: 13px;
+            font-family: Almarose-Semibold;
+            height: 35px;
+            padding: 0px 22px;
+    
+            &:hover {
+                opacity: 0.9;
+            }
+    
+            &:active {
+                transform: scale(0.98);
+            }
+    
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+        }
+    
+        .ant-btn-dangerous {
+            background: #b93838;
+            border: unset;
+            transition: 0.5s;
+            color: #ffffff;
+            font-size: 13px;
+            height: 35px;
+            padding: 0px 22px;
+            border-radius: 5px;
+            font-family: Almarose-Semibold;
+    
+            &:hover {
+                opacity: 0.9;
+            }
+    
+            &:active {
+                transform: scale(0.98);
+            }
+    
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+        }
     }
 }

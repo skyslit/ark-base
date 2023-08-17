@@ -8,13 +8,23 @@ export default defineService("add-user", (props) => {
   const GroupModel = useModel("group");
 
   props.defineRule((props) => {
-        props.allowPolicy('SUPER_ADMIN')
-    });
+    props.allowPolicy('SUPER_ADMIN')
+  });
 
   props.defineLogic(async (props) => {
     let newUser: any = null;
     let member: any = null;
-    const { email, password, groupId, name } = props.args.input;
+    const { email, password, groupId, name, tenantId } = props.args.input;
+
+    const tenantSlug = () => {
+      return encodeURIComponent(
+        String(tenantId)
+          .replace(/\W+(?!$)/g, "_")
+          .toUpperCase()
+          .replace(/\W$/, "")
+      );
+    };
+
     await new Promise(async (operationComplete, error) => {
       const existingAccount = await UserModel.findOne({
         email,
@@ -25,7 +35,8 @@ export default defineService("add-user", (props) => {
           name: name,
           email: email,
           password: password,
-          groupId: groupId
+          groupId: groupId,
+          tenantId: tenantSlug(tenantId)
         });
         await newUser.save();
 

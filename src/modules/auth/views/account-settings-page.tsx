@@ -1,7 +1,7 @@
 import React from "react";
 import { createComponent, Frontend } from "@skyslit/ark-frontend";
 import '../styles/account-settings-page.scss';
-import { Col, Row, Typography, Button, Collapse, Table, Modal, Form, Input, message, Divider, Select, Spin } from "antd";
+import { Col, Row, Typography, Button, Collapse, Table, Modal, Form, Input, message, Divider, Select, Spin, Checkbox } from "antd";
 import SuperAdminIcon from "../images/super-admin-icon.png";
 import ApplicationIcon from "../images/application.png";
 import MaleLogo from "../images/male-logo.png";
@@ -79,7 +79,9 @@ export default createComponent((props) => {
     const [emailDisabled, setEmailDisabled] = React.useState(true);
     const [passwordDisabled, setPasswordDisabled] = React.useState(true);
     const [groupTitleDisabled, setGroupTitleDisabled] = React.useState(true);
-    const [groups, setGroups] = React.useState(null)
+    const [groups, setGroups] = React.useState(null);
+    const [isTenantIdAvailable, setIsTenantIdAvailable] = React.useState(false);
+    const [tenantId, setTenantId] = React.useState("");
 
 
     const context = useContext();
@@ -99,8 +101,7 @@ export default createComponent((props) => {
     const listUserDetailsService = useService({ serviceId: "get-user-by-id" });
     const allGroupsService = useService({ serviceId: "list-group-service" });
     const changePasswordService = useService({ serviceId: "change-password" });
-
-
+    const availabilityCheckService = useService({ serviceId: "availability-check-of-tenantId" });
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -218,11 +219,30 @@ export default createComponent((props) => {
         setUpdatePassword(!updatePassword)
     }
 
+    const availabilityCheck = () => {
+        availabilityCheckService.invoke({
+            tenantId: tenantId
+        }, { force: true })
+            .then((res) => {
+
+            })
+            .catch(() => {
+
+            })
+    }
+
+    React.useEffect(() => {
+        if (tenantId) {
+        availabilityCheck();
+        }
+    },[tenantId])
+
     const addNewUser = (data) => {
         addNewUserService.invoke({
             name: data.name,
             email: data.email,
             password: data.password,
+            tenantId: tenantId,
             groupId: data.groupId
         }, { force: true })
             .then((res) => {
@@ -231,6 +251,7 @@ export default createComponent((props) => {
                 listAllUsers.onChange();
                 showAllUsers();
                 listAllGroups.onChange();
+                setIsTenantIdAvailable(false)
             })
             .catch((e) => {
             })
@@ -339,6 +360,8 @@ export default createComponent((props) => {
     React.useEffect(() => {
         listUserDetails();
     }, []);
+
+    
 
     const antIcon = (
         <LoadingOutlined style={{ fontSize: 30, color: "#4c91c9" }} spin />
@@ -519,14 +542,14 @@ export default createComponent((props) => {
                                                 <button className="close-btn-sm" onClick={triggerEditEmail}> <CloseOutlined className="close-icon" /> </button>
                                             </div>
                                         </div>
-                                         <div className={
+                                        <div className={
                                             showEditEmail === false && showOtp === false ? "basic-sub2" : "basic-sub2-hide"
                                         }>
                                             <Typography.Text ellipsis={true} className="user-email">
                                                 {userDetails ? userDetails.email : ""}
                                             </Typography.Text>
                                             <button className="edit-btn" onClick={triggerEditEmail}><img className="edit-img" src={EditIcon}></img></button>
-                                        </div> 
+                                        </div>
                                         <div className={
                                             showEditEmail === true ? "edit-email-section" : "edit-email-section-hide"
                                         }>
@@ -833,7 +856,7 @@ export default createComponent((props) => {
                                         </Form.Item>
                                         <div style={{ display: "flex", justifyContent: "end", marginTop: 60 }}>
                                             <Form.Item>
-                                                <Button className="create-btn" htmlType="submit" disabled={addGroupService.isLoading || groupTitleDisabled}>
+                                                <Button className="create-btn" htmlType="submit" disabled={addGroupService.isLoading || groupTitleDisabled }>
                                                     {addGroupService.isLoading === true ? (
                                                         <>
                                                             <LoadingOutlined style={{ marginRight: 5 }} />
@@ -901,6 +924,25 @@ export default createComponent((props) => {
                                                 <Input.Password className="title-input" placeholder="Enter a password" />
                                             </Form.Item>
                                             <><p style={{ color: "#717171", fontSize: 12 }}>Password should have at least 8 characters including one uppercase character, one lowercase character & one number</p></>
+                                            <Checkbox style={{ paddingBottom: 10, fontSize: 13 }} checked={isTenantIdAvailable} onChange={() => { setIsTenantIdAvailable(!isTenantIdAvailable) }}>Is this account for a tenant?</Checkbox>
+                                            <Form.Item>
+                                                {isTenantIdAvailable ? (
+                                                    <>
+                                                        <label style={{fontSize: 13}}>Tenant ID</label>
+                                                        <Input
+                                                            onChange={(e) => { setTenantId(e.target.value) }}
+                                                            className="title-input"
+                                                            style={{marginTop: 7}}
+                                                            placeholder="Enter organisation name"
+                                                        />
+                                                        {availabilityCheckService?.response?.data === false ? (
+                                                            <div style={{ color: "red", marginBottom: 15, transition: "color 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)" }}>
+                                                                Tenant ID already taken
+                                                            </div>
+                                                        ) : null}
+                                                    </>
+                                                ) : null}
+                                            </Form.Item>
                                         </div>
                                         <Divider />
                                         <div style={{ padding: "0 28px", textAlign: "center" }}>
@@ -935,7 +977,7 @@ export default createComponent((props) => {
                                         }}>
                                             <Form.Item
                                             >
-                                                <Button className="create-btn" htmlType="submit" disabled={addNewUserService.isLoading}>
+                                                <Button className="create-btn" htmlType="submit" disabled={addNewUserService.isLoading || availabilityCheckService?.response?.data === false && isTenantIdAvailable }>
                                                     {addNewUserService.isLoading === true ? (
                                                         <>
                                                             <LoadingOutlined style={{ marginRight: 5 }} />

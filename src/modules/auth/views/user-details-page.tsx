@@ -65,7 +65,7 @@ export default createComponent((props) => {
             { force: true })
             .then((res) => {
                 setIsModalOpen(false)
-                history.push("/users")
+                history.push("/app/users/all")
             })
             .catch(() => {
                 message.error("Failed to delete user")
@@ -212,7 +212,7 @@ export default createComponent((props) => {
                             <div className="user-details-wrapper">
                                 <div className="top-section">
                                     <div className="back-btn-section">
-                                        <Link to="/users" className="back-btn">
+                                        <Link to="/app/users" className="back-btn">
                                             <ArrowLeftOutlined style={{ color: "black" }} />
                                             <Typography.Text className="all-users-text"> All Users / </Typography.Text>
                                             <Typography.Text className="user-details-text"> User Details</Typography.Text>
