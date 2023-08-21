@@ -8,7 +8,7 @@ export default defineService("availability-check-of-tenantId", (props) => {
     });
     props.defineLogic(async (props) => {
         const { tenantId } = props.args.input;
-        const tenantSlug = () => {
+        const tenantSlug = (tenantId) => {
             return encodeURIComponent(
                 String(tenantId)
                     .replace(/\W+(?!$)/g, "_")

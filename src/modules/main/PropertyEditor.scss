@@ -204,6 +204,14 @@
                         }
                     }
 
+
+
+
+                    
+
+
+
+
                     .ant-table-thead>tr>th {
                         border-bottom: 1px solid #f0f0f0;
                         font-family: "Almarose-Regular";
@@ -225,9 +233,78 @@
                     }
                 }
             }
+
+
+            
         }
     }
+   
 }
+.add-user-modal{
+    border-radius: 8px;
+    .modal-content-wrapper{  
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        .modal-content-parent{
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            .label-modal-name{
+                display: flex;
+                width: 29%;
+                font-weight: 600;
+            }
+            .input-modal-div{
+                width: 70%;
+                border-radius: 4px;
+                border: 1px solid #D9D9D9;
+            }
+        }
+    }
+    .ant-modal-title {
+        margin: 0;
+        color: rgba(0, 0, 0, 0.85);
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 22px;
+        word-wrap: break-word;
+        font-family: 'Almarose-Bold';
+    }
+    .update-btn{
+        background-color: #2DB7F5;
+        border-radius: 5px;
+        border: #2DB7F5;
+    }
+    .cancel-btn{                    
+        border-radius: 5px;
+    }
+    .remove-btn{
+        
+        border-radius: 5px;
+        
+    }
+    .ant-modal-content {
+        position: relative;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 0;
+        border-radius: 8px;
+        box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+        pointer-events: auto;
+    }
+    .ant-modal-header {
+        padding: 16px 24px;
+        color: rgba(0, 0, 0, 0.85);
+        background: #fff;
+        border-bottom: 1px solid #f0f0f0;
+        /* border-radius: 2px 2px 0 0; */
+        border-radius: 8px;
+    }
+} 
+
+
+
 .custom-confirm-modal-wrapper{
     .ant-modal-content {
         border-radius: 8px;

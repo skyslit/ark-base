@@ -2,7 +2,7 @@ import { defineService, Data } from "@skyslit/ark-backend";
 
 export default defineService("add-admin-account", (props) => {
   const { useModel } = props.use(Data);
-  const AddAdminModel = useModel("account");
+  const AccountModel = useModel("account");
   const GroupModel = useModel("group");
   const MemberModel = useModel("member-assignment");
   props.defineLogic(async (props) => {
@@ -10,13 +10,15 @@ export default defineService("add-admin-account", (props) => {
     let newGroup: any = null;
     let newMember: any = null;
     let findAccount: any = null;
+    let createAdminGroup: any = null;
+
     const { email, password } = props.args.input;
     await new Promise(async (operationComplete, error) => {
-      const existingAccount = await AddAdminModel.findOne({
+      const existingAccount = await AccountModel.findOne({
         email,
       }).exec();
       if (!existingAccount) {
-        newAdminAccount = new AddAdminModel({
+        newAdminAccount = new AccountModel({
           name:"Super admin",
           email: email,
           password: password,
@@ -29,6 +31,13 @@ export default defineService("add-admin-account", (props) => {
         });
         await newGroup.save();
 
+        createAdminGroup = new GroupModel({
+          groupTitle: "ADMIN",
+          count:0,
+          description:""
+        });
+        await createAdminGroup.save();
+
         newMember = new MemberModel({
         userId: newAdminAccount._id,
         groupId: newGroup._id
@@ -36,7 +45,7 @@ export default defineService("add-admin-account", (props) => {
 
         await newMember.save();
 
-        findAccount = await AddAdminModel.findOne({
+        findAccount = await AccountModel.findOne({
         _id:newAdminAccount._id
       }).exec();
 

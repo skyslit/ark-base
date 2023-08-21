@@ -5,7 +5,7 @@ export default defineService("user-login-service", (props) => {
   const { useModel, useFolderOperations } = props.use(Data);
   const UserModel = useModel<UserDocument>("account");
   props.defineLogic(async (props) => {
-    let data: UserDocument = {};
+    let data : UserDocument = {};
     let redirectUri: any = null;
 
     await new Promise(async (operationComplete, error) => {
@@ -90,6 +90,13 @@ export default defineService("user-login-service", (props) => {
                     "supress",
                     true
                   ))
+                  .then((userRoot) => {
+                    if (data.tenantId) {
+                      return (
+                        folderApi.createShortcut('default', `/${data.tenantId.toLowerCase()}`, userRoot.path, data.tenantId)
+                      )
+                    }
+                  })
                   .then(() => {
                     if (external_auth === true) {
                       redirectUri = (

@@ -39,7 +39,10 @@ import GroupDetails from "../auth/services/group-details.service";
 import UpdateGroup from "../auth/services/update-group.service";
 import CrossCheckEmailService from '../auth/services/cross-check-email.service';
 import AvailabilityCheckOfTenantId from "../auth/services/availability-check-of-tenantId.service";
-import ListAllTenants from "../auth/services/list-all-tenants-table.service.ts";
+import ListAllTenants from "../auth/services/list-all-tenants-table.service";
+import ListUsersOfTenant from "../auth/services/list-users-of-tenant-table.service";
+import AddUserOfTenant from "../auth/services/add-user-of-tenant.service";
+
 
 import createS3Volume from "./toolkit/providers/s3-volume";
 import createWebspaceVolume from "./toolkit/providers/webspace-blob";
@@ -88,6 +91,8 @@ export default createModule(({ use, run }) => {
   useService(CrossCheckEmailService);
   useService(AvailabilityCheckOfTenantId);
   useService(ListAllTenants);
+  useService(ListUsersOfTenant);
+  useService(AddUserOfTenant);
 
 
   if (useEnv("AWS_ACCESS_KEY_ID")) {

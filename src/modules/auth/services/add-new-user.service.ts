@@ -2,7 +2,8 @@ import { defineService, Data } from "@skyslit/ark-backend";
 import async from "async";
 
 export default defineService("add-user", (props) => {
-  const { useModel } = props.use(Data);
+  const { useModel, useFolderOperations } = props.use(Data);
+  const { addItem } = useFolderOperations();
   const UserModel = useModel("account");
   const MemberModel = useModel("member-assignment");
   const GroupModel = useModel("group");
@@ -14,9 +15,11 @@ export default defineService("add-user", (props) => {
   props.defineLogic(async (props) => {
     let newUser: any = null;
     let member: any = null;
+    let tenantGroup: any = null;
+
     const { email, password, groupId, name, tenantId } = props.args.input;
 
-    const tenantSlug = () => {
+    const tenantSlug = (tenantId) => {
       return encodeURIComponent(
         String(tenantId)
           .replace(/\W+(?!$)/g, "_")
@@ -39,6 +42,19 @@ export default defineService("add-user", (props) => {
           tenantId: tenantSlug(tenantId)
         });
         await newUser.save();
+
+        if (newUser.tenantId){
+          tenantGroup = new GroupModel({
+            groupTitle: newUser.tenantId,
+            count: 0,
+            description:""
+          });
+          await tenantGroup.save();
+
+          addItem('default', `/`, newUser.tenantId, 'folder', {}, { permissions: [{ type: 'user', policy: '', access: 'owner', userEmail: newUser.email }] }, undefined, undefined, 'supress')
+          .then(() => addItem('default', `/${newUser.tenantId.toLowerCase()}`, "users", 'folder', {}, { permissions: [{ type: 'user', policy: '', access: 'owner', userEmail: newUser.email }] }, undefined, undefined, 'supress'))
+          .then(() => addItem('default', `/${newUser.tenantId.toLowerCase()}`, "uploads", 'folder', {},{ permissions: [{ type: 'user', policy: '', access: 'owner', userEmail: newUser.email },{ type: 'public', policy: '', access: 'read', userEmail: "" }] }, undefined, undefined, 'supress'))
+        }
 
         async.forEach(groupId, (id, next) => {
           member = new MemberModel({

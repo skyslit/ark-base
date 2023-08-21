@@ -84,6 +84,7 @@ export default createContext(async ({ use, useModule, useDataFromContext }) => {
           _id: userInfo._id,
           name: userInfo.name,
           emailAddress: userInfo.email,
+          tenantId: userInfo.tenantId,
           password: undefined,
           policies: groups,
           deserialized: true,

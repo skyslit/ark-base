@@ -50,7 +50,6 @@ export function PropertyRenderer() {
         const { useService, useTableService } = use(Frontend);
         const [isTenantIdAvailable, setIsTenantIdAvailable] = React.useState(false);
         const [tenantId, setTenantId] = React.useState("");
-        const [groups, setGroups] = React.useState([]);
         const [isUserModalOpen, setIsUserModalOpen] = React.useState(false);
 
         const availabilityCheckService = useService({ serviceId: "availability-check-of-tenantId" });
@@ -58,7 +57,7 @@ export function PropertyRenderer() {
         const listAllGroupsService = useService({ serviceId: "assign-group" });
         const deleteTenantService = useService({ serviceId: "delete-user-service" });
 
-        const userRef = React.useRef()
+        const [tenantForm] = Form.useForm();
 
         const showAddUserModal = () => {
             setIsUserModalOpen(true);
@@ -74,7 +73,7 @@ export function PropertyRenderer() {
                     Modal.confirm({
                         title: "Delete Confirmation",
                         icon: <DeleteOutlined />,
-                        content: "Are you sure you want to remove this user?",
+                        content: "Are you sure you want to remove this tenant?",
                         className: 'custom-confirm-modal-wrapper',
                         okText: "Delete",
                         okType: "danger",
@@ -100,7 +99,6 @@ export function PropertyRenderer() {
                 </Menu.Item>
             </Menu>
         );
-
 
         const columns = [
             {
@@ -133,13 +131,41 @@ export function PropertyRenderer() {
                 render: (data) =>
                 (
                     <Dropdown overlay={menu(data._id)} trigger={['click']}>
-                        <Button type="link">
+                        <a>
                             <HolderOutlined />
-                        </Button>
+                        </a>
                     </Dropdown>
                 )
             },
         ];
+
+
+        React.useEffect(() => {
+            listAllGroupsService.invoke({}, { force: true })
+                .then((res) => {
+                })
+                .catch(() => {
+                })
+        }, []);
+
+        const hasGroupsLoaded = React.useMemo(() => {
+            return listAllGroupsService.hasInitialized === true && listAllGroupsService.isLoading === false
+        }, [listAllGroupsService.hasInitialized, listAllGroupsService.isLoading,]);
+
+        const groups = React.useMemo(() => {
+            if (hasGroupsLoaded === true) {
+                return listAllGroupsService.response.data;
+            }
+            return [];
+        }, [hasGroupsLoaded, listAllGroupsService.response,]);
+
+        const adminGroup : any = React.useMemo(() => {
+            return groups.find(group => group.groupTitle === 'ADMIN');
+          }, [groups]);
+
+          const initialValues = {
+            groupId: adminGroup ? [adminGroup._id] : undefined
+          };
 
 
         React.useEffect(() => {
@@ -156,6 +182,7 @@ export function PropertyRenderer() {
             }
         }, [tenantId])
 
+
         const addNewTenant = (data) => {
             addTenantService.invoke({
                 name: data.name,
@@ -166,7 +193,7 @@ export function PropertyRenderer() {
             }, { force: true })
                 .then((res) => {
                     setIsUserModalOpen(false);
-                    (userRef.current as any).resetFields();
+                    tenantForm.resetFields()
                     listTenants.onChange();
                     setIsTenantIdAvailable(false)
                 })
@@ -180,16 +207,6 @@ export function PropertyRenderer() {
             columns,
             disableSelect: true,
         });
-
-
-        React.useEffect(() => {
-            listAllGroupsService.invoke({}, { force: true })
-                .then((res) => {
-                    setGroups(res.data);
-                })
-                .catch(() => {
-                })
-        }, []);
 
 
         return (
@@ -214,6 +231,7 @@ export function PropertyRenderer() {
                                 columns={listTenants.columns}
                                 onChange={listTenants.onChange}
                                 loading={listTenants.loading} 
+                                pagination={listTenants.pagination}
                                 />
                         </div>
                     </div>
@@ -225,7 +243,7 @@ export function PropertyRenderer() {
                     footer={null}
                     centered
                     className="new-user-modal">
-                    <Form layout="vertical" ref={userRef as any} onFinish={addNewTenant} name="user">
+                    <Form layout="vertical" onFinish={addNewTenant} name="user" form={tenantForm} initialValues={initialValues}>
                         <div style={{ padding: "10px 28px 0 28px" }}>
                             <Form.Item
                                 label="Name of the user"
@@ -350,7 +368,7 @@ export function PropertyRenderer() {
     return (
         <Row className="property-editor-row-wrapper">
             <Col span={24} className="property-editor-col-wrapper">
-                <Tabs className="tab-wrapper" defaultActiveKey="1" tabPosition={tabPosition} items={items} />
+                <Tabs className="tab-wrapper" defaultActiveKey="2" tabPosition={tabPosition} items={items} />
             </Col>
         </Row>
     );

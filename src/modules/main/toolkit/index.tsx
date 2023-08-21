@@ -18,7 +18,9 @@ import {
   DashboardView,
 } from "./views/dashboard/index";
 import dashboard from "./views/dashboard/dashboard-controller";
-import { PropertyRenderer, PropertySchema } from "../PropertyEditor"
+import { PropertyRenderer, PropertySchema } from "../PropertyEditor";
+import { SettingsRenderer, SettingsSchema } from "../settingsEditor";
+
 import BinaryView from "./views/data-explorer/components/binary-view"
 import { BinaryFileIcon } from "../toolkit/views/data-explorer/icons/global-icons"
 
@@ -70,5 +72,20 @@ export function initialiseToolkit() {
     },
     fileCollectionName: "property",
     fileSchema: PropertySchema,
+  });
+
+  controller.defineType("settings", {
+    name: "Settings",
+    toolkit: {
+      Renderer() {
+        return (
+          <FileEditor>
+            <SettingsRenderer />
+          </FileEditor>
+        );
+      },
+    },
+    fileCollectionName: "settings",
+    fileSchema: SettingsSchema,
   });
 }

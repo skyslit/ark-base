@@ -8,13 +8,21 @@ export default defineService('remove-member-service', (props) => {
 
     props.defineRule((props) => {
         props.allowPolicy('SUPER_ADMIN')
+        props.allowPolicy('ADMIN')
     });
 
     props.defineLogic(async (props) => {
+        let group
         await new Promise(async (operationComplete, error) => {
             const { userId, groupId } = props.args.input;
+            const tenantId = props.args.user.tenantId;
             const accountItem = await MemberModel.findOne({ userId: userId }).exec();
-            const group = await GroupModel.findOne({ _id: groupId }).exec();
+            if (tenantId){
+                 group = await GroupModel.findOne({ groupTitle: tenantId }).exec();
+            }
+            else{
+                 group = await GroupModel.findOne({ _id: groupId }).exec();
+            }
 
             if (accountItem) {
                 await accountItem.remove();
