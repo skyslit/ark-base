@@ -6,7 +6,6 @@ export default defineService("list-users-of-tenant-table-service", (props) => {
     const UserModel = useModel("account");
 
     props.defineRule((props) => {
-        props.allowPolicy('SUPER_ADMIN')
         props.allowPolicy('ADMIN')
     })
 

@@ -42,6 +42,7 @@ import AvailabilityCheckOfTenantId from "../auth/services/availability-check-of-
 import ListAllTenants from "../auth/services/list-all-tenants-table.service";
 import ListUsersOfTenant from "../auth/services/list-users-of-tenant-table.service";
 import AddUserOfTenant from "../auth/services/add-user-of-tenant.service";
+import RemoveUserOfTenant from "../auth/services/remove-user-of-tenant.service";
 
 
 import createS3Volume from "./toolkit/providers/s3-volume";
@@ -93,6 +94,7 @@ export default createModule(({ use, run }) => {
   useService(ListAllTenants);
   useService(ListUsersOfTenant);
   useService(AddUserOfTenant);
+  useService(RemoveUserOfTenant);
 
 
   if (useEnv("AWS_ACCESS_KEY_ID")) {

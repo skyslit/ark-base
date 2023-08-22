@@ -1,8 +1,7 @@
 import React from "react";
 import { Frontend, useArkReactServices } from '@skyslit/ark-frontend';
 import { useFile } from '@skyslit/ark-frontend/build/dynamics-v2';
-import { useCatalogueItemPicker, generateFileLink } from '@skyslit/ark-frontend/build/dynamics-v2/widgets/catalogue';
-import { Input, Row, Col, Button, Tabs, Select, Menu, Grid, Form, Divider, Space, Table, Tag, Dropdown, Modal, message } from 'antd';
+import { Input, Row, Col, Button, Tabs, Menu, Grid, Form, Table, Dropdown, Modal, message } from 'antd';
 import {
     DeleteOutlined,
     HolderOutlined,
@@ -11,15 +10,10 @@ import {
 import { createSchema } from '@skyslit/ark-frontend/build/dynamics-v2';
 import "./PropertyEditor.scss"
 import type { TabsProps } from 'antd';
-import { useParams, useHistory } from "react-router-dom";
 
 
 export const SettingsSchema = createSchema({
     orgName: "",
-    shopLogoPath: "",
-    shopAddress: "",
-    description: "",
-    availableSlots: [""],
 })
 
 
@@ -54,33 +48,19 @@ export function SettingsRenderer() {
     const UserInformationOfTenants = ((props) => {
         const { use } = useArkReactServices();
         const { useService, useTableService } = use(Frontend);
-        const file = useFile();
-        const picker = useCatalogueItemPicker();
-        const params = useParams();
-        const groupId = (params as any).id;
 
-        const [isRemoveModalOpen, setIsRemoveModalOpen] = React.useState(false);
-        const [idToDelete, setIdToDelete] = React.useState("")
         const [failedToAddStudent, setFailedToAddStudent] = React.useState(false);
         const [addStudentModalOpen, setIsAddStudentModalOpen] = React.useState(false);
-        const [tenantId, setTenantId] = React.useState("");
-        const [nameValue, setNameValue] = React.useState("");
-        const [emailValue, setEmailValue] = React.useState("");
-        const [passwordValue, setPasswordValue] = React.useState('')
-        const [confirmPasswordValue, setConfirmPasswordValue] = React.useState('');
 
-
-        const removeMemberService = useService({ serviceId: "remove-user-service" });
+        const removeUserOfTenantService = useService({ serviceId: "remove-user-of-tenant-service" });
         const addExistingStudentService = useService({ serviceId: "cross-check-email-service" });
-        const addUserService = useService({ serviceId: "add-user-service" });
-        const availabilityCheckService = useService({ serviceId: "availability-check-of-tenantId" });
+        const addUserOfTenantService = useService({ serviceId: "add-user-of-tenant-service" });
 
         const [userForm] = Form.useForm();
 
         const toggleAddStudentModal = () => {
             setIsAddStudentModalOpen(!addStudentModalOpen)
         }
-
 
         const menu = (userId) => (
             <Menu >
@@ -96,13 +76,12 @@ export function SettingsRenderer() {
                         closable: true,
                         cancelText: "Cancel",
                         onOk: () => {
-                            removeMemberService.invoke(
+                            removeUserOfTenantService.invoke(
                                 {
                                     userId
                                 },
                                 { force: true })
                                 .then((res) => {
-                                    message.success("Member removed!")
                                     listUsersOfTenant.onChange();
                                 })
                                 .catch(() => {
@@ -115,8 +94,8 @@ export function SettingsRenderer() {
                 </Menu.Item>
             </Menu>
         );
-    
-    
+
+
         const columns = [
             {
                 title: 'Sl. No',
@@ -149,22 +128,13 @@ export function SettingsRenderer() {
                 )
             },
         ];
-    
+
         const listUsersOfTenant = useTableService({
-            serviceId: "list-users-of-tenants-table-service",
+            serviceId: "list-users-of-tenant-table-service",
             columns,
             defaultPageSize: 10,
             disableSelect: true,
         });
-
-
-        const handleFormSubmit = (values: any) => {
-            if (addExistingStudentService.err) {
-                addStudent(values);
-            } else {
-                addExistingStudent(values);
-            }
-        };
 
         const addExistingStudent = (data) => {
             addExistingStudentService.invoke({
@@ -176,12 +146,16 @@ export function SettingsRenderer() {
                     userForm.resetFields()
                     listUsersOfTenant.onChange();
                 })
-                .catch(() => {
-                    setFailedToAddStudent(true);
+                .catch((e) => {
+                    if (e.message === "Email doesn't exist") {
+                        setFailedToAddStudent(true);
+                    }
+                    message.error(e.message)
                 })
         }
+
         const addStudent = (data) => {
-            addUserService.invoke({
+            addUserOfTenantService.invoke({
                 name: data.name,
                 email: data.email,
                 password: data.password
@@ -194,26 +168,15 @@ export function SettingsRenderer() {
                 })
                 .catch(() => {
                 })
-
-        }
-        const availabilityCheck = () => {
-            availabilityCheckService.invoke({
-                tenantId: tenantId
-            }, { force: true })
-                .then((res) => {
-
-                })
-                .catch(() => {
-
-                })
         }
 
-        React.useEffect(() => {
-            if (tenantId) {
-                availabilityCheck();
+        const handleFormSubmit = React.useCallback((values: any) => {
+            if (addExistingStudentService.err?.message === "Email doesn't exist") {
+                addStudent(values);
+            } else {
+                addExistingStudent(values);
             }
-        }, [tenantId])
-
+        }, [addExistingStudentService.isLoading]);
 
 
         return (
@@ -243,25 +206,27 @@ export function SettingsRenderer() {
                     </div>
                 </Col>
 
-                <Modal className="add-user-modal" title="Add User" centered open={addStudentModalOpen} onCancel={toggleAddStudentModal}
+                <Modal className="add-user-of-tenant-modal" title="Add User" centered open={addStudentModalOpen} onCancel={toggleAddStudentModal}
                     footer={[
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }} >
-                            <Button type="default" className="cancel-btn" onClick={toggleAddStudentModal}
-                                style={{ borderRadius: "4px" }}>
+                            <Button type="default" className="cancel-btn" onClick={toggleAddStudentModal}>
                                 Cancel
                             </Button>
-                            <Button type="primary"
+                            <Button type="text"
                                 className="update-btn"
                                 form="create"
                                 htmlType="submit"
                                 key="submit"
-                                style={{ borderRadius: "4px" }}
-                                // disabled={
-                                //     (!failedToAddStudent && (!nameValue || !emailValue)) ||
-                                //     (failedToAddStudent && (!passwordValue || passwordValue !== confirmPasswordValue))
-                                // }
+                                disabled={addUserOfTenantService.isLoading}
                             >
-                                Add
+                                {addUserOfTenantService.isLoading === true ? (
+                                    <>
+                                        <LoadingOutlined style={{ marginRight: 5 }} />
+                                        Adding...
+                                    </>
+                                ) : (
+                                    "Add"
+                                )}
                             </Button>
                         </div>
                     ]}
@@ -271,10 +236,9 @@ export function SettingsRenderer() {
                             name="create"
                             form={userForm}
                             onFinish={handleFormSubmit}
-                            className="add-user-form-wrapper"
                         >
                             <Form.Item
-                             label={<span style={{ fontSize: "14px", fontWeight: "600"}}>Name</span>}
+                                label={<span style={{ fontSize: "14px", fontWeight: "600" }}>Name</span>}
                                 name="name"
                                 rules={[
                                     {
@@ -283,11 +247,11 @@ export function SettingsRenderer() {
                                     },
                                 ]}
                             >
-                                <Input className="title-input" style={{ width: "70%", borderRadius: "4px" }} placeholder="Enter full name" />
+                                <Input className="title-input" style={{ borderRadius: "4px" }} placeholder="Enter full name" />
                             </Form.Item>
                             <Form.Item
                                 name="email"
-                                label={<span style={{ fontSize: "14px", fontWeight: "600"}}>Email</span>}
+                                label={<span style={{ fontSize: "14px", fontWeight: "600" }}>Email</span>}
                                 rules={[
                                     {
                                         required: true,
@@ -296,13 +260,13 @@ export function SettingsRenderer() {
                                     },
                                 ]}
                             >
-                                    <Input style={{ width: "70%", borderRadius: "4px" }} placeholder="Enter User mail ID" />
+                                <Input disabled={failedToAddStudent} style={{ borderRadius: "4px" }} placeholder="Enter User mail ID" />
                             </Form.Item>
                             {failedToAddStudent ? (
                                 <>
                                     <Form.Item
                                         name="password"
-                                        label={<span style={{ fontSize: "14px", fontWeight: "600"}}>Password</span>}
+                                        label={<span style={{ fontSize: "14px", fontWeight: "600" }}>Password</span>}
                                         rules={[
                                             { required: true, message: "Please input your password!" },
                                             {
@@ -312,14 +276,14 @@ export function SettingsRenderer() {
                                         ]}
                                         hasFeedback
                                     >
-                                            <Input.Password
-                                                style={{ width: "70%", borderRadius: "4px" }}
-                                                className="input-modal-div" placeholder="Enter a strong password" />
+                                        <Input.Password
+                                            style={{ borderRadius: "4px" }}
+                                            placeholder="Enter a strong password" />
                                     </Form.Item>
                                     <Form.Item
                                         name="confirmPassword"
                                         dependencies={['password']}
-                                        label={<span style={{ fontSize: "14px", fontWeight: "600"}}>Confirm Password</span>}
+                                        label={<span style={{ fontSize: "14px", fontWeight: "600" }}>Confirm Password</span>}
                                         hasFeedback
                                         rules={[
                                             { required: true, message: "Confirm new password" },
@@ -333,9 +297,9 @@ export function SettingsRenderer() {
                                             }),
                                         ]}
                                     >
-                                            <Input.Password
-                                                style={{ width: "70%", borderRadius: "4px" }}
-                                                className="input-modal-div" placeholder="Confirm Password" />
+                                        <Input.Password
+                                            style={{ borderRadius: "4px" }}
+                                            placeholder="Confirm Password" />
                                     </Form.Item>
                                 </>
                             ) : null}
