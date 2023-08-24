@@ -49,17 +49,17 @@ export function SettingsRenderer() {
         const { use } = useArkReactServices();
         const { useService, useTableService } = use(Frontend);
 
-        const [failedToAddStudent, setFailedToAddStudent] = React.useState(false);
-        const [addStudentModalOpen, setIsAddStudentModalOpen] = React.useState(false);
+        const [failedToAddUserOfTenant, setFailedToAddUserOfTenant] = React.useState(false);
+        const [addUserOfTenantModalOpen, setIsAddUserOfTenantModalOpen] = React.useState(false);
 
         const removeUserOfTenantService = useService({ serviceId: "remove-user-of-tenant-service" });
-        const addExistingStudentService = useService({ serviceId: "cross-check-email-service" });
+        const addExistingUserOfTenantService = useService({ serviceId: "cross-check-email-service" });
         const addUserOfTenantService = useService({ serviceId: "add-user-of-tenant-service" });
 
         const [userForm] = Form.useForm();
 
-        const toggleAddStudentModal = () => {
-            setIsAddStudentModalOpen(!addStudentModalOpen)
+        const toggleAddUserOfTenantModal = () => {
+            setIsAddUserOfTenantModalOpen(!addUserOfTenantModalOpen)
         }
 
         const menu = (userId) => (
@@ -136,47 +136,48 @@ export function SettingsRenderer() {
             disableSelect: true,
         });
 
-        const addExistingStudent = (data) => {
-            addExistingStudentService.invoke({
+        const addExistingUser = (data) => {
+            addExistingUserOfTenantService.invoke({
                 name: data.name,
                 email: data.email,
             }, { force: true })
                 .then((res) => {
-                    toggleAddStudentModal();
+                    toggleAddUserOfTenantModal();
                     userForm.resetFields()
                     listUsersOfTenant.onChange();
                 })
                 .catch((e) => {
                     if (e.message === "Email doesn't exist") {
-                        setFailedToAddStudent(true);
+                        setFailedToAddUserOfTenant(true);
+                    } else {
+                        message.error(e.message)
                     }
-                    message.error(e.message)
                 })
         }
 
-        const addStudent = (data) => {
+        const addUserOfTenant = (data) => {
             addUserOfTenantService.invoke({
                 name: data.name,
                 email: data.email,
                 password: data.password
             }, { force: true })
                 .then((res) => {
-                    toggleAddStudentModal();
+                    toggleAddUserOfTenantModal();
                     userForm.resetFields()
                     listUsersOfTenant.onChange();
-                    setFailedToAddStudent(false);
+                    setFailedToAddUserOfTenant(false);
                 })
                 .catch(() => {
                 })
         }
 
         const handleFormSubmit = React.useCallback((values: any) => {
-            if (addExistingStudentService.err?.message === "Email doesn't exist") {
-                addStudent(values);
+            if (addExistingUserOfTenantService.err?.message === "Email doesn't exist") {
+                addUserOfTenant(values);
             } else {
-                addExistingStudent(values);
+                addExistingUser(values);
             }
-        }, [addExistingStudentService.isLoading]);
+        }, [addExistingUserOfTenantService.isLoading]);
 
 
         return (
@@ -189,7 +190,7 @@ export function SettingsRenderer() {
                                 <span className="heading-text">Users</span>
                             </div>
                             <div className="heading-button-wrapper" >
-                                <Button className="top-add-btn" type="text" onClick={toggleAddStudentModal}>
+                                <Button className="top-add-btn" type="text" onClick={toggleAddUserOfTenantModal}>
                                     Add
                                 </Button>
                             </div>
@@ -206,10 +207,10 @@ export function SettingsRenderer() {
                     </div>
                 </Col>
 
-                <Modal className="add-user-of-tenant-modal" title="Add User" centered open={addStudentModalOpen} onCancel={toggleAddStudentModal}
+                <Modal className="add-user-of-tenant-modal" title="Add User" centered open={addUserOfTenantModalOpen} onCancel={toggleAddUserOfTenantModal}
                     footer={[
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }} >
-                            <Button type="default" className="cancel-btn" onClick={toggleAddStudentModal}>
+                            <Button type="default" className="cancel-btn" onClick={toggleAddUserOfTenantModal}>
                                 Cancel
                             </Button>
                             <Button type="text"
@@ -260,9 +261,9 @@ export function SettingsRenderer() {
                                     },
                                 ]}
                             >
-                                <Input disabled={failedToAddStudent} style={{ borderRadius: "4px" }} placeholder="Enter User mail ID" />
+                                <Input disabled={failedToAddUserOfTenant} style={{ borderRadius: "4px" }} placeholder="Enter User mail ID" />
                             </Form.Item>
-                            {failedToAddStudent ? (
+                            {failedToAddUserOfTenant ? (
                                 <>
                                     <Form.Item
                                         name="password"
