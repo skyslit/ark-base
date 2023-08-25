@@ -7,7 +7,6 @@ export default defineService('cross-check-email-service', (props) => {
     const AssignmentModel = useModel('member-assignment');
 
     props.defineRule((props) => {
-        props.allowPolicy('SUPER_ADMIN');
         props.allowPolicy('ADMIN');
     });
 

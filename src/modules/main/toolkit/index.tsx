@@ -19,7 +19,7 @@ import {
 } from "./views/dashboard/index";
 import dashboard from "./views/dashboard/dashboard-controller";
 import { PropertyRenderer, PropertySchema } from "../PropertyEditor";
-import { SettingsRenderer, SettingsSchema } from "../SettingsEditor";
+import { SettingsRenderer, SettingsSchema } from "../settingsEditor";
 
 import BinaryView from "./views/data-explorer/components/binary-view"
 import { BinaryFileIcon } from "../toolkit/views/data-explorer/icons/global-icons"
