@@ -48,7 +48,6 @@ export function PropertyRenderer() {
 
         const { use } = useArkReactServices();
         const { useService, useTableService } = use(Frontend);
-        const [isTenantIdAvailable, setIsTenantIdAvailable] = React.useState(false);
         const [tenantId, setTenantId] = React.useState("");
         const [isUserModalOpen, setIsUserModalOpen] = React.useState(false);
 
@@ -195,7 +194,6 @@ export function PropertyRenderer() {
                     setIsUserModalOpen(false);
                     tenantForm.resetFields()
                     listTenants.onChange();
-                    setIsTenantIdAvailable(false)
                 })
                 .catch((e) => {
                 })
@@ -295,6 +293,7 @@ export function PropertyRenderer() {
                                 <label style={{ fontSize: 12 }}>Tenant ID</label>
                                 <Input
                                     onChange={(e) => { setTenantId(e.target.value) }}
+                                    value={tenantId}
                                     className="title-input"
                                     style={{ marginTop: 7 }}
                                     placeholder="Enter organisation name"
@@ -331,7 +330,7 @@ export function PropertyRenderer() {
                         }}>
                             <Form.Item
                             >
-                                <Button className="create-btn" htmlType="submit" disabled={addTenantService.isLoading || availabilityCheckService?.response?.data === false && isTenantIdAvailable || tenantId === ""}>
+                                <Button className="create-btn" htmlType="submit" disabled={addTenantService.isLoading || availabilityCheckService?.response?.data === false || tenantId === ""}>
                                     {addTenantService.isLoading === true ? (
                                         <>
                                             <LoadingOutlined style={{ marginRight: 5 }} />
