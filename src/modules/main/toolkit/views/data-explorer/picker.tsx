@@ -22,7 +22,8 @@ function Picker(props: any) {
       <div className="homepage-wrapper" style={{ width: "100%", height: 465 }}>
         <Catalogue
           style={{ height: "100%" }}
-          namespace="default"
+          namespace={picker?.pickerOption?.namespace}
+          initialPath={picker?.pickerOption?.initialPath}
           meta={{ mode: "picker" }}
         />
       </div>
