@@ -454,6 +454,21 @@
             height: 100%;
         }
     }
+
+    .content-wrapper-for-list-view {
+        background: white;
+
+        .ant-layout-content {
+            padding: 25px 0px;
+        }
+
+        .list-folder-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            overflow: auto;
+            height: 100%;
+        }
+    }
 }
 
 .hamburger-drawer-whole-wrapper {

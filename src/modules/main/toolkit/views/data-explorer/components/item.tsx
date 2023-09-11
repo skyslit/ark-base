@@ -22,6 +22,7 @@ import {
 } from "@skyslit/ark-frontend/build/dynamics-v2";
 import { CustomType } from "@skyslit/ark-frontend/build/dynamics-v2/core/controller";
 import { EnterOutlined, PlusOutlined } from "@ant-design/icons";
+import { ViewAsContext } from "../../../base";
 
 const { TabPane } = Tabs;
 
@@ -254,6 +255,9 @@ export default (props: any) => {
   const [renameSource, setRenameSource] = React.useState(false);
   const [isRenaming, setIsRenaming] = React.useState(false);
 
+  const selectedView = React.useContext(ViewAsContext)
+
+
   const handleOpenModal = () => {
     setModalVisible(true);
   };
@@ -393,8 +397,10 @@ export default (props: any) => {
             props.onDoubleClick && props.onDoubleClick(fullPath);
           }}
           onClick={props.onClick}
-          className={`folder-wrapper ${contextMenuVisible || renameMode ? "menu-visible" : ""
-            } ${selected === true ? "selected" : ""}`}
+          // className={`folder-wrapper-for-list-view ${contextMenuVisible || renameMode ? "menu-visible" : ""
+          //   } ${selected === true ? "selected" : ""}`}
+          className={`${selectedView === "list" ? "folder-wrapper-for-list-view" : "folder-wrapper"}  ${contextMenuVisible || renameMode ? "menu-visible" : ""
+            } ${selected === true ? "selected" : ""} `}
           style={{
             transform: renameMode ? "translateY(-16px)" : undefined,
             position: "relative",
@@ -406,16 +412,10 @@ export default (props: any) => {
             </div>
           ) : null}
           <div
-            style={{
-              width: 100,
-              height: 100,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+            className="item-wrapper">
             <Icon
-              style={{ fontSize: 100, width: 100, height: 100 }}
+              className="folder-icon"
+              // style={{ fontSize: 100, width: 100, height: 100 }}
               item={item}
             />
           </div>

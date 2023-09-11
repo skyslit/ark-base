@@ -14,9 +14,52 @@
     background: #f5f5f5;
   }
 
-  .folder-icon {
-    font-size: 90px;
+  .item-wrapper {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .folder-icon {
+      font-size: 100px;
+      width: 100px;
+      height: 100px;
+    }
   }
+}
+
+.folder-wrapper-for-list-view {
+  padding: 12px 50px;
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+  user-select: none;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+
+  &.selected,
+  &.menu-visible,
+  &:hover,
+  &:active {
+    background: #f5f5f5;
+  }
+
+  .item-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .folder-icon {
+      // font-size: 100px;
+      // width: 100px;
+      // height: 100px;
+      font-size: 29px;
+    }
+  }
+
+
 }
 
 .menu-btn {
@@ -34,6 +77,7 @@
 
   .homepage-wrapper {
     height: 100%;
+
     .ant-layout.ant-layout-has-sider {
       flex-direction: row !important;
     }
