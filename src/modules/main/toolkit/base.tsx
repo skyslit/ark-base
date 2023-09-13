@@ -194,10 +194,18 @@ export function Renderer() {
   const [newFolderModal, setNewFolderModal] = React.useState<boolean>(false);
   const [newFolderName, setnewFolderName] = React.useState("");
   const [selectedNewType, setSelectedNewType] = React.useState(null);
-  const [selectedView, setSelectedView] = React.useState("grid");
+  const [selectedView, setSelectedView] = React.useState(
+    window.localStorage.getItem("selectedView")
+  );
 
   const api = useCatalogue();
   const picker = useCatalogueItemPicker();
+
+  const handleSelectView = (value) => {
+    setSelectedView(value);
+    localStorage.setItem('selectedView', value);
+  };
+
 
   React.useEffect(() => {
     setnewFolderName("");
@@ -366,7 +374,8 @@ export function Renderer() {
 
             <Col>
               <span style={{ fontSize: 13, color: "#2C2C2C", marginRight: 10 }}>View as:</span>
-              <Select value={selectedView} style={{ width: 108 }} onChange={(e) => setSelectedView(e)} className="view-type-select"
+              <Select value={selectedView} style={{ width: 108 }} className="view-type-select"
+                onChange={handleSelectView}
                 suffixIcon={<DownArrowOutlined style={{ color: "#000000" }} />}
               >
                 <Option value="grid">
@@ -478,6 +487,14 @@ export function Renderer() {
         </Header>
         <Layout className={selectedView === "grid" ? "content-wrapper" : "content-wrapper-for-list-view"} style={{ flex: 1 }}>
           <Content>
+            <div className="content-header-for-list-view">
+              <div style={{ minWidth: 300 }}>
+                <span style={{color: "#121212", fontSize:13, fontFamily:"Almarose-Semibold"}}>Item</span>
+              </div>
+              <div>
+              <span style={{color: "#121212", fontSize:13, fontFamily:"Almarose-Semibold"}}>Type</span>
+              </div>
+            </div>
             <div className="list-folder-wrapper">
               <api.namespaceUI.ItemGrid />
             </div>
