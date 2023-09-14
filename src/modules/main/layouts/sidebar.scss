@@ -1,5 +1,4 @@
 .homepage-wrapper {
-
     .sider-wrapper {
         flex: 0 0 264px !important;
         max-width: 264px !important;
@@ -338,6 +337,36 @@
             }
         }
 
+        .dropdown-section {
+            display: flex;
+            align-items: center;
+
+            h4 {
+                color: #5A5A5A;
+                font-size: 13px;
+                margin: unset;
+            }
+
+            Button {
+                font-size: 13px;
+                color: #343434;
+                font-weight: 900;
+            }
+            .sltd-tenant-btn {
+                background: transparent linear-gradient(180deg, #9A2BF8 0%, #7A22C6 100%) 0% 0% no-repeat padding-box;
+                color: #FFFFFF;
+                font-size: 13px;
+                border-radius: 5px !important;
+                padding: 10px !important;
+                display: flex;
+                align-items: center;
+                .selected-tenant-txt{
+                    color: white;
+                    margin-right: 12px;
+                }
+            }
+        }
+
         .username-signout-btn-wrapper {
             align-items: center;
             display: flex;
@@ -453,6 +482,45 @@
             overflow: auto;
             height: 100%;
         }
+    }
+}
+
+.list-tenant-dropdown {
+    background: white;
+    width: 358px;
+    box-shadow: 0px 3px 6px #00000029;
+    border-radius: 4px;
+
+    Input {
+        width: 274px;
+
+        .ant-input:placeholder-shown {
+            font-size: 12px;
+            color: #00000040;
+        }
+    }
+    .each-name-wrapper {
+        height: 47px;
+        padding: 13px 24px;
+        font-size: 13px;
+        border-bottom: 1px solid #EAEAEA;
+
+        &:last-child {
+            border: unset;
+        }
+
+        &:hover {
+            background-color: #F8F8F8;
+            cursor: pointer;
+        }
+    }
+
+    .empty-tenant-wrapper {
+        display: flex;
+        background-color: white;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
     }
 }
 

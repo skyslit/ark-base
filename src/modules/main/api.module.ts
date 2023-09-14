@@ -43,6 +43,11 @@ import ListAllTenants from "../auth/services/list-all-tenants-table.service";
 import ListUsersOfTenant from "../auth/services/list-users-of-tenant-table.service";
 import AddUserOfTenant from "../auth/services/add-user-of-tenant.service";
 import RemoveUserOfTenant from "../auth/services/remove-user-of-tenant.service";
+import GetAllAccountsWithTenantId from "../auth/services/get-all-accounts-with-tenantId.service";
+import AddNewTenant from "../auth/services/add-new-tenant.service";
+import CreateNewUser from "../auth/services/create-new-user.service";
+import ListTenants from "../auth/services/list-tenants.service";
+
 
 
 import createS3Volume from "./toolkit/providers/s3-volume";
@@ -95,7 +100,10 @@ export default createModule(({ use, run }) => {
   useService(ListUsersOfTenant);
   useService(AddUserOfTenant);
   useService(RemoveUserOfTenant);
-
+  useService(GetAllAccountsWithTenantId);
+  useService(AddNewTenant);
+  useService(CreateNewUser);
+  useService(ListTenants);
 
   if (useEnv("AWS_ACCESS_KEY_ID")) {
     useVolume(
