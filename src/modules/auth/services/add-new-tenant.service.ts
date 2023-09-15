@@ -13,26 +13,33 @@ export default defineService("add-new-tenant", (props) => {
     });
 
     props.defineLogic(async (props) => {
-        let newUser: any = null;
-        let member: any = null;
         let tenantGroup: any = null;
 
         const { tenantId } = props.args.input;
         const tenantSlug = (tenantId) => {
             return encodeURIComponent(
-              String(tenantId)
-                .replace(/\W+(?!$)/g, "_")
-                .toUpperCase()
-                .replace(/\W$/, "")
+                String(tenantId)
+                    .replace(/\W+(?!$)/g, "_")
+                    .toUpperCase()
+                    .replace(/\W$/, "")
             );
-          };
-      
+        };
 
         const newTenant = tenantSlug(tenantId);
         await new Promise(async (operationComplete, error) => {
             addItem('default', `/`, "Tenants", 'folder', {}, {}, undefined, undefined, 'supress')
                 .then(() => {
-                    addItem('default', `/tenants`, newTenant, 'folder', {}, {}, undefined, undefined, 'supress')
+                    addItem('default', `/tenants`, newTenant, 'folder', {}, {}, undefined, undefined, 'supress').then(() => {
+                        addItem('default', `/tenants/${newTenant.toLowerCase()}`, "global", 'folder', {}, {}, undefined, undefined, 'supress').then(() => {
+                            addItem('default', `/tenants/${newTenant.toLowerCase()}/global`, "dashboards", 'folder', {}, {}, undefined, undefined, 'supress').then(() => {
+                                addItem('default', `/tenants/${newTenant.toLowerCase()}/global/dashboards`, "default", 'dashboard', {}, {}, undefined, undefined, 'supress').then(()=>{
+                                    addItem('default', `/tenants/${newTenant.toLowerCase()}`, "users", 'folder', {}, {}, undefined, undefined, 'supress').then(()=>{
+                                        addItem('default', `/tenants/${newTenant.toLowerCase()}/users`, "dashboards", 'folder', {}, {}, undefined, undefined, 'supress')
+                                    })
+                                })
+                            })
+                        })
+                    })
                 })
             tenantGroup = new GroupModel({
                 groupTitle: `TENANT_${newTenant}`,
@@ -42,6 +49,6 @@ export default defineService("add-new-tenant", (props) => {
             await tenantGroup.save();
             operationComplete(true)
         });
-        return props.success({ message: "Tenant Added Successfully" },[tenantGroup]);
+        return props.success({ message: "Tenant Added Successfully" }, [tenantGroup]);
     });
 });

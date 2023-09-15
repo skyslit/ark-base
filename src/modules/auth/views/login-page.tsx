@@ -50,6 +50,7 @@ export default createComponent((props) => {
         if (res?.meta?.redirectUri) {
           window.location.replace(res?.meta?.redirectUri);
         } else {
+          localStorage.removeItem('selectedTenant');
           context.invoke({}, { force: true });
           // history.push("/account/settings")
         }

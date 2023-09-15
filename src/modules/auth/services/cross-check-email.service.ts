@@ -6,9 +6,9 @@ export default defineService('cross-check-email-service', (props) => {
     const GroupModel = useModel('group');
     const AssignmentModel = useModel('member-assignment');
 
-    props.defineRule((props) => {
-        props.allowPolicy('ADMIN');
-    });
+    // props.defineRule((props) => {
+    //     props.allowPolicy('ADMIN');
+    // });
 
     props.defineLogic(async (props) => {
         let userEmail: any = null;

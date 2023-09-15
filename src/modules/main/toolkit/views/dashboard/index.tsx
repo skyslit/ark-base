@@ -52,6 +52,8 @@ import {
   Frontend,
   useArkReactServices,
 } from "@skyslit/ark-frontend";
+import { useHistory, useParams } from "react-router-dom";
+
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -1297,18 +1299,18 @@ export function DashboardCore(props: ExplorerPropType) {
   }
 
   return (
-    <ExplorerContext.Provider value={context}>
-      <DashboardControlPane.Provider value={controlPane}>
-        <div ref={wrapperRef} className="atlas-explorer">
-          <OnMountCallback onMount={setHasMounted} />
-          {wrapperWidth > 0 ? (
-            <>
-              <div>
-                <Row justify="space-between">
-                  <Col></Col>
-                  <Col>
-                    <Space>
-                      {/* <Popover
+      <ExplorerContext.Provider value={context}>
+        <DashboardControlPane.Provider value={controlPane}>
+          <div ref={wrapperRef} className="atlas-explorer">
+            <OnMountCallback onMount={setHasMounted} />
+            {wrapperWidth > 0 ? (
+              <>
+                <div>
+                  <Row justify="space-between">
+                    <Col></Col>
+                    <Col>
+                      <Space>
+                        {/* <Popover
                         overlayStyle={{ width: '650px' }}
                         placement="bottomLeft"
                         overlayInnerStyle={{ padding: '0px 0px' }}
@@ -1330,60 +1332,60 @@ export function DashboardCore(props: ExplorerPropType) {
                           </Tooltip>
                         </Badge>
                       </Popover> */}
-                      {
-                        mode === 'editor' ? (
-                          <Tooltip placement="topLeft" title="Add widget">
-                            <Button
-                              icon={<PlusOutlined />}
-                              type="ghost"
-                              onClick={showGallery}
-                            />
-                          </Tooltip>
-                        ) : null
-                      }
-                    </Space>
-                  </Col>
-                </Row>
+                        {
+                          mode === 'editor' ? (
+                            <Tooltip placement="topLeft" title="Add widget">
+                              <Button
+                                icon={<PlusOutlined />}
+                                type="ghost"
+                                onClick={showGallery}
+                              />
+                            </Tooltip>
+                          ) : null
+                        }
+                      </Space>
+                    </Col>
+                  </Row>
+                </div>
+                <GridController
+                  layout={layoutData}
+                  width={wrapperWidth}
+                  isDraggable={mode === 'editor'}
+                  isResizable={mode === 'editor'}
+                  onLayoutChange={(l, allLayouts) => {
+                    saveLayout(allLayouts, widgets);
+                  }}
+                >
+                  {processedWidgets.map((w) => {
+                    return (
+                      <div key={w.id} data-grid={w.layout}>
+                        <WidgetContainer
+                          contentConfiguration={w}
+                          savePreferencesToCloud={savePreferencesToCloud}
+                          onRemove={controlPane.removeWidget}
+                        />
+                      </div>
+                    );
+                  })}
+                </GridController>
+              </>
+            ) : (
+              <div style={{ marginLeft: 24, marginRight: 24 }}>
+                <p>Starting up...</p>
               </div>
-              <GridController
-                layout={layoutData}
-                width={wrapperWidth}
-                isDraggable={mode === 'editor'}
-                isResizable={mode === 'editor'}
-                onLayoutChange={(l, allLayouts) => {
-                  saveLayout(allLayouts, widgets);
-                }}
-              >
-                {processedWidgets.map((w) => {
-                  return (
-                    <div key={w.id} data-grid={w.layout}>
-                      <WidgetContainer
-                        contentConfiguration={w}
-                        savePreferencesToCloud={savePreferencesToCloud}
-                        onRemove={controlPane.removeWidget}
-                      />
-                    </div>
-                  );
-                })}
-              </GridController>
-            </>
-          ) : (
-            <div style={{ marginLeft: 24, marginRight: 24 }}>
-              <p>Starting up...</p>
-            </div>
-          )}
-        </div>
-        <Drawer
-          width={1200}
-          title="Widget Gallery"
-          visible={galleryVisible}
-          onClose={hideGallery}
-          footer={null}
-        >
-          <GallerV2 />
-        </Drawer>
-      </DashboardControlPane.Provider>
-    </ExplorerContext.Provider>
+            )}
+          </div>
+          <Drawer
+            width={1200}
+            title="Widget Gallery"
+            visible={galleryVisible}
+            onClose={hideGallery}
+            footer={null}
+          >
+            <GallerV2 />
+          </Drawer>
+        </DashboardControlPane.Provider>
+      </ExplorerContext.Provider>
   );
 }
 

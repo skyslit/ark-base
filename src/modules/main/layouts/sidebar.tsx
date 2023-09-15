@@ -4,8 +4,8 @@ import {
   Catalogue,
   useCataloguePath,
 } from "@skyslit/ark-frontend/build/dynamics-v2";
-import { Layout, Divider, Button, message, Modal, Drawer, Dropdown, Input, Form, Radio, Typography } from "antd";
-import { CloseOutlined, DownOutlined, EnterOutlined, LogoutOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
+import { Layout, Divider, Button, message, Modal, Drawer, Dropdown, Input, Form, Radio, Typography, Popover, Menu, Popconfirm } from "antd";
+import { CloseOutlined, DeleteOutlined, DownOutlined, EnterOutlined, LogoutOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
 import "../layouts/sidebar.scss";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import {
@@ -30,7 +30,7 @@ const SiderLayout = createComponent((props) => {
   const location = useLocation();
   const context = useContext();
   const history = useHistory()
-  const { usePath, readFile } = useFolder();
+  const { usePath, readFile, createItem, deleteMany } = useFolder();
 
   const [organisationDetails, setOrganisationDetails] = React.useState(orgDetails);
   const [isUserModalOpen, setIsUserModalOpen] = React.useState(false);
@@ -41,8 +41,9 @@ const SiderLayout = createComponent((props) => {
   const [email, setEmail] = React.useState("")
   const [isUserAvailable, setIsUserAvailable] = React.useState(true)
   const [allTenants, setAllTenants] = React.useState([])
-
-
+  const [isEmailAlreadyExists, setIsEmailAlreadyExists] = React.useState(false)
+  const [isAddDashboardModalOpen, setIsAddDashboardModalOpen] = React.useState(false)
+  const [newDashboardName, setNewDashboardName] = React.useState('')
 
   const showAddUserModal = () => {
     setIsUserModalOpen(true);
@@ -56,8 +57,19 @@ const SiderLayout = createComponent((props) => {
     setIsTenantModalOpen(!isTenantModalOpen)
   }
 
+  const handleAddDashboardModal = () => {
+    setIsAddDashboardModalOpen(!isAddDashboardModalOpen)
+  }
+
   const [tenantForm] = Form.useForm();
 
+  const selectedTenant = React.useMemo(() => {
+    if (localStorage.getItem('selectedTenant')) {
+      return localStorage.getItem('selectedTenant')?.toUpperCase();
+    } else {
+      return null
+    }
+  }, [])
 
   const emailAddress = context?.response?.meta?.currentUser?.emailAddress;
   const emailSlug = React.useMemo(() => {
@@ -76,6 +88,23 @@ const SiderLayout = createComponent((props) => {
       useRedux: true,
     }
   );
+
+  const dashBoardPath = React.useMemo(() => {
+    if (selectedTenant) {
+      return `/tenants/${selectedTenant?.toLowerCase()}/global/dashboards`
+    } else {
+      return `/dashboards`
+    }
+  }, [selectedTenant])
+
+  const tenantDashboardItems = usePath(
+    "tenant-dashboard-items-ref",
+    dashBoardPath,
+    {
+      useRedux: true,
+    }
+  );
+
 
   const systemDashboardItems = usePath(
     "system-dashboard-items-ref",
@@ -155,15 +184,19 @@ const SiderLayout = createComponent((props) => {
     listAllTenantsService
       .invoke()
       .then((res) => {
-        setAllTenants(res.data)
+        if (res.data) {
+          setAllTenants(res.data)
+        } else {
+          setAllTenants([])
+        }
       })
       .catch((e) => {
       })
   };
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     listAllTenants()
-  },[])
+  }, [])
 
 
   const addNewUserToTenant = (data) => {
@@ -175,12 +208,19 @@ const SiderLayout = createComponent((props) => {
       isNewUser
     }, { force: true })
       .then((res) => {
+        localStorage.setItem('selectedTenant', tenantId);
         handleTenantModal()
-        window.location.href = "/"
+        window.location.href = `/app/viewport/tenants/${tenantId.toLowerCase()}/global/dashboards/default`
       })
       .catch((e) => {
         if (e.message === "Cannot find user with the provided email") {
           setIsUserAvailable(false)
+        } else {
+          message.error({
+            content: 'Email already in use!',
+            zIndex: 10002,
+          });
+          setIsEmailAlreadyExists(true)
         }
       })
   }
@@ -272,30 +312,37 @@ const SiderLayout = createComponent((props) => {
 
   const navigateTenant = React.useCallback((tenantId, path) => {
     localStorage.setItem('selectedTenant', tenantId);
-    window.location.href = '/app/files' + path
+    window.location.href = `/app/viewport${path}/global/dashboards/default`
   }, [])
 
   const exitTenant = React.useCallback(() => {
     localStorage.removeItem('selectedTenant');
-    window.location.href = '/app/files'
+    window.location.href = '/app/files/dashboards/default'
   }, [])
 
-  const selectedTenant = React.useMemo(() => {
-    if (localStorage.getItem('selectedTenant')) {
-      return localStorage.getItem('selectedTenant')?.toUpperCase();
-    } else {
-      return null
+  React.useEffect(() => {
+    if (!isUserSuperAdmin && !selectedTenant && allTenants.length > 0) {
+      localStorage.setItem('selectedTenant', allTenants[0]?.slug);
+      // window.location.href = "/app/files/tenants/" + allTenants[0]?.slug
+      window.location.href = `/app/viewport/tenants/${allTenants[0]?.slug}/global/dashboards/default`
     }
-  }, [])
+  }, [selectedTenant, isUserSuperAdmin, allTenants])
 
-const isSuperAdmin = context?.response?.meta?.currentUser?.policies?.includes("SUPER_ADMIN")
+  const navigateToDashboard = React.useMemo(() => {
+    if (selectedTenant) {
+      return `/app/viewport/tenants/${selectedTenant.toLowerCase()}/global/dashboards/default`;
+    } else {
+      return `/app/viewport/dashboards/default`;
+    }
+  }, [selectedTenant, isUserSuperAdmin]);
 
-React.useEffect(()=>{
-  if(!isSuperAdmin && !selectedTenant && allTenants.length > 0){
-    localStorage.setItem('selectedTenant', allTenants[0]?.slug);
-   window.location.href="/app/files/tenants/"+allTenants[0]?.slug
-  }
-},[selectedTenant,isSuperAdmin,allTenants])
+  const addNewDashboard = React.useCallback(() => {
+    createItem(dashBoardPath, `${newDashboardName}`, 'dashboard', {}).then(() => {
+      handleAddDashboardModal()
+      setNewDashboardName('')
+      window.location.reload()
+    })
+  }, [selectedTenant, newDashboardName, dashBoardPath])
 
   const menu = (
     <div>
@@ -308,12 +355,12 @@ React.useEffect(()=>{
         <>
           <div style={{ display: "flex", padding: "25px 16px", paddingBottom: "unset", width: "100%", alignItems: "center" }}>
             <Input
-              placeholder="Enter name"
+              placeholder="Search tenants"
               onChange={(e) => { setSearchInput(e.target.value) }}
             />
-            {isSuperAdmin ?(
-            <AddBtnIcon style={{ fontSize: 35, marginLeft: 13, cursor: "pointer" }} onClick={handleTenantModal} />
-            ):null}
+            {isUserSuperAdmin ? (
+              <AddBtnIcon style={{ fontSize: 35, marginLeft: 13, cursor: "pointer" }} onClick={handleTenantModal} />
+            ) : null}
           </div>
           <div style={{ maxHeight: 300, overflow: "auto" }}>
             {filterNames.length === 0 && searchInput ? (
@@ -328,6 +375,26 @@ React.useEffect(()=>{
       )}
     </div>
   );
+
+  // const dasboardMenu=(path,name) => (
+  //   <Menu>
+  //     <Menu.Item key="rename">
+  //         <div style={{display:"flex"}}>
+  //           <Input
+  //             autoFocus
+  //             type="text"
+  //             style={{marginRight:10}}
+  //           />
+  //           <Button type="primary" >
+  //             Rename
+  //           </Button>
+  //         </div>
+  //     </Menu.Item>
+  //     <Menu.Item key="delete">
+  //       <Button danger>Delete</Button>
+  //     </Menu.Item>
+  //   </Menu>
+  // );
 
   const NewTenant = (
     <div style={{ padding: 30 }}>
@@ -395,8 +462,11 @@ React.useEffect(()=>{
                   },
                 ]}
               >
-                <Input className="title-input" placeholder="johndoe@example.com" />
+                <Input className="title-input" placeholder="johndoe@example.com" onChange={() => { setIsEmailAlreadyExists(false) }} />
               </Form.Item>
+              {isEmailAlreadyExists ? (
+                <div style={{ color: "#fb4040", fontSize: 12, marginTop: 8 }}>Email already exists!</div>
+              ) : null}
               <Form.Item
                 label="Password"
                 name="password"
@@ -446,6 +516,13 @@ React.useEffect(()=>{
     </div>
   )
 
+  const AddDashboardContents = (
+    <div style={{ display: "flex", justifyContent: "center", flexDirection: "column" }}>
+      <Input placeholder="Enter name" onChange={(e) => { setNewDashboardName(e.target.value) }} />
+      <Button type="primary" style={{ marginTop: 10 }} onClick={() => { addNewDashboard() }} disabled={!newDashboardName}>Add</Button>
+    </div>
+  )
+
   let currentState
   switch (modalCurrentState) {
     case "new-tenant":
@@ -475,31 +552,31 @@ React.useEffect(()=>{
               </span>
             </div>
           </div>
-          {!isSuperAdmin && filterNames.length === 0 ? (
+          {!isUserSuperAdmin && filterNames.length === 0 && !searchInput ? (
             null
-          ):(
+          ) : (
             <div className="dropdown-section">
-            <h4 style={{ display: selectedTenant ? "none" : "inline" }}>Viewing:</h4>
-            <Dropdown overlay={menu} trigger={['click']} overlayClassName="list-tenant-dropdown" placement="bottomCenter">
+              <h4 style={{ display: selectedTenant ? "none" : "inline" }}>Viewing:</h4>
+              <Dropdown overlay={menu} trigger={['click']} overlayClassName="list-tenant-dropdown" placement="bottomCenter">
+                {selectedTenant ? (
+                  <Button type="text" className="sltd-tenant-btn">
+                    <span>Viewing:</span> <div style={{ maxWidth: 160 }}><Typography.Text className="selected-tenant-txt" ellipsis={true} style={{ marginLeft: 15 }}>{selectedTenant}</Typography.Text></div><DownOutlined />
+                  </Button>
+                ) : (
+                  <Button style={{ marginLeft: 8 }} type="text">
+                    Your Dashboard <DownOutlined />
+                  </Button>
+                )}
+              </Dropdown>
               {selectedTenant ? (
-                <Button type="text" className="sltd-tenant-btn">
-                  <span>Viewing:</span> <div style={{ maxWidth: 160 }}><Typography.Text className="selected-tenant-txt" ellipsis={true} style={{ marginLeft: 15 }}>{selectedTenant}</Typography.Text></div><DownOutlined />
-                </Button>
-              ) : (
-                <Button style={{ marginLeft: 8 }} type="text">
-                  Your Dashboard <DownOutlined />
-                </Button>
-              )}
-            </Dropdown>
-            {selectedTenant ? (
-              isSuperAdmin ? (
-                <Button type="text" style={{ marginLeft: 7 }} onClick={exitTenant}>
-                <Typography.Text style={{ marginLeft: 9 }}>Exit</Typography.Text><CloseOutlined />
-              </Button>
-              ):(null)
-            ) : null}
+                isUserSuperAdmin ? (
+                  <Button type="text" style={{ marginLeft: 7 }} onClick={exitTenant}>
+                    <Typography.Text style={{ marginLeft: 9 }}>Exit</Typography.Text><CloseOutlined />
+                  </Button>
+                ) : (null)
+              ) : null}
 
-          </div>
+            </div>
           )}
 
           <div className="username-signout-btn-wrapper">
@@ -571,7 +648,63 @@ React.useEffect(()=>{
               </div>
               {/* <span className="version-text">v1.0.1</span> */}
               <div className="top-content-section">
-                {Array.isArray(userDashboardItems?.response?.items)
+                {Array.isArray(tenantDashboardItems?.response?.items) ? (
+                  tenantDashboardItems?.response?.items.map((item, index) => {
+                    return (
+                      // <Dropdown overlay={dasboardMenu(item.path,item.name)} trigger="contextMenu">
+                      <div className="button-wrapper" key={index} style={{display:"flex",alignItems:"center"}}>
+                        <Link
+                          type="text"
+                          to={`/app/viewport${item.path}`}
+                          className={`${location.pathname === `/app/viewport${item.path}`
+                            ? "selected-btn"
+                            : "unselected-btn"
+                            }`}
+                        >
+                          <SiderAnalyticsChartIcon style={{ fontSize: 18 }} />
+                          <span className="btn-text">{item.name === "default" ? "Dashboard" : item.name}</span>
+                          {item.name !== "default" && location.pathname === `/app/viewport${item.path}` ? (
+                            <Popconfirm
+                            title="Delete the dashboard"
+                            description="Are you sure to delete this dashboard?"
+                            onCancel={()=>{console.log("Cancelled")}}
+                            onConfirm={()=>{
+                              deleteMany([item.path]).then(()=>{
+                                window.location.href=("/app/viewport"+dashBoardPath+"/default")
+                              })
+                            }}
+                            okText="Delete"
+                            cancelText="No"
+                          >
+                            <Button type="text" style={{ position: "absolute", right: 0 }} onClick={(e) => { e.preventDefault() }}><DeleteOutlined /></Button>
+                            </Popconfirm>
+                          ) : null}
+                        </Link>
+                      </div>
+                      // </Dropdown>
+                    );
+                  })
+                ) : null}
+
+                <Popover
+                  content={AddDashboardContents}
+                  title="Add Dashboard"
+                  trigger="click"
+                  open={isAddDashboardModalOpen}
+                  onOpenChange={handleAddDashboardModal}
+                >
+                  <div className="button-wrapper">
+                    <div
+                      className="unselected-btn"
+                    >
+                      <PlusOutlined style={{ fontSize: 18, color: "black" }} />
+                      <span className="btn-text">Add Dashboard</span>
+                    </div>
+                  </div>
+                </Popover>
+                <Divider />
+
+                {/* {Array.isArray(userDashboardItems?.response?.items)
                   ? userDashboardItems?.response?.items.map((item) => {
                     return (
                       <div key={item.slug} className="button-wrapper">
@@ -592,8 +725,8 @@ React.useEffect(()=>{
                       </div>
                     );
                   })
-                  : null}
-                {Array.isArray(systemDashboardItems?.response?.items)
+                  : null} */}
+                {/* {Array.isArray(systemDashboardItems?.response?.items)
                   ? systemDashboardItems?.response?.items.map((item) => {
                     return (
                       <div key={item.slug} className="button-wrapper">
@@ -618,7 +751,7 @@ React.useEffect(()=>{
                 {userDashboardItems?.response?.items.length > 0 ||
                   systemDashboardItems?.response?.items.length > 0 ? (
                   <Divider />
-                ) : null}
+                ) : null} */}
                 {Array.isArray(userQuicklinkItems?.response?.items)
                   ? userQuicklinkItems?.response?.items.map((item) => {
                     return (

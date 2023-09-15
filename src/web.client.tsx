@@ -10,7 +10,7 @@ export default createReactApp(({ use, useModule }) => {
     use(Frontend);
 
   configureAuth({
-    defaultProtectedUrl: "/app/files",
+    defaultProtectedUrl: "/app/viewport/dashboards/default",
     loginPageUrl: "/auth/login",
   });
 

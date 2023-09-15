@@ -13,7 +13,6 @@ export default defineService("list-tenants", (props) => {
     props.defineLogic(async (props) => {
         let tenants: any = null;
         const folderApi = useFolderOperations();
-        console.log("props",props.args.user)
 
         const isSuperAdmin = props.args.user.policies?.includes("SUPER_ADMIN")
         const email = props.args.user.emailAddress

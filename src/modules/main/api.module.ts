@@ -165,6 +165,23 @@ export default createModule(({ use, run }) => {
         },
       },
       {
+        parentPath: "/dashboards",
+        name: "default",
+        type: "dashboard",
+        meta: {},
+        security: {
+          // @ts-ignore
+          permissions: [
+            {
+              type: "user",
+              policy: "",
+              userEmail: "",
+              access: "read",
+            },
+          ],
+        },
+      },
+      {
         parentPath: "/",
         name: "info",
         type: "property",

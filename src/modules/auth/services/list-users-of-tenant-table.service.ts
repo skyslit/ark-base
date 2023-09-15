@@ -5,9 +5,9 @@ export default defineService("list-users-of-tenant-table-service", (props) => {
     const GroupModel = useModel("group");
     const UserModel = useModel("account");
 
-    props.defineRule((props) => {
-        props.allowPolicy('ADMIN')
-    })
+    // props.defineRule((props) => {
+    //     props.allowPolicy('ADMIN')
+    // })
 
     props.defineLogic(async (props) => {
         const tenantId = props.args.user.tenantId;

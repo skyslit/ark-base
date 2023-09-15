@@ -7,9 +7,9 @@ export default defineService('add-user-of-tenant-service', (props) => {
     const GroupModel = useModel('group')
     const AssignmentModel = useModel('member-assignment')
 
-    props.defineRule((props) => {
-        props.allowPolicy('ADMIN')
-    });
+    // props.defineRule((props) => {
+    //     props.allowPolicy('ADMIN')
+    // });
 
     props.defineLogic(async (props) => {
         let newUser: any = null;
