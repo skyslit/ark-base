@@ -153,8 +153,6 @@
                     }
                 }
             }
-
-
         }
     }
 
@@ -475,6 +473,10 @@
 
         .ant-layout-content {
             padding: 25px 30px;
+
+            .content-header-for-list-view {
+                display: none;
+            }
         }
 
         .list-folder-wrapper {
@@ -482,6 +484,30 @@
             flex-wrap: wrap;
             overflow: auto;
             height: 100%;
+        }
+    }
+
+    .content-wrapper-for-list-view {
+        background: white;
+
+        .ant-layout-content {
+            padding: 0px 0px 25px 0px;
+
+            .content-header-for-list-view {
+                display: flex;
+                padding-left: 50px;
+                border-bottom: 1px solid #E8E8E8;
+                height: 49px;
+                align-items: center;
+            }
+        }
+
+        .list-folder-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            overflow: auto;
+            height: 100%;
+            padding-top: 5px;
         }
     }
 }

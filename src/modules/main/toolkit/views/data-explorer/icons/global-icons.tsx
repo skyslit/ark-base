@@ -8,7 +8,11 @@ import blackDownload from "./black-download-icon.svg";
 import whiteDownload from "./white-download-icon.svg";
 import discard from "./discard-icon.svg";
 import BinaryFile from "./binary-file-icon.svg";
-import SmartIcon from "./smart-icon"
+import SmartIcon from "./smart-icon";
+import gridIcon from "./window_grid_icon.svg";
+import listIcon from "./window_list_icon.svg";
+import selectDownIcon from "./select-down-arrow-outlined.svg";
+
 
 export const Folder = (props: any) => {
   return <Icon component={FolderIcon} {...props} />;
@@ -32,6 +36,18 @@ export const WhiteDownloadIcon = (props: any) => {
 
 export const DiscardIcon = (props: any) => {
   return <Icon component={discard} {...props} />;
+};
+
+export const GridOutlined = (props: any) => {
+  return <Icon component={gridIcon} {...props} />;
+};
+
+export const ListOutlined = (props: any) => {
+  return <Icon component={listIcon} {...props} />;
+};
+
+export const DownArrowOutlined = (props: any) => {
+  return <Icon component={selectDownIcon} {...props} />;
 };
 
 export const BinaryFileIcon = (props: any) => {

@@ -22,6 +22,7 @@ import {
 } from "@skyslit/ark-frontend/build/dynamics-v2";
 import { CustomType } from "@skyslit/ark-frontend/build/dynamics-v2/core/controller";
 import { EnterOutlined, PlusOutlined } from "@ant-design/icons";
+import { ViewAsContext } from "../../../base";
 
 const { TabPane } = Tabs;
 
@@ -246,6 +247,7 @@ function PropertiesModal(props: {
 export default (props: any) => {
   const { title, item, fullPath, onDelete, onRename, onCut, onCopyShortcut } =
     props;
+
   const { selected } = props;
   const api = useCatalogue();
   const [contextMenuVisible, setContextMenuVisible] = React.useState(false);
@@ -253,6 +255,9 @@ export default (props: any) => {
   const [renameMode, setRenameMode] = React.useState(false);
   const [renameSource, setRenameSource] = React.useState(false);
   const [isRenaming, setIsRenaming] = React.useState(false);
+
+  const selectedView = React.useContext(ViewAsContext)
+
 
   const handleOpenModal = () => {
     setModalVisible(true);
@@ -387,96 +392,98 @@ export default (props: any) => {
         placement={"bottomRight"}
       >
         <div
-          title={title}
-          // to={fullPath}
+          className={`${selectedView === "list" ? "folder-whole-wrapper-for-list-view" : "folder-whole-wrapper"}  ${contextMenuVisible || renameMode ? "menu-visible" : ""
+            } ${selected === true ? "selected" : ""} `}
           onDoubleClick={() => {
             props.onDoubleClick && props.onDoubleClick(fullPath);
           }}
           onClick={props.onClick}
-          className={`folder-wrapper ${contextMenuVisible || renameMode ? "menu-visible" : ""
-            } ${selected === true ? "selected" : ""}`}
           style={{
             transform: renameMode ? "translateY(-16px)" : undefined,
             position: "relative",
           }}
         >
-          {isRenaming ? (
-            <div style={{ position: "absolute", top: 10, right: 10 }}>
-              <Spin />
-            </div>
-          ) : null}
           <div
-            style={{
-              width: 100,
-              height: 100,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+            title={title}
+            // to={fullPath}
+            className="folder-wrapper-for-list-view"
           >
-            <Icon
-              style={{ fontSize: 100, width: 100, height: 100 }}
-              item={item}
-            />
-          </div>
-          {isSymLink === true ? (
+            {isRenaming ? (
+              <div style={{ position: "absolute", top: 10, right: 10 }}>
+                <Spin />
+              </div>
+            ) : null}
             <div
-              style={{
-                position: "absolute",
-                bottom: 30,
-                right: 25,
-                color: "black",
-                fontSize: 20,
-              }}
-            >
-              <Shortcut />
+              className="item-wrapper">
+              <Icon
+                className="folder-icon"
+                // style={{ fontSize: 100, width: 100, height: 100 }}
+                item={item}
+              />
             </div>
-          ) : null}
-          {renameMode === true ? (
-            <div style={{ width: "100px", position: "relative" }}>
+            {isSymLink === true ? (
               <div
-                onKeyDown={(e) => {
-                  switch (e.key) {
-                    case "Enter": {
-                      e.preventDefault();
-                      rename(e.currentTarget.innerText);
-                      break;
-                    }
-                    case "Escape": {
-                      setIsRenaming(false);
-                      setRenameMode(false);
-                      break;
-                    }
-                  }
-                }}
-                ref={(e) => {
-                  if (e?.focus) {
-                    e.focus();
-                  }
-                }}
-                contentEditable={isRenaming === false}
-                onBlur={(e) => {
-                  rename(e.currentTarget.innerText);
-                }}
                 style={{
-                  textAlign: "center",
                   position: "absolute",
-                  top: 0,
-                  left: -28,
-                  right: -28,
-                  background: "#f5f5f5",
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
+                  bottom: 30,
+                  right: 25,
+                  color: "black",
+                  fontSize: 20,
                 }}
               >
-                {item.name}
+                <Shortcut />
               </div>
-            </div>
-          ) : (
-            <Typography.Text ellipsis={true}>{item.name}</Typography.Text>
-          )}
+            ) : null}
+            {renameMode === true ? (
+              <div style={{ width: "100px", position: "relative" }}>
+                <div
+                  onKeyDown={(e) => {
+                    switch (e.key) {
+                      case "Enter": {
+                        e.preventDefault();
+                        rename(e.currentTarget.innerText);
+                        break;
+                      }
+                      case "Escape": {
+                        setIsRenaming(false);
+                        setRenameMode(false);
+                        break;
+                      }
+                    }
+                  }}
+                  ref={(e) => {
+                    if (e?.focus) {
+                      e.focus();
+                    }
+                  }}
+                  contentEditable={isRenaming === false}
+                  onBlur={(e) => {
+                    rename(e.currentTarget.innerText);
+                  }}
+                  style={{
+                    textAlign: "center",
+                    position: "absolute",
+                    top: 0,
+                    left: -28,
+                    right: -28,
+                    background: "#f5f5f5",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }}
+                >
+                  {item.name}
+                </div>
+              </div>
+            ) : (
+              <Typography.Text ellipsis={true}>{item.name}</Typography.Text>
+            )}
+
+          </div>
+          <div className="type-for-list-view">
+            <span>{item.type}</span>
+          </div>
         </div>
       </Dropdown>
       <Modal

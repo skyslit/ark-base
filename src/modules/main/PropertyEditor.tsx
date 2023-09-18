@@ -367,7 +367,7 @@ export function PropertyRenderer() {
     return (
         <Row className="property-editor-row-wrapper">
             <Col span={24} className="property-editor-col-wrapper">
-                <Tabs className="tab-wrapper" defaultActiveKey="2" tabPosition={tabPosition} items={items} />
+                <Tabs className="tab-wrapper" defaultActiveKey="1" tabPosition={tabPosition} items={items} />
             </Col>
         </Row>
     );

@@ -19,6 +19,7 @@ import {
   Drawer,
   Tabs,
   TabsProps,
+  Select,
 } from "antd";
 import { useCatalogue, useFile } from "@skyslit/ark-frontend/build/dynamics-v2";
 import { Link, useHistory } from "react-router-dom";
@@ -30,6 +31,10 @@ import {
 } from "./views/data-explorer/components/item";
 import { useCatalogueItemPicker } from "@skyslit/ark-frontend/build/dynamics-v2/widgets/catalogue";
 import "./base.scss";
+import { Option } from "antd/lib/mentions";
+import { DownArrowOutlined, GridOutlined, ListOutlined } from "./views/data-explorer/icons/global-icons";
+
+export const ViewAsContext = React.createContext<any>(null);
 
 const { Header, Content } = Layout;
 const { Panel } = Collapse;
@@ -127,6 +132,7 @@ export function GridView() {
   );
 }
 
+
 function NewItem(props: any) {
   const { selected, onClick, item } = props;
 
@@ -188,8 +194,18 @@ export function Renderer() {
   const [newFolderModal, setNewFolderModal] = React.useState<boolean>(false);
   const [newFolderName, setnewFolderName] = React.useState("");
   const [selectedNewType, setSelectedNewType] = React.useState(null);
+  const [selectedView, setSelectedView] = React.useState(
+    window.localStorage.getItem("selectedView")
+  );
+
   const api = useCatalogue();
   const picker = useCatalogueItemPicker();
+
+  const handleSelectView = (value) => {
+    setSelectedView(value);
+    localStorage.setItem('selectedView', value);
+  };
+
 
   React.useEffect(() => {
     setnewFolderName("");
@@ -303,259 +319,283 @@ export function Renderer() {
     },
   ];
 
+
   return (
-    <div
-      style={{
-        position: "relative",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <Header style={{ flexShrink: 0 }} className="second-header">
-        <Row align="middle" style={{ width: "100%" }}>
-          <Col flex={1}>
-            <Breadcrumb separator=">">
-              {api?.meta?.mode === "picker" ? (
-                <Breadcrumb.Item onClick={() => api.setPath(`/`)}>
-                  Root
-                </Breadcrumb.Item>
-              ) : null}
-              {paths.map((p) => {
-                if (api?.meta?.mode === "picker") {
+    <ViewAsContext.Provider value={selectedView}>
+      <div
+        style={{
+          position: "relative",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Header style={{ flexShrink: 0 }} className="second-header">
+          <Row align="middle" style={{ width: "100%" }}>
+            <Col flex={1}>
+              <Breadcrumb separator=">">
+                {api?.meta?.mode === "picker" ? (
+                  <Breadcrumb.Item onClick={() => api.setPath(`/`)}>
+                    Root
+                  </Breadcrumb.Item>
+                ) : null}
+                {paths.map((p) => {
+                  if (api?.meta?.mode === "picker") {
+                    return (
+                      <Breadcrumb.Item
+                        key={p.folderName}
+                        onClick={() => api.setPath(`/${p.fullPath}`)}
+                      >
+                        {p.folderName}
+                      </Breadcrumb.Item>
+                    );
+                  }
                   return (
-                    <Breadcrumb.Item
-                      key={p.folderName}
-                      onClick={() => api.setPath(`/${p.fullPath}`)}
-                    >
-                      {p.folderName}
+                    <Breadcrumb.Item key={p.folderName}>
+                      <Link to={api.getFullUrlFromPath(p.fullPath)}>
+                        {p.folderName}
+                      </Link>
                     </Breadcrumb.Item>
                   );
-                }
-                return (
-                  <Breadcrumb.Item key={p.folderName}>
-                    <Link to={api.getFullUrlFromPath(p.fullPath)}>
-                      {p.folderName}
-                    </Link>
-                  </Breadcrumb.Item>
-                );
-              })}
-            </Breadcrumb>
-            <p
-              style={{
-                margin: 0,
-                lineHeight: "10px",
-                paddingTop: 4,
-                fontSize: 12,
-                color: "#adadad",
-              }}
-            >
-              Access: {accessMode}
-            </p>
-          </Col>
-          <Col>
-            {api.claims.write === true ? (
-              <Space>
-                <Dropdown
-                  trigger={["click"]}
-                  overlay={
-                    <Menu
-                      onClick={(e) => {
-                        switch (e.key) {
-                          case "paste": {
-                            api
-                              .moveItem(
-                                api.clipboard.meta.item.path,
-                                api.currentDir.path,
-                                api.findNextUniqueName(
-                                  api.clipboard.meta.item.name
+                })}
+              </Breadcrumb>
+              <p
+                style={{
+                  margin: 0,
+                  lineHeight: "10px",
+                  paddingTop: 4,
+                  fontSize: 12,
+                  color: "#adadad",
+                }}
+              >
+                Access: {accessMode}
+              </p>
+            </Col>
+
+            <Col>
+              <span style={{ fontSize: 13, color: "#2C2C2C", marginRight: 10 }}>View as:</span>
+              <Select value={selectedView} style={{ width: 108 }} className="view-type-select"
+                onChange={handleSelectView}
+                suffixIcon={<DownArrowOutlined style={{ color: "#000000" }} />}
+              >
+                <Option value="grid">
+                  <GridOutlined /> Grid
+                </Option>
+                <Option value="list">
+                  <ListOutlined /> List
+                </Option>
+              </Select>
+              {api.claims.write === true ? (
+                <Space style={{ marginLeft: 15 }}>
+                  <Dropdown
+                    trigger={["click"]}
+                    overlay={
+                      <Menu
+                        onClick={(e) => {
+                          switch (e.key) {
+                            case "paste": {
+                              api
+                                .moveItem(
+                                  api.clipboard.meta.item.path,
+                                  api.currentDir.path,
+                                  api.findNextUniqueName(
+                                    api.clipboard.meta.item.name
+                                  )
                                 )
-                              )
-                              .catch((e) => {
-                                message.error(
-                                  e?.response?.data?.message
-                                    ? e?.response?.data?.message
-                                    : e.message
-                                );
-                              });
-                            break;
-                          }
-                          case "paste-shortcut": {
-                            api
-                              .createShortcut(
-                                api.clipboard.meta.item.path,
-                                api.currentDir.path,
-                                api.findNextUniqueName(
-                                  api.clipboard.meta.item.name
+                                .catch((e) => {
+                                  message.error(
+                                    e?.response?.data?.message
+                                      ? e?.response?.data?.message
+                                      : e.message
+                                  );
+                                });
+                              break;
+                            }
+                            case "paste-shortcut": {
+                              api
+                                .createShortcut(
+                                  api.clipboard.meta.item.path,
+                                  api.currentDir.path,
+                                  api.findNextUniqueName(
+                                    api.clipboard.meta.item.name
+                                  )
                                 )
-                              )
-                              .catch((e) => {
-                                message.error(
-                                  e?.response?.data?.message
-                                    ? e?.response?.data?.message
-                                    : e.message
-                                );
-                              });
-                            break;
+                                .catch((e) => {
+                                  message.error(
+                                    e?.response?.data?.message
+                                      ? e?.response?.data?.message
+                                      : e.message
+                                  );
+                                });
+                              break;
+                            }
                           }
+                        }}
+                      >
+                        <Menu.Item
+                          disabled={api?.clipboard?.action !== "cut"}
+                          key="paste"
+                        >
+                          Paste
+                        </Menu.Item>
+                        <Menu.Item
+                          disabled={api?.clipboard?.action !== "copy-shortcut"}
+                          key="paste-shortcut"
+                        >
+                          Paste Shortcut
+                        </Menu.Item>
+                      </Menu>
+                    }
+                  >
+                    <Button>
+                      <MoreOutlined />
+                    </Button>
+                  </Dropdown>
+                  <Button
+                    onClick={() => setUploadModalVisible(true)}
+                    type="default"
+                    icon={<PlusOutlined />}
+                  >
+                    Upload Files
+                  </Button>
+                  <Button
+                    onClick={() => setNewFolderModal(true)}
+                    type={api?.meta?.mode === "picker" ? "default" : "primary"}
+                    icon={<PlusOutlined />}
+                  >
+                    Create
+                  </Button>
+                  {api?.meta?.mode === "picker" ? (
+                    <Button
+                      disabled={api.selectedItems.length < 1}
+                      onClick={() => {
+                        if (picker) {
+                          picker.settle({
+                            items: api.selectedItems,
+                          });
                         }
                       }}
+                      type={"primary"}
                     >
-                      <Menu.Item
-                        disabled={api?.clipboard?.action !== "cut"}
-                        key="paste"
-                      >
-                        Paste
-                      </Menu.Item>
-                      <Menu.Item
-                        disabled={api?.clipboard?.action !== "copy-shortcut"}
-                        key="paste-shortcut"
-                      >
-                        Paste Shortcut
-                      </Menu.Item>
-                    </Menu>
-                  }
-                >
-                  <Button>
-                    <MoreOutlined />
-                  </Button>
-                </Dropdown>
-                <Button
-                  onClick={() => setUploadModalVisible(true)}
-                  type="default"
-                  icon={<PlusOutlined />}
-                >
-                  Upload Files
-                </Button>
-                <Button
-                  onClick={() => setNewFolderModal(true)}
-                  type={api?.meta?.mode === "picker" ? "default" : "primary"}
-                  icon={<PlusOutlined />}
-                >
-                  Create
-                </Button>
-                {api?.meta?.mode === "picker" ? (
-                  <Button
-                    disabled={api.selectedItems.length < 1}
-                    onClick={() => {
-                      if (picker) {
-                        picker.settle({
-                          items: api.selectedItems,
-                        });
-                      }
-                    }}
-                    type={"primary"}
-                  >
-                    Choose this file
-                  </Button>
-                ) : null}
-              </Space>
-            ) : null}
-          </Col>
-        </Row>
-      </Header>
-      <Layout className="content-wrapper" style={{ flex: 1 }}>
-        <Content>
-          <div className="list-folder-wrapper">
-            <api.namespaceUI.ItemGrid />
+                      Choose this file
+                    </Button>
+                  ) : null}
+                </Space>
+              ) : null}
+            </Col>
+          </Row>
+        </Header>
+        <Layout className={selectedView === "grid" ? "content-wrapper" : "content-wrapper-for-list-view"} style={{ flex: 1 }}>
+          <Content>
+            <div className="content-header-for-list-view">
+              <div style={{ minWidth: 300 }}>
+                <span style={{color: "#121212", fontSize:13, fontFamily:"Almarose-Semibold"}}>Item</span>
+              </div>
+              <div>
+              <span style={{color: "#121212", fontSize:13, fontFamily:"Almarose-Semibold"}}>Type</span>
+              </div>
+            </div>
+            <div className="list-folder-wrapper">
+              <api.namespaceUI.ItemGrid />
+            </div>
+          </Content>
+        </Layout>
+        <Drawer
+          title="Upload files"
+          open={uploadModalVisible}
+          getContainer={false}
+          onClose={() => setUploadModalVisible(false)}
+        >
+          <div style={{ height: "50%" }}>
+            <Upload.Dragger
+              action={`/___service/main/powerserver___upload-files?namespace=default&parentPath=${api.path}`}
+              multiple={true}
+              maxCount={30}
+              onChange={(info) => {
+                if (info.event?.percent === 100) {
+                  api.refresh(true);
+                }
+              }}
+            >
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">
+                Click or drag file to this area to upload
+              </p>
+              <p className="ant-upload-hint">
+                Support for a single or bulk upload
+              </p>
+            </Upload.Dragger>
           </div>
-        </Content>
-      </Layout>
-      <Drawer
-        title="Upload files"
-        open={uploadModalVisible}
-        getContainer={false}
-        onClose={() => setUploadModalVisible(false)}
-      >
-        <div style={{ height: "50%" }}>
-          <Upload.Dragger
-            action={`/___service/main/powerserver___upload-files?namespace=default&parentPath=${api.path}`}
-            multiple={true}
-            maxCount={30}
-            onChange={(info) => {
-              if (info.event?.percent === 100) {
-                api.refresh(true);
-              }
-            }}
-          >
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">
-              Click or drag file to this area to upload
-            </p>
-            <p className="ant-upload-hint">
-              Support for a single or bulk upload
-            </p>
-          </Upload.Dragger>
-        </div>
-      </Drawer>
-      <Modal
-        className="add-new-item-modal"
-        title="Create New Item"
-        open={Boolean(newFolderModal)}
-        onCancel={() => setNewFolderModal(false)}
-        okText="Create"
-        onOk={() => {
-          if (!newFolderName) {
-            message.error("Name must not be empty");
-            return;
-          }
-          if (!selectedNewType) {
-            message.error("Please select the type");
-            return;
-          }
-          return api
-            .createItem(newFolderName, selectedNewType, {})
-            .then(() => {
-              setNewFolderModal(false);
-              return true;
-            })
-            .catch((e) =>
-              message.error(
-                e?.response?.data?.message
-                  ? e?.response?.data?.message
-                  : e.message
-              )
-            );
-        }}
-        width={1080}
-        footer={[
-          <div className="modal-footer-wrapper">
-            <span className="footer-text">Filename:</span>
-            <Input value={newFolderName}
-              onChange={(e) => setnewFolderName(e.currentTarget.value)}
-              className="footer-input" placeholder="Enter filename" />
-            <Button className="footer-add-btn" type="text" onClick={() => {
-              if (!newFolderName) {
-                message.error("Name must not be empty");
-                return;
-              }
-              if (!selectedNewType) {
-                message.error("Please select the type");
-                return;
-              }
-              return api
-                .createItem(newFolderName, selectedNewType, {})
-                .then(() => {
-                  setNewFolderModal(false);
-                  return true;
-                })
-                .catch((e) =>
-                  message.error(
-                    e?.response?.data?.message
-                      ? e?.response?.data?.message
-                      : e.message
-                  )
-                );
-            }}>Add</Button>
+        </Drawer>
+        <Modal
+          className="add-new-item-modal"
+          title="Create New Item"
+          open={Boolean(newFolderModal)}
+          onCancel={() => setNewFolderModal(false)}
+          okText="Create"
+          onOk={() => {
+            if (!newFolderName) {
+              message.error("Name must not be empty");
+              return;
+            }
+            if (!selectedNewType) {
+              message.error("Please select the type");
+              return;
+            }
+            return api
+              .createItem(newFolderName, selectedNewType, {})
+              .then(() => {
+                setNewFolderModal(false);
+                return true;
+              })
+              .catch((e) =>
+                message.error(
+                  e?.response?.data?.message
+                    ? e?.response?.data?.message
+                    : e.message
+                )
+              );
+          }}
+          width={1080}
+          footer={[
+            <div className="modal-footer-wrapper">
+              <span className="footer-text">Filename:</span>
+              <Input value={newFolderName}
+                onChange={(e) => setnewFolderName(e.currentTarget.value)}
+                className="footer-input" placeholder="Enter filename" />
+              <Button className="footer-add-btn" type="text" onClick={() => {
+                if (!newFolderName) {
+                  message.error("Name must not be empty");
+                  return;
+                }
+                if (!selectedNewType) {
+                  message.error("Please select the type");
+                  return;
+                }
+                return api
+                  .createItem(newFolderName, selectedNewType, {})
+                  .then(() => {
+                    setNewFolderModal(false);
+                    return true;
+                  })
+                  .catch((e) =>
+                    message.error(
+                      e?.response?.data?.message
+                        ? e?.response?.data?.message
+                        : e.message
+                    )
+                  );
+              }}>Add</Button>
+            </div>
+          ]}
+        >
+          <div className="add-new-item-modal-wrapper">
+            <Tabs className="tab-wrapper" defaultActiveKey="1" tabPosition='left' items={items} />
           </div>
-        ]}
-      >
-        <div className="add-new-item-modal-wrapper">
-          <Tabs className="tab-wrapper" defaultActiveKey="1" tabPosition='left' items={items} />
-        </div>
-      </Modal>
-    </div>
+        </Modal>
+      </div>
+    </ViewAsContext.Provider>
   );
 }
