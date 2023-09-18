@@ -5,7 +5,7 @@ import {
   useCataloguePath,
 } from "@skyslit/ark-frontend/build/dynamics-v2";
 import { Layout, Divider, Button, message, Modal, Drawer, Dropdown, Input, Form, Radio, Typography, Popover, Menu, Popconfirm } from "antd";
-import { CloseOutlined, DeleteOutlined, DownOutlined, EnterOutlined, LogoutOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
+import { CloseOutlined, DeleteOutlined, DownOutlined, EditOutlined, EnterOutlined, LogoutOutlined, PlusOutlined, QuestionCircleOutlined, UserOutlined } from "@ant-design/icons";
 import "../layouts/sidebar.scss";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import {
@@ -30,7 +30,7 @@ const SiderLayout = createComponent((props) => {
   const location = useLocation();
   const context = useContext();
   const history = useHistory()
-  const { usePath, readFile, createItem, deleteMany } = useFolder();
+  const { usePath, readFile, createItem, deleteMany, rename } = useFolder();
 
   const [organisationDetails, setOrganisationDetails] = React.useState(orgDetails);
   const [isUserModalOpen, setIsUserModalOpen] = React.useState(false);
@@ -44,6 +44,8 @@ const SiderLayout = createComponent((props) => {
   const [isEmailAlreadyExists, setIsEmailAlreadyExists] = React.useState(false)
   const [isAddDashboardModalOpen, setIsAddDashboardModalOpen] = React.useState(false)
   const [newDashboardName, setNewDashboardName] = React.useState('')
+  const [renameDashboard, setRenameDashboard] = React.useState('')
+  const [hoveredIndex, setHoveredIndex] = React.useState(null);
 
   const showAddUserModal = () => {
     setIsUserModalOpen(true);
@@ -328,11 +330,11 @@ const SiderLayout = createComponent((props) => {
     }
   }, [selectedTenant, isUserSuperAdmin, allTenants])
 
-  const navigateToDashboard = React.useMemo(() => {
+  const navigateFileManager = React.useMemo(() => {
     if (selectedTenant) {
-      return `/app/viewport/tenants/${selectedTenant.toLowerCase()}/global/dashboards/default`;
+      return `/app/files/tenants/${selectedTenant.toLowerCase()}`;
     } else {
-      return `/app/viewport/dashboards/default`;
+      return `/app/files`;
     }
   }, [selectedTenant, isUserSuperAdmin]);
 
@@ -546,10 +548,10 @@ const SiderLayout = createComponent((props) => {
             >
               <HamburgerMenuIcon className="hamburger-icon" />
             </Button>
-            <div style={{ width: 150 }}>
-              <span style={{ color: "black", fontFamily: "Almarose-Bold" }}>
+            <div style={{ maxWidth: 100 }}>
+              <Typography.Text ellipsis={true} style={{ color: "black", fontFamily: "Almarose-Bold" }}>
                 {organisationDetails?.orgName}
-              </span>
+              </Typography.Text>
             </div>
           </div>
           {!isUserSuperAdmin && filterNames.length === 0 && !searchInput ? (
@@ -560,7 +562,7 @@ const SiderLayout = createComponent((props) => {
               <Dropdown overlay={menu} trigger={['click']} overlayClassName="list-tenant-dropdown" placement="bottomCenter">
                 {selectedTenant ? (
                   <Button type="text" className="sltd-tenant-btn">
-                    <span>Viewing:</span> <div style={{ maxWidth: 160 }}><Typography.Text className="selected-tenant-txt" ellipsis={true} style={{ marginLeft: 15 }}>{selectedTenant}</Typography.Text></div><DownOutlined />
+                    <span>Viewing:</span> <div style={{ maxWidth: 160 }}><Typography.Text className="selected-tenant-txt" ellipsis={true} style={{ marginLeft: 8 }}>{selectedTenant}</Typography.Text></div><DownOutlined />
                   </Button>
                 ) : (
                   <Button style={{ marginLeft: 8 }} type="text">
@@ -651,8 +653,9 @@ const SiderLayout = createComponent((props) => {
                 {Array.isArray(tenantDashboardItems?.response?.items) ? (
                   tenantDashboardItems?.response?.items.map((item, index) => {
                     return (
-                      // <Dropdown overlay={dasboardMenu(item.path,item.name)} trigger="contextMenu">
-                      <div className="button-wrapper" key={index} style={{display:"flex",alignItems:"center"}}>
+                      <div className="button-wrapper" key={index} style={{ display: "flex", alignItems: "center" }}
+                        onMouseEnter={() => { setHoveredIndex(index) }}
+                        onMouseLeave={() => { setHoveredIndex(null) }}>
                         <Link
                           type="text"
                           to={`/app/viewport${item.path}`}
@@ -663,25 +666,47 @@ const SiderLayout = createComponent((props) => {
                         >
                           <SiderAnalyticsChartIcon style={{ fontSize: 18 }} />
                           <span className="btn-text">{item.name === "default" ? "Dashboard" : item.name}</span>
-                          {item.name !== "default" && location.pathname === `/app/viewport${item.path}` ? (
+                          {item.name !== "default" && collapsed !== "close" && hoveredIndex === index ? (
                             <Popconfirm
-                            title="Delete the dashboard"
-                            description="Are you sure to delete this dashboard?"
-                            onCancel={()=>{console.log("Cancelled")}}
-                            onConfirm={()=>{
-                              deleteMany([item.path]).then(()=>{
-                                window.location.href=("/app/viewport"+dashBoardPath+"/default")
-                              })
-                            }}
-                            okText="Delete"
-                            cancelText="No"
-                          >
-                            <Button type="text" style={{ position: "absolute", right: 0 }} onClick={(e) => { e.preventDefault() }}><DeleteOutlined /></Button>
+                              title="Delete the dashboard"
+                              onCancel={() => { console.log("Cancelled") }}
+                              onConfirm={() => {
+                                deleteMany([item.path]).then(() => {
+                                  window.location.href = ("/app/viewport" + dashBoardPath + "/default")
+                                })
+                              }}
+                              icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                              okText="Delete"
+                              cancelText="Cancel"
+                            >
+                              <Button type="text" style={{ position: "absolute", right: 0 }} onClick={(e) => { e.preventDefault() }}><DeleteOutlined /></Button>
+                            </Popconfirm>
+                          ) : null}
+
+                          {item.name !== "default" && collapsed !== "close" && hoveredIndex === index ? (
+                            <Popconfirm
+                              title={
+                                <>
+                                  <div>Rename the dashboard</div>
+                                  <div style={{ marginTop: 10 }}><Input value={renameDashboard} onChange={(e) => { setRenameDashboard(e.target.value) }} /></div>
+                                </>
+                              }
+                              onCancel={() => { console.log("Cancelled") }}
+                              onConfirm={() => {
+                                rename(`${item.path}`, item.parentPath, renameDashboard).then(() => {
+                                  window.location.href = ("/app/viewport" + dashBoardPath + "/default")
+                                })
+                              }}
+                              okButtonProps={{ disabled: !renameDashboard || renameDashboard === item.name }}
+                              icon={<EditOutlined style={{ color: "grey" }} />}
+                              okText="Rename"
+                              cancelText="Cancel"
+                            >
+                              <Button type="text" style={{ position: "absolute", right: 0, marginRight: 30 }} onClick={(e) => { e.preventDefault(), setRenameDashboard(item.name) }}><EditOutlined /></Button>
                             </Popconfirm>
                           ) : null}
                         </Link>
                       </div>
-                      // </Dropdown>
                     );
                   })
                 ) : null}
@@ -752,7 +777,7 @@ const SiderLayout = createComponent((props) => {
                   systemDashboardItems?.response?.items.length > 0 ? (
                   <Divider />
                 ) : null} */}
-                {Array.isArray(userQuicklinkItems?.response?.items)
+                {/*    {Array.isArray(userQuicklinkItems?.response?.items)
                   ? userQuicklinkItems?.response?.items.map((item) => {
                     return (
                       <div key={item.slug} className="button-wrapper">
@@ -772,7 +797,7 @@ const SiderLayout = createComponent((props) => {
                       </div>
                     );
                   })
-                  : null}
+                  : null} */}
                 {Array.isArray(systemQuicklinkItems?.response?.items)
                   ? systemQuicklinkItems?.response?.items.map((item) => {
                     return (
@@ -830,23 +855,23 @@ const SiderLayout = createComponent((props) => {
                     </div>
                   </>
                 ) : null}
-                {isUserSuperAdmin === true ? (
-                  <>
-                    <div className="button-wrapper">
-                      <Link
-                        type="text"
-                        to="/app/files"
-                        className={`${location.pathname === "/app/files"
-                          ? "selected-btn"
-                          : "unselected-btn"
-                          }`}
-                      >
-                        <SiderFolderIcon style={{ fontSize: 18 }} />
-                        <span className="btn-text">File Manager</span>
-                      </Link>
-                    </div>
-                  </>
-                ) : null}
+                {/* {isUserSuperAdmin === true ? ( */}
+                <>
+                  <div className="button-wrapper">
+                    <Link
+                      type="text"
+                      to={navigateFileManager}
+                      className={`${location.pathname === `/app/files/tenants/${selectedTenant?.toLowerCase()}` || location.pathname === "/app/files"
+                        ? "selected-btn"
+                        : "unselected-btn"
+                        }`}
+                    >
+                      <SiderFolderIcon style={{ fontSize: 18 }} />
+                      <span className="btn-text">File Manager</span>
+                    </Link>
+                  </div>
+                </>
+                {/* ) : null} */}
               </div>
             </div>
           </Sider>
@@ -882,7 +907,7 @@ const SiderLayout = createComponent((props) => {
         <div className="hamburger-drawer-content-wrapper">
           <div className="sider-content-wrapper">
             <div className="top-content-section">
-              {Array.isArray(userDashboardItems?.response?.items)
+              {/* {Array.isArray(userDashboardItems?.response?.items)
                 ? userDashboardItems?.response?.items.map((item) => {
                   return (
                     <div key={item.slug} className="button-wrapper">
@@ -935,20 +960,224 @@ const SiderLayout = createComponent((props) => {
                     </Link>
                   </div>
                 </>
+              ) : null} */}
+
+              {Array.isArray(tenantDashboardItems?.response?.items) ? (
+                tenantDashboardItems?.response?.items.map((item, index) => {
+                  return (
+                    <div className="button-wrapper" key={index} style={{ display: "flex", alignItems: "center" }}>
+                      <Link
+                        type="text"
+                        to={`/app/viewport${item.path}`}
+                        className={`${location.pathname === `/app/viewport${item.path}`
+                          ? "selected-btn"
+                          : "unselected-btn"
+                          }`}
+                      >
+                        <SiderAnalyticsChartIcon style={{ fontSize: 18 }} />
+                        <span className="btn-text">{item.name === "default" ? "Dashboard" : item.name}</span>
+                        {item.name !== "default" && location.pathname === `/app/viewport${item.path}` && collapsed !== "close" ? (
+                          <Popconfirm
+                            title="Delete the dashboard"
+                            onCancel={() => { console.log("Cancelled") }}
+                            onConfirm={() => {
+                              deleteMany([item.path]).then(() => {
+                                window.location.href = ("/app/viewport" + dashBoardPath + "/default")
+                              })
+                            }}
+                            icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                            okText="Delete"
+                            cancelText="Cancel"
+                          >
+                            <Button type="text" style={{ position: "absolute", right: 0 }} onClick={(e) => { e.preventDefault() }}><DeleteOutlined /></Button>
+                          </Popconfirm>
+                        ) : null}
+
+                        {item.name !== "default" && location.pathname === `/app/viewport${item.path}` && collapsed !== "close" ? (
+                          <Popconfirm
+                            title={
+                              <>
+                                <div>Rename the dashboard</div>
+                                <div style={{ marginTop: 10 }}><Input value={renameDashboard} onChange={(e) => { setRenameDashboard(e.target.value) }} /></div>
+                              </>
+                            }
+                            onCancel={() => { console.log("Cancelled") }}
+                            onConfirm={() => {
+                              rename(`${item.path}`, item.parentPath, renameDashboard).then(() => {
+                                window.location.href = ("/app/viewport" + dashBoardPath + "/default")
+                              })
+                            }}
+                            okButtonProps={{ disabled: !renameDashboard || renameDashboard === item.name }}
+                            icon={<EditOutlined style={{ color: "grey" }} />}
+                            okText="Rename"
+                            cancelText="Cancel"
+                          >
+                            <Button type="text" style={{ position: "absolute", right: 0, marginRight: 30 }} onClick={(e) => { e.preventDefault(), setRenameDashboard(item.name) }}><EditOutlined /></Button>
+                          </Popconfirm>
+                        ) : null}
+                      </Link>
+                    </div>
+                  );
+                })
               ) : null}
+              <Popover
+                content={AddDashboardContents}
+                title="Add Dashboard"
+                trigger="click"
+                open={isAddDashboardModalOpen}
+                onOpenChange={handleAddDashboardModal}
+              >
+                <div className="button-wrapper">
+                  <div
+                    className="unselected-btn"
+                  >
+                    <PlusOutlined style={{ fontSize: 18, color: "black" }} />
+                    <span className="btn-text">Add Dashboard</span>
+                  </div>
+                </div>
+              </Popover>
+              <Divider />
+              {/*  {Array.isArray(userQuicklinkItems?.response?.items)
+                ? userQuicklinkItems?.response?.items.map((item) => {
+                  return (
+                    <div key={item.slug} className="button-wrapper">
+                      <Link
+                        type="text"
+                        to={`/app/files${item.destinationPath || item.path
+                          }`}
+                        className={`${location.pathname ===
+                          `/app/files${item.destinationPath || item.path}`
+                          ? "selected-btn"
+                          : "unselected-btn"
+                          }`}
+                      >
+                        <SiderShortcutFolderIcon style={{ fontSize: 19 }} />
+                        <span className="btn-text">{item.name}</span>
+                      </Link>
+                    </div>
+                  );
+                })
+                : null} */}
+              {Array.isArray(systemQuicklinkItems?.response?.items)
+                ? systemQuicklinkItems?.response?.items.map((item) => {
+                  return (
+                    <div key={item.slug} className="button-wrapper">
+                      <Link
+                        type="text"
+                        to={`/app/files${item.destinationPath || item.path
+                          }`}
+                        className={`${location.pathname ===
+                          `/app/files${item.destinationPath || item.path}`
+                          ? "selected-btn"
+                          : "unselected-btn"
+                          }`}
+                      >
+                        <SiderShortcutFolderIcon style={{ fontSize: 19 }} />
+                        <span className="btn-text">{item.name}</span>
+                      </Link>
+                    </div>
+                  );
+                })
+                : null}
+              {userQuicklinkItems?.response?.items?.length > 0 ||
+                systemQuicklinkItems?.response?.items?.length > 0 ? (
+                <Divider />
+              ) : null}
+              <div className="button-wrapper">
+                <Link
+                  type="text"
+                  to="/app/users"
+                  className={`${location.pathname === "/app/users" ||
+                    location.pathname.includes("/app/users") ||
+                    location.pathname.includes("/app/groups")
+                    ? "selected-btn"
+                    : "unselected-btn"
+                    }`}
+                >
+                  <SiderUsersIcon style={{ fontSize: 18 }} />
+                  <span className="btn-text">Users & Groups</span>
+                </Link>
+              </div>
+              {isUserSuperAdmin === true ? (
+                <>
+                  <div className="button-wrapper">
+                    <Link
+                      type="text"
+                      to="/app/files/info"
+                      className={`${location.pathname === "/app/files/info"
+                        ? "selected-btn"
+                        : "unselected-btn"
+                        }`}
+                    >
+                      <SiderSettingsIcon style={{ fontSize: 18 }} />
+                      <span className="btn-text">Settings</span>
+                    </Link>
+                  </div>
+                </>
+              ) : null}
+              {/* {isUserSuperAdmin === true ? ( */}
+              <>
+                <div className="button-wrapper">
+                  <Link
+                    type="text"
+                    to={navigateFileManager}
+                    className={`${location.pathname === `/app/files/tenants/${selectedTenant?.toLowerCase()}` || location.pathname === "/app/files"
+                      ? "selected-btn"
+                      : "unselected-btn"
+                      }`}
+                  >
+                    <SiderFolderIcon style={{ fontSize: 18 }} />
+                    <span className="btn-text">File Manager</span>
+                  </Link>
+                </div>
+              </>
+              {/* ) : null} */}
             </div>
           </div>
         </div>
-        <span
-          style={{
-            fontSize: 12,
-            color: "#9F9F9F",
-            fontFamily: "Almarose-Medium",
-            paddingLeft: 24,
-          }}
-        >
-          v1.0.1
-        </span>
+        <div>
+          <div className="username-signout-btn-wrapper-sm">
+            <div className="username-role-wrapper">
+              <span className="username-text">
+                {context?.response?.meta?.currentUser?.name}
+              </span>
+              <span className="role-text">
+                {context?.response?.meta?.currentUser?.emailAddress}
+              </span>
+            </div>
+            <div className="signout-btn-wrapper">
+              <Button
+                type="link"
+                className="signout-btn"
+                onClick={() => {
+                  Modal.confirm({
+                    maskClosable: true,
+                    title: "Logout Confirmation",
+                    content: " Are you sure you want to logout?",
+                    okText: "Logout",
+                    onOk: () => {
+                      localStorage.removeItem('selectedTenant');
+                      logoutUser();
+                    },
+                  });
+                }}
+              >
+                <LogoutOutlined className="logout-antd-icon" />
+                Sign Out
+              </Button>
+            </div>
+          </div>
+          <span
+            style={{
+              fontSize: 12,
+              color: "#9F9F9F",
+              fontFamily: "Almarose-Medium",
+              paddingLeft: 24,
+            }}
+          >
+            v1.0.1
+          </span>
+        </div>
       </Drawer>
       <Modal title="New Tenant"
         width={570}
