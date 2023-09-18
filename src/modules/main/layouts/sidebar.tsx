@@ -5,7 +5,7 @@ import {
   useCataloguePath,
 } from "@skyslit/ark-frontend/build/dynamics-v2";
 import { Layout, Divider, Button, message, Modal, Drawer, Dropdown, Input, Form, Radio, Typography, Popover, Menu, Popconfirm } from "antd";
-import { CloseOutlined, DeleteOutlined, DownOutlined, EditOutlined, EnterOutlined, LogoutOutlined, PlusOutlined, QuestionCircleOutlined, UserOutlined } from "@ant-design/icons";
+import { CloseOutlined, DeleteOutlined, DownOutlined, EditOutlined, EnterOutlined, LogoutOutlined, PlusOutlined, QuestionCircleOutlined, UsergroupAddOutlined, UserOutlined } from "@ant-design/icons";
 import "../layouts/sidebar.scss";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import {
@@ -17,6 +17,7 @@ import {
   HamburgerMenuIcon,
   SiderUsersIcon,
   AddBtnIcon,
+  CheckCircleIcon
 } from "../../auth/icons/global-icons";
 import { Content } from "antd/lib/layout/layout";
 import NoSSR from "../../auth/reusables/NoSSR";
@@ -331,11 +332,10 @@ const SiderLayout = createComponent((props) => {
   }, [selectedTenant, isUserSuperAdmin, allTenants])
 
   const navigateFileManager = React.useMemo(() => {
-    if (selectedTenant) {
-      return `/app/files/tenants/${selectedTenant.toLowerCase()}`;
-    } else {
+    if (isUserSuperAdmin) {
       return `/app/files`;
-    }
+    } else if (selectedTenant)
+      return `/app/files/tenants/${selectedTenant.toLowerCase()}`;
   }, [selectedTenant, isUserSuperAdmin]);
 
   const addNewDashboard = React.useCallback(() => {
@@ -398,8 +398,45 @@ const SiderLayout = createComponent((props) => {
   //   </Menu>
   // );
 
+
   const NewTenant = (
-    <div style={{ padding: 30 }}>
+    <>
+      <div className="add-tenant-header-wrapper">
+        <div><h4>Add Tenant</h4></div>
+        <div style={{ textAlign: "center" }}><p>Provide this app to other tenants (sellers, educators, etc.) who can list their products/services using your app and sell it to their customers.</p></div>
+      </div>
+      <div className="main-content-wrapper">
+        <div>
+          <h4>Enter new username for this tenant:</h4>
+          <div className="input-wrapper">
+            <span>{window.location.host}/</span>
+            <div style={{ display: "flex", flexDirection: "column" }}><Input placeholder="Tenant Username" autoFocus onChange={(e) => { setTenantId(e.target.value) }} />
+              {availablityOfTenant && tenantId ? (
+                <label>
+                  <span style={{ fontWeight: 800 }}><CheckCircleIcon style={{ marginRight: 6 }} />{tenantId}</span> is available
+                </label>
+              ) : (
+                tenantId ? (
+                  <label>
+                    <span style={{ fontWeight: 800 }}>{tenantId}</span> is not available
+                  </label>
+                ) : null
+              )}
+            </div>
+          </div>
+        </div>
+        <div style={{ width: "100%", display: "flex", justifyContent: "space-between", padding: "0 34px" }}>
+          <Button type="text" className="discard-btn" onClick={handleTenantModal}>Discard</Button>
+          <Button type="text" className="continue-btn" onClick={addNewTenant} disabled={!tenantId || !availablityOfTenant || addNewTenantService.isLoading}>{
+            addNewTenantService.isLoading ? (
+              "Adding..."
+            ) : (
+              "Continue"
+            )
+          }</Button>
+        </div>
+      </div>
+      {/* <div style={{ padding: 30 }}>
       <label style={{ fontSize: 12 }}>Tenant ID</label>
       <Input
         className="title-input"
@@ -424,7 +461,8 @@ const SiderLayout = createComponent((props) => {
           )}
         </Button>
       </div>
-    </div>
+    </div> */}
+    </>
   )
   const AddNewUser = (
     <div>
@@ -727,7 +765,19 @@ const SiderLayout = createComponent((props) => {
                     </div>
                   </div>
                 </Popover>
-                <Divider />
+                {selectedTenant ? (
+                  <>
+                    <Divider />
+                    <div className="button-wrapper">
+                      <Link to={`/app/files/tenants/${selectedTenant.toLowerCase()}/info`}
+                        className={location.pathname === `/app/files/tenants/${selectedTenant.toLowerCase()}/info` ? "selected-btn" : "unselected-btn"}
+                      >
+                        <UsergroupAddOutlined style={{ fontSize: 18, color: "black" }} />
+                        <span className="btn-text">Manage Users</span>
+                      </Link>
+                    </div>
+                  </>
+                ) :<Divider />}
 
                 {/* {Array.isArray(userDashboardItems?.response?.items)
                   ? userDashboardItems?.response?.items.map((item) => {
@@ -1036,6 +1086,19 @@ const SiderLayout = createComponent((props) => {
                   </div>
                 </div>
               </Popover>
+              {selectedTenant ? (
+                <>
+                  <Divider />
+                  <div className="button-wrapper">
+                    <Link to={`/app/files/tenants/${selectedTenant.toLowerCase()}/info`}
+                      className={location.pathname === `/app/files/tenants/${selectedTenant.toLowerCase()}/info` ? "selected-btn" : "unselected-btn"}
+                    >
+                      <UsergroupAddOutlined style={{ fontSize: 18, color: "black" }} />
+                      <span className="btn-text">Manage Users</span>
+                    </Link>
+                  </div>
+                </>
+              ) : null}
               <Divider />
               {/*  {Array.isArray(userQuicklinkItems?.response?.items)
                 ? userQuicklinkItems?.response?.items.map((item) => {
@@ -1187,7 +1250,7 @@ const SiderLayout = createComponent((props) => {
         centered
         footer={null}
         zIndex={10001}
-        className="new-user-modal">
+        className="new-tenant-modal">
         {currentState}
       </Modal>
     </>

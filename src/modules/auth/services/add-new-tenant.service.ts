@@ -32,9 +32,11 @@ export default defineService("add-new-tenant", (props) => {
                     addItem('default', `/tenants`, newTenant, 'folder', {}, {}, undefined, undefined, 'supress').then(() => {
                         addItem('default', `/tenants/${newTenant.toLowerCase()}`, "global", 'folder', {}, {}, undefined, undefined, 'supress').then(() => {
                             addItem('default', `/tenants/${newTenant.toLowerCase()}/global`, "dashboards", 'folder', {}, {}, undefined, undefined, 'supress').then(() => {
-                                addItem('default', `/tenants/${newTenant.toLowerCase()}/global/dashboards`, "default", 'dashboard', {}, {}, undefined, undefined, 'supress').then(()=>{
-                                    addItem('default', `/tenants/${newTenant.toLowerCase()}`, "users", 'folder', {}, {}, undefined, undefined, 'supress').then(()=>{
-                                        addItem('default', `/tenants/${newTenant.toLowerCase()}/users`, "dashboards", 'folder', {}, {}, undefined, undefined, 'supress')
+                                addItem('default', `/tenants/${newTenant.toLowerCase()}/global/dashboards`, "default", 'dashboard', {}, {}, undefined, undefined, 'supress').then(() => {
+                                    addItem('default', `/tenants/${newTenant.toLowerCase()}`, "info", 'settings', {}, {}, undefined, undefined, 'supress').then(() => {
+                                        addItem('default', `/tenants/${newTenant.toLowerCase()}`, "users", 'folder', {}, {}, undefined, undefined, 'supress').then(() => {
+                                            addItem('default', `/tenants/${newTenant.toLowerCase()}/users`, "dashboards", 'folder', {}, {}, undefined, undefined, 'supress')
+                                        })
                                     })
                                 })
                             })

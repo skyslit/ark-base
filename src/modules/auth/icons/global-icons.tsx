@@ -25,6 +25,8 @@ import HamburgerMenu from "../icons/hamburger-menu.svg";
 import SiderUsers from "./sider-users-icon.svg";
 // @ts-ignore
 import AddBtn from "../icons/add-btn.svg";
+// @ts-ignore
+import CheckCircle from "../icons/check-circle.svg";
 
 
 export const SiderFolderIcon = (props: any) => {
@@ -62,4 +64,7 @@ export const SiderUsersIcon = (props: any) => {
 };
 export const AddBtnIcon = (props: any) => {
     return <Icon component={AddBtn} {...props} />;
+};
+export const CheckCircleIcon = (props: any) => {
+    return <Icon component={CheckCircle} {...props} />;
 };
