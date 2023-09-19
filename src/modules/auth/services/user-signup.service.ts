@@ -1,16 +1,13 @@
 import { defineService, Data } from "@skyslit/ark-backend";
 import async from "async";
 
-export default defineService("add-user", (props) => {
+export default defineService("user-signup-v2", (props) => {
   const { useModel, useFolderOperations } = props.use(Data);
   const { addItem } = useFolderOperations();
   const UserModel = useModel("account");
   const MemberModel = useModel("member-assignment");
   const GroupModel = useModel("group");
 
-  props.defineRule((props) => {
-    props.allowPolicy('SUPER_ADMIN')
-  });
 
   props.defineLogic(async (props) => {
     let newUser: any = null;

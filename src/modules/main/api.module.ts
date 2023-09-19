@@ -47,6 +47,9 @@ import GetAllAccountsWithTenantId from "../auth/services/get-all-accounts-with-t
 import AddNewTenant from "../auth/services/add-new-tenant.service";
 import CreateNewUser from "../auth/services/create-new-user.service";
 import ListTenants from "../auth/services/list-tenants.service";
+//login v2
+import CheckForExistingEmail from "../auth/services/check-email.service";
+import LoginV2Service from "../auth/services/login-v2.service";
 
 
 
@@ -104,6 +107,9 @@ export default createModule(({ use, run }) => {
   useService(AddNewTenant);
   useService(CreateNewUser);
   useService(ListTenants);
+  useService(CheckForExistingEmail);
+  useService(LoginV2Service);
+
 
   if (useEnv("AWS_ACCESS_KEY_ID")) {
     useVolume(
