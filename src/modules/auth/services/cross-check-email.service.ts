@@ -12,19 +12,19 @@ export default defineService('cross-check-email-service', (props) => {
 
     props.defineLogic(async (props) => {
         let userEmail: any = null;
-        const tenantId = props.args.user.tenantId;
-        const { email } = props.args.input;
+        const { email, tenantId } = props.args.input;
+        const tenant_id = tenantId.toUpperCase()
 
         await new Promise(async (operationComplete, error) => {
 
             userEmail = await AccountModel.findOne({ email: email }).exec();
 
             if (userEmail) {
-                const group: any = await GroupModel.findOne({ groupTitle: tenantId }).exec();
+                const group: any = await GroupModel.findOne({ groupTitle: `TENANT_${tenant_id}` }).exec();
 
                 if (!group) {
                     const newGroup = new GroupModel({
-                        groupTitle: tenantId,
+                        groupTitle: `TENANT_${tenant_id}`,
                         count: 0,
                     });
                     await newGroup.save();
@@ -36,7 +36,7 @@ export default defineService('cross-check-email-service', (props) => {
                 }).exec();
 
                 if (existingMember) {
-                    error({ message: "User is already a member of this group" });
+                   return error({ message: "User is already a member of this group" });
                 }
                     userEmail.groupId.push(group._id);
                     await userEmail.save();

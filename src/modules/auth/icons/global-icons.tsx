@@ -27,6 +27,8 @@ import SiderUsers from "./sider-users-icon.svg";
 import AddBtn from "../icons/add-btn.svg";
 // @ts-ignore
 import CheckCircle from "../icons/check-circle.svg";
+// @ts-ignore
+import CloseRounded from "../icons/close-rounded.svg";
 
 
 export const SiderFolderIcon = (props: any) => {
@@ -67,4 +69,7 @@ export const AddBtnIcon = (props: any) => {
 };
 export const CheckCircleIcon = (props: any) => {
     return <Icon component={CheckCircle} {...props} />;
+};
+export const CloseRoundedIcon = (props: any) => {
+    return <Icon component={CloseRounded} {...props} />;
 };

@@ -10,8 +10,9 @@ export default defineService("list-users-of-tenant-table-service", (props) => {
     // })
 
     props.defineLogic(async (props) => {
-        const tenantId = props.args.user.tenantId;
-        const group : any = await GroupModel.findOne({ groupTitle: tenantId }).exec();
+        const { tenantId } = props.args.input;
+        const tenant_id = tenantId.toUpperCase()
+        const group : any = await GroupModel.findOne({ groupTitle: `TENANT_${tenant_id}` }).exec();
         return props.table(UserModel.find({ groupId: group._id }));
     });
 });

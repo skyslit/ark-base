@@ -15,14 +15,15 @@ export default defineService('add-user-of-tenant-service', (props) => {
         let newUser: any = null;
         let member: any = null;
         let newGroup: any = null;
-        const tenantId = props.args.user.tenantId
-        const { email, name, password } = props.args.input;
+        // const tenantId = props.args.user.tenantId
+        const { email, name, password, tenantId } = props.args.input;
+        const tenant_id = tenantId.toUpperCase()
         await new Promise(async (operationComplete, error) => {
-            const group : any = await GroupModel.findOne({ groupTitle: tenantId }).exec();
+            const group: any = await GroupModel.findOne({ groupTitle: `TENANT_${tenant_id}` }).exec();
 
             if (!group) {
                 newGroup = new GroupModel({
-                    groupTitle: tenantId,
+                    groupTitle: `TENANT_${tenant_id}`,
                 });
                 await newGroup.save();
             }
@@ -44,7 +45,7 @@ export default defineService('add-user-of-tenant-service', (props) => {
                 await group.save();
             } else {
                 if (newUser._id) {
-                    const newgroup : any = await GroupModel.findOne({ _id: newGroup._id }).exec();
+                    const newgroup: any = await GroupModel.findOne({ _id: newGroup._id }).exec();
                     if (newgroup.count) {
                         newgroup.count = newgroup.count + 1;
                     } else {
@@ -60,7 +61,7 @@ export default defineService('add-user-of-tenant-service', (props) => {
             });
             await member.save();
 
-            operationComplete();
+            operationComplete(true);
         });
 
         return props.success({ message: 'User added successfully' },

@@ -78,7 +78,8 @@ export function SettingsRenderer() {
                         onOk: () => {
                             removeUserOfTenantService.invoke(
                                 {
-                                    userId
+                                    userId,
+                                    tenantId
                                 },
                                 { force: true })
                                 .then((res) => {
@@ -129,8 +130,17 @@ export function SettingsRenderer() {
             },
         ];
 
+        const tenantId = React.useMemo(() => {
+            const url = location.pathname;
+            const urlParts = url.split('/');
+            const tenantsIndex = urlParts.indexOf('tenants');
+            if (tenantsIndex !== -1 && tenantsIndex < urlParts.length - 1) {
+                return urlParts[tenantsIndex + 1]
+            }
+        }, [])
+
         const listUsersOfTenant = useTableService({
-            serviceId: "list-users-of-tenant-table-service",
+            serviceId: `list-users-of-tenant-table-service?tenantId=${tenantId}`,
             columns,
             defaultPageSize: 10,
             disableSelect: true,
@@ -140,11 +150,13 @@ export function SettingsRenderer() {
             addExistingUserOfTenantService.invoke({
                 name: data.name,
                 email: data.email,
+                tenantId
             }, { force: true })
                 .then((res) => {
-                    toggleAddUserOfTenantModal();
+                    setIsAddUserOfTenantModalOpen(false);
                     userForm.resetFields()
                     listUsersOfTenant.onChange();
+                    setFailedToAddUserOfTenant(false);
                 })
                 .catch((e) => {
                     if (e.message === "Email doesn't exist") {
@@ -159,7 +171,8 @@ export function SettingsRenderer() {
             addUserOfTenantService.invoke({
                 name: data.name,
                 email: data.email,
-                password: data.password
+                password: data.password,
+                tenantId
             }, { force: true })
                 .then((res) => {
                     toggleAddUserOfTenantModal();
@@ -172,12 +185,12 @@ export function SettingsRenderer() {
         }
 
         const handleFormSubmit = React.useCallback((values: any) => {
-            if (addExistingUserOfTenantService.err?.message === "Email doesn't exist") {
+            if (failedToAddUserOfTenant) {
                 addUserOfTenant(values);
             } else {
                 addExistingUser(values);
             }
-        }, [addExistingUserOfTenantService.isLoading]);
+        }, [addExistingUserOfTenantService.isLoading, failedToAddUserOfTenant]);
 
 
         return (
@@ -218,9 +231,9 @@ export function SettingsRenderer() {
                                 form="create"
                                 htmlType="submit"
                                 key="submit"
-                                disabled={addUserOfTenantService.isLoading}
+                                disabled={addUserOfTenantService.isLoading || addExistingUserOfTenantService.isLoading}
                             >
-                                {addUserOfTenantService.isLoading === true ? (
+                                {addUserOfTenantService.isLoading === true || addExistingUserOfTenantService.isLoading === true ? (
                                     <>
                                         <LoadingOutlined style={{ marginRight: 5 }} />
                                         Adding...
@@ -331,7 +344,7 @@ export function SettingsRenderer() {
     return (
         <Row className="property-editor-row-wrapper">
             <Col span={24} className="property-editor-col-wrapper">
-                <Tabs className="tab-wrapper" defaultActiveKey="1" tabPosition={tabPosition} items={items} />
+                <Tabs className="tab-wrapper" defaultActiveKey="2" tabPosition={tabPosition} items={items} />
             </Col>
         </Row>
     );

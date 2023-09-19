@@ -17,7 +17,8 @@ import {
   HamburgerMenuIcon,
   SiderUsersIcon,
   AddBtnIcon,
-  CheckCircleIcon
+  CheckCircleIcon,
+  CloseRoundedIcon
 } from "../../auth/icons/global-icons";
 import { Content } from "antd/lib/layout/layout";
 import NoSSR from "../../auth/reusables/NoSSR";
@@ -410,15 +411,16 @@ const SiderLayout = createComponent((props) => {
           <h4>Enter new username for this tenant:</h4>
           <div className="input-wrapper">
             <span>{window.location.host}/</span>
-            <div style={{ display: "flex", flexDirection: "column" }}><Input placeholder="Tenant Username" autoFocus onChange={(e) => { setTenantId(e.target.value) }} />
+            <div style={{ display: "flex", flexDirection: "column" }}><Input placeholder="Tenant Username" autoFocus value={tenantId} onChange={(e) => { setTenantId(e.target.value.replace(/[^a-zA-Z0-9]/g, '')) }} />
               {availablityOfTenant && tenantId ? (
-                <label>
-                  <span style={{ fontWeight: 800 }}><CheckCircleIcon style={{ marginRight: 6 }} />{tenantId}</span> is available
+                <label style={{ width: 120 }}>
+                  <Typography.Text style={{ fontWeight: 800 }}><CheckCircleIcon style={{ marginRight: 6 }} ellipsis={true} />{tenantId}</Typography.Text> is available
                 </label>
               ) : (
                 tenantId ? (
-                  <label>
-                    <span style={{ fontWeight: 800 }}>{tenantId}</span> is not available
+                  <label style={{ width: 252 }}>
+                    <CloseRoundedIcon style={{ marginRight: 6 }} />
+                    Username already taken. Try adding a few numbers along with it.
                   </label>
                 ) : null
               )}
@@ -586,7 +588,7 @@ const SiderLayout = createComponent((props) => {
             >
               <HamburgerMenuIcon className="hamburger-icon" />
             </Button>
-            <div style={{ maxWidth: 100 }}>
+            <div style={{ minWidth: 150, maxWidth: 200 }}>
               <Typography.Text ellipsis={true} style={{ color: "black", fontFamily: "Almarose-Bold" }}>
                 {organisationDetails?.orgName}
               </Typography.Text>
@@ -767,7 +769,6 @@ const SiderLayout = createComponent((props) => {
                 </Popover>
                 {selectedTenant ? (
                   <>
-                    <Divider />
                     <div className="button-wrapper">
                       <Link to={`/app/files/tenants/${selectedTenant.toLowerCase()}/info`}
                         className={location.pathname === `/app/files/tenants/${selectedTenant.toLowerCase()}/info` ? "selected-btn" : "unselected-btn"}
@@ -776,8 +777,9 @@ const SiderLayout = createComponent((props) => {
                         <span className="btn-text">Manage Users</span>
                       </Link>
                     </div>
+                    <Divider />
                   </>
-                ) :<Divider />}
+                ) : <Divider />}
 
                 {/* {Array.isArray(userDashboardItems?.response?.items)
                   ? userDashboardItems?.response?.items.map((item) => {
@@ -869,10 +871,10 @@ const SiderLayout = createComponent((props) => {
                     );
                   })
                   : null}
-                {userQuicklinkItems?.response?.items?.length > 0 ||
+                {/* {userQuicklinkItems?.response?.items?.length > 0 ||
                   systemQuicklinkItems?.response?.items?.length > 0 ? (
                   <Divider />
-                ) : null}
+                ) : null} */}
                 <div className="button-wrapper">
                   <Link
                     type="text"

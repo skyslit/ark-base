@@ -19,47 +19,47 @@ export default defineService("add-admin-account", (props) => {
       }).exec();
       if (!existingAccount) {
         newAdminAccount = new AccountModel({
-          name:"Super admin",
+          name: "Super admin",
           email: email,
           password: password,
         });
         await newAdminAccount.save();
-        
+
         newGroup = new GroupModel({
           groupTitle: "SUPER_ADMIN",
-          count:1
+          count: 1
         });
         await newGroup.save();
 
-        createAdminGroup = new GroupModel({
-          groupTitle: "ADMIN",
-          count:0,
-          description:""
-        });
-        await createAdminGroup.save();
+        // createAdminGroup = new GroupModel({
+        //   groupTitle: "ADMIN",
+        //   count:0,
+        //   description:""
+        // });
+        // await createAdminGroup.save();
 
         newMember = new MemberModel({
-        userId: newAdminAccount._id,
-        groupId: newGroup._id
+          userId: newAdminAccount._id,
+          groupId: newGroup._id
         });
 
         await newMember.save();
 
         findAccount = await AccountModel.findOne({
-        _id:newAdminAccount._id
-      }).exec();
+          _id: newAdminAccount._id
+        }).exec();
 
-      if(findAccount){
-        findAccount.groupId = newGroup._id;
-        await findAccount.save();
-      }
+        if (findAccount) {
+          findAccount.groupId = newGroup._id;
+          await findAccount.save();
+        }
         operationComplete(true);
       } else {
         error({ message: "Email already in use" });
       }
     });
     return props.success({ message: "Account Added Successfully" }, [
-      newAdminAccount, newGroup,newMember,findAccount
+      newAdminAccount, newGroup, newMember, findAccount
     ]);
   });
 });
