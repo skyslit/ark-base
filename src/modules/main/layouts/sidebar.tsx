@@ -182,19 +182,19 @@ const SiderLayout = createComponent((props) => {
       })
   }
 
-  const listAllTenants = () => {
+  const listAllTenants = React.useCallback(() => {
     listAllTenantsService
       .invoke()
       .then((res) => {
         if (res.data) {
-          setAllTenants(res.data)
+          setAllTenants(res.data);
         } else {
-          setAllTenants([])
+          setAllTenants([]);
         }
       })
       .catch((e) => {
-      })
-  };
+      });
+  }, []);
 
   React.useEffect(() => {
     listAllTenants()
@@ -323,10 +323,9 @@ const SiderLayout = createComponent((props) => {
   React.useEffect(() => {
     if (!isUserSuperAdmin && !selectedTenant && allTenants.length > 0) {
       localStorage.setItem('selectedTenant', allTenants[0]?.slug);
-      // window.location.href = "/app/files/tenants/" + allTenants[0]?.slug
-      window.location.href = `/app/viewport/tenants/${allTenants[0]?.slug}/global/dashboards/default`
+      history.push(`/app/viewport/tenants/${allTenants[0]?.slug}/global/dashboards/default`)
     }
-  }, [selectedTenant, isUserSuperAdmin, allTenants])
+  }, [selectedTenant, isUserSuperAdmin, allTenants,window.location])
 
   const navigateFileManager = React.useMemo(() => {
     if (isUserSuperAdmin) {
@@ -591,6 +590,7 @@ const SiderLayout = createComponent((props) => {
     default:
       break;
   }
+
   return (
     <>
       <Layout className="homepage-wrapper">

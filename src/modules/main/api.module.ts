@@ -162,12 +162,12 @@ export default createModule(({ use, run }) => {
         security: {
           // @ts-ignore
           permissions: [
-            {
-              type: "user",
-              policy: "",
-              userEmail: "",
-              access: "read",
-            },
+            // {
+            //   type: "user",
+            //   policy: "",
+            //   userEmail: "",
+            //   access: "read",
+            // },
           ],
         },
       },
@@ -179,12 +179,12 @@ export default createModule(({ use, run }) => {
         security: {
           // @ts-ignore
           permissions: [
-            {
-              type: "user",
-              policy: "",
-              userEmail: "",
-              access: "read",
-            },
+            // {
+            //   type: "user",
+            //   policy: "",
+            //   userEmail: "",
+            //   access: "read",
+            // },
           ],
         },
       },

@@ -37,7 +37,8 @@ export default defineService("create-user", (props) => {
                         name: name,
                         email: email,
                         password: password,
-                        tenantId: newTenant
+                        tenantId: newTenant,
+                        haveDashboardAccess: true,
                     });
                     await newUser.save();
 

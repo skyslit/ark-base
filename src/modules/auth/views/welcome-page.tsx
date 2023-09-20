@@ -21,6 +21,10 @@ export default createComponent((props) => {
             })
             .finally(() => context.invoke(null, { force: true }));
     };
+
+    // React.useEffect(() => {
+    //     localStorage.removeItem('selectedTenant');
+    // }, [])
     return (
         <div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
             <h2>This is your homepage</h2>

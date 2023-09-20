@@ -83,7 +83,7 @@ export default createReactApp(({ use, useModule }) => {
     },
     {
       path: "/admin",
-      component: () => <Redirect to="/app/files" />,
+      component: () => <Redirect to="/app/viewport/dashboards/default" />,
     },
     {
       path: "/",
