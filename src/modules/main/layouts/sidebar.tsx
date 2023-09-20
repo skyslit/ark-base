@@ -109,7 +109,6 @@ const SiderLayout = createComponent((props) => {
     }
   );
 
-
   const systemDashboardItems = usePath(
     "system-dashboard-items-ref",
     "/dashboards",
@@ -154,7 +153,6 @@ const SiderLayout = createComponent((props) => {
   const listAllGroupsService = useService({ serviceId: "assign-group" });
   const listAllTenantsService = useService({ serviceId: "list-tenants" });
   const addNewUserService = useService({ serviceId: "create-user" });
-
 
   const logoutUser = () => {
     logoutService
@@ -201,7 +199,6 @@ const SiderLayout = createComponent((props) => {
   React.useEffect(() => {
     listAllTenants()
   }, [])
-
 
   const addNewUserToTenant = (data) => {
     addNewUserService.invoke({
@@ -266,7 +263,6 @@ const SiderLayout = createComponent((props) => {
       }
     }
   }, [tenantId, loaded])
-
 
   const [collapsed, setCollapsed] = React.useState(
     window.localStorage.getItem("collapsed")
@@ -346,6 +342,26 @@ const SiderLayout = createComponent((props) => {
       window.location.reload()
     })
   }, [selectedTenant, newDashboardName, dashBoardPath])
+
+  const isUserHaveDashboardAccess = React.useMemo(() => {
+    if (context?.response?.meta?.currentUser) {
+      try {
+        return (
+          Boolean(context.response.meta.currentUser.haveDashboardAccess)
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return false;
+  }, [context?.response?.meta?.currentUser]);
+
+  React.useEffect(() => {
+    if (!isUserSuperAdmin && !isUserHaveDashboardAccess) {
+      history.push("/")
+    }
+  }, [isUserSuperAdmin, isUserHaveDashboardAccess])
+
 
   const menu = (
     <div>
@@ -575,7 +591,6 @@ const SiderLayout = createComponent((props) => {
     default:
       break;
   }
-
   return (
     <>
       <Layout className="homepage-wrapper">

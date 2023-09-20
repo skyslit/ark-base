@@ -24,13 +24,13 @@ export default createComponent((props) => {
 
     const columns = [
         {
-            title: 'Name',
-            key: 'name',
+            title: 'Name/Email',
+            key: 'email',
             render: (user, row: any) =>
                 <>
                     <div style={{ display: "flex", alignItems: "center" }}>
                         <img className="user-icon" src={UserIcon} />
-                        <Link className="usertable-name" to={`/app/users/${(row as any)._id}`} style={{ color: "black" }}>{user.name}</Link>
+                        <Link className="usertable-name" to={`/app/users/${(row as any)._id}`} style={{ color: "black" }}>{user.name || user.email}</Link>
                     </div>
                 </>
         },
@@ -233,9 +233,9 @@ export default createComponent((props) => {
 
     React.useEffect(() => {
         if (tenantId) {
-        availabilityCheck();
+            availabilityCheck();
         }
-    },[tenantId])
+    }, [tenantId])
 
     const addNewUser = (data) => {
         addNewUserService.invoke({
@@ -361,7 +361,7 @@ export default createComponent((props) => {
         listUserDetails();
     }, []);
 
-    
+
 
     const antIcon = (
         <LoadingOutlined style={{ fontSize: 30, color: "#4c91c9" }} spin />
@@ -856,7 +856,7 @@ export default createComponent((props) => {
                                         </Form.Item>
                                         <div style={{ display: "flex", justifyContent: "end", marginTop: 60 }}>
                                             <Form.Item>
-                                                <Button className="create-btn" htmlType="submit" disabled={addGroupService.isLoading || groupTitleDisabled }>
+                                                <Button className="create-btn" htmlType="submit" disabled={addGroupService.isLoading || groupTitleDisabled}>
                                                     {addGroupService.isLoading === true ? (
                                                         <>
                                                             <LoadingOutlined style={{ marginRight: 5 }} />
@@ -928,11 +928,11 @@ export default createComponent((props) => {
                                             <Form.Item>
                                                 {isTenantIdAvailable ? (
                                                     <>
-                                                        <label style={{fontSize: 13}}>Tenant ID</label>
+                                                        <label style={{ fontSize: 13 }}>Tenant ID</label>
                                                         <Input
                                                             onChange={(e) => { setTenantId(e.target.value) }}
                                                             className="title-input"
-                                                            style={{marginTop: 7}}
+                                                            style={{ marginTop: 7 }}
                                                             placeholder="Enter organisation name"
                                                         />
                                                         {availabilityCheckService?.response?.data === false ? (
@@ -977,7 +977,7 @@ export default createComponent((props) => {
                                         }}>
                                             <Form.Item
                                             >
-                                                <Button className="create-btn" htmlType="submit" disabled={addNewUserService.isLoading || availabilityCheckService?.response?.data === false && isTenantIdAvailable }>
+                                                <Button className="create-btn" htmlType="submit" disabled={addNewUserService.isLoading || availabilityCheckService?.response?.data === false && isTenantIdAvailable}>
                                                     {addNewUserService.isLoading === true ? (
                                                         <>
                                                             <LoadingOutlined style={{ marginRight: 5 }} />

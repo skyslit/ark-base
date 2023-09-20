@@ -10,8 +10,8 @@ export default createReactApp(({ use, useModule }) => {
     use(Frontend);
 
   configureAuth({
-    defaultProtectedUrl: "/app/viewport/dashboards/default",
-    loginPageUrl: "/auth/loginV2",
+    defaultProtectedUrl: "/",
+    loginPageUrl: "/auth/login",
   });
 
   useComponent("protectedRoute", Routers.ProtectedRoute),
@@ -25,18 +25,13 @@ export default createReactApp(({ use, useModule }) => {
       component: useComponent("main/admin-page"),
       Route: useComponent("authRoute"),
     },
-    // {
-    //   path: "/auth/login",
-    //   hideInMenu: true,
-    //   component: useComponent("main/login-page"),
-    //   Route: useComponent("authRoute"),
-    // },
     {
-      path: "/auth/loginV2",
+      path: "/auth/login",
       hideInMenu: true,
-      component: useComponent("main/login-v2-page"),
+      component: useComponent("main/login-page-v2"),
       Route: useComponent("authRoute"),
     },
+    
     {
       path: "/app/files/:dynamics_path*",
       hideInMenu: true,
@@ -87,8 +82,14 @@ export default createReactApp(({ use, useModule }) => {
       Route: useComponent("protectedRoute"),
     },
     {
+      path: "/admin",
+      component: () => <Redirect to="/app/files" />,
+    },
+    {
       path: "/",
-      component: () => <Redirect to="/auth/loginV2" />,
+      hideInMenu: true,
+      component: useComponent("main/welcome-page"),
+      // Route: useComponent("protectedRoute"),
     },
   ]);
 });

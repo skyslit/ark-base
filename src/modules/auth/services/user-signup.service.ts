@@ -14,69 +14,45 @@ export default defineService("user-signup-v2", (props) => {
     let member: any = null;
     let tenantGroup: any = null;
 
-    const { email, password, groupId, name, tenantId } = props.args.input;
-
-    const tenantSlug = (tenantId) => {
-      return encodeURIComponent(
-        String(tenantId)
-          .replace(/\W+(?!$)/g, "_")
-          .toUpperCase()
-          .replace(/\W$/, "")
-      );
-    };
+    const { email, password, name } = props.args.input;
 
     await new Promise(async (operationComplete, error) => {
+
       const existingAccount = await UserModel.findOne({
         email,
       }).exec();
+
+      // const group: any = await GroupModel.findOne({ groupTitle: `TENANT_${tenant_id}` }).exec();
 
       if (!existingAccount) {
         newUser = new UserModel({
           name: name,
           email: email,
           password: password,
-          groupId: groupId,
-          tenantId: tenantSlug(tenantId)
+          haveDashboardAccess: false
         });
         await newUser.save();
 
-        if (newUser.tenantId) {
-          tenantGroup = new GroupModel({
-            groupTitle: newUser.tenantId,
-            count: 0,
-            description: ""
-          });
-          await tenantGroup.save();
-
-          addItem('default', `/`, newUser.tenantId, 'folder', {}, { permissions: [{ type: 'user', policy: '', access: 'owner', userEmail: newUser.email }] }, undefined, undefined, 'supress')
-            .then(() => addItem('default', `/${newUser.tenantId.toLowerCase()}`, "users", 'folder', {}, undefined, undefined, undefined, 'supress'))
-            .then(() => addItem('default', `/${newUser.tenantId.toLowerCase()}`, "uploads", 'folder', {}, { permissions: [{ type: 'public', policy: '', access: 'read', userEmail: "" }] }, undefined, undefined, 'supress'))
-            .then(() => addItem('default', `/${newUser.tenantId.toLowerCase()}`, "info", 'settings', {}, { permissions: [{ type: 'public', policy: '', access: 'read', userEmail: "" }] }, undefined, undefined, 'supress'))
-        }
-
-        async.forEach(groupId, (id, next) => {
-          member = new MemberModel({
-            userId: newUser._id,
-            groupId: id
-          });
-          member.save()
-          next();
-        });
-        async.forEach(groupId, async (id, next) => {
-          const group = await GroupModel.findOne({
-            _id: id
-          });
-          group.count = group.count + 1;
-          await group.save();
-          next();
-        })
-        operationComplete(true);
-
+        // addItem('default', `/`, newUser.tenantId, 'folder', {}, { permissions: [{ type: 'user', policy: '', access: 'owner', userEmail: newUser.email }] }, undefined, undefined, 'supress')
+        //   .then(() => addItem('default', `/${newUser.tenantId.toLowerCase()}`, "users", 'folder', {}, undefined, undefined, undefined, 'supress'))
+        //   .then(() => addItem('default', `/${newUser.tenantId.toLowerCase()}`, "uploads", 'folder', {}, { permissions: [{ type: 'public', policy: '', access: 'read', userEmail: "" }] }, undefined, undefined, 'supress'))
+        //   .then(() => addItem('default', `/${newUser.tenantId.toLowerCase()}`, "info", 'settings', {}, { permissions: [{ type: 'public', policy: '', access: 'read', userEmail: "" }] }, undefined, undefined, 'supress'))
       } else {
-        error({ message: "Email already in use" });
+        return error({ message: "User already exists" })
       }
+
+      // member = new MemberModel({
+      //   userId: newUser._id,
+      //   groupId: group._id
+      // });
+      // member.save()
+
+      // group.count = group.count + 1;
+      // await group.save();
+
+      operationComplete(true);
     });
     return props.success({ message: "Account Added Successfully" },
-      [newUser], [member]);
+      newUser);
   });
 });

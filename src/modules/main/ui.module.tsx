@@ -14,8 +14,8 @@ import UserDetails from "../auth/views/user-details-page";
 import AllGroupsPage from "../auth/views/all-groups-page";
 import GroupDetailsPage from "../auth/views/group-details-page";
 import DashboardPage from "../auth/views/dashboard";
-import ManageUsersPage from "../auth/views/manage-user";
 import LoginV2Page from "../auth/views/login-v2";
+import WelcomePage from "../auth/views/welcome-page";
 
 import { initialiseWidgets } from "./widgets";
 
@@ -40,5 +40,6 @@ export default createModule(({ use }) => {
   useComponent("all-groups-page", AllGroupsPage);
   useComponent("group-details-page", GroupDetailsPage);
   useComponent("dashboard-page", DashboardPage)
-  useComponent("login-v2-page", LoginV2Page)
+  useComponent("login-page-v2", LoginV2Page)
+  useComponent("welcome-page", WelcomePage)
 });
