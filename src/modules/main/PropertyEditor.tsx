@@ -139,13 +139,13 @@ export function PropertyRenderer() {
         ];
 
 
-        React.useEffect(() => {
-            listAllGroupsService.invoke({}, { force: true })
-                .then((res) => {
-                })
-                .catch(() => {
-                })
-        }, []);
+        // React.useEffect(() => {
+        //     listAllGroupsService.invoke({}, { force: true })
+        //         .then((res) => {
+        //         })
+        //         .catch(() => {
+        //         })
+        // }, []);
 
         const hasGroupsLoaded = React.useMemo(() => {
             return listAllGroupsService.hasInitialized === true && listAllGroupsService.isLoading === false
@@ -353,11 +353,11 @@ export function PropertyRenderer() {
             label: `Basic Information`,
             children: <BasicInformation />
         },
-        {
-            key: '2',
-            label: `Tenants`,
-            children: <TenantsInformation />
-        }
+        // {
+        //     key: '2',
+        //     label: `Tenants`,
+        //     children: <TenantsInformation />
+        // }
     ];
 
     const { useBreakpoint } = Grid;

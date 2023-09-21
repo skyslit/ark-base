@@ -31,7 +31,6 @@ export default createReactApp(({ use, useModule }) => {
       component: useComponent("main/login-page-v2"),
       Route: useComponent("authRoute"),
     },
-    
     {
       path: "/app/files/:dynamics_path*",
       hideInMenu: true,
@@ -84,6 +83,12 @@ export default createReactApp(({ use, useModule }) => {
     {
       path: "/admin",
       component: () => <Redirect to="/app/viewport/dashboards/default" />,
+    },
+    {
+      path: "/account-settings",
+      hideInMenu: true,
+      component: useComponent("main/user-account-settings"),
+      Route: useComponent("protectedRoute"),
     },
     {
       path: "/",

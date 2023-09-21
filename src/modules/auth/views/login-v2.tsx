@@ -10,6 +10,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 export default createComponent((props) => {
     const { useService, useContext, useFolder } = props.use(Frontend);
     const context = useContext();
+    const history = useHistory()
 
     const CheckForExistingEmailService = useService({ serviceId: "check-for-existing-email" });
     const loginService = useService({ serviceId: "user-login-v2-service" });
@@ -27,11 +28,12 @@ export default createComponent((props) => {
     const specialCharRegex = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/;
     const capitalLetterRegex = /[A-Z]/;
 
-    const CheckForExistingEmail = () => {
+
+    const CheckForExistingEmail = React.useCallback(() => {
         CheckForExistingEmailService
             .invoke({
                 email
-            })
+            }, { force: true })
             .then((res) => {
                 if (res.data === true) {
                     setCurrentState("login")
@@ -40,8 +42,8 @@ export default createComponent((props) => {
                 }
             })
             .catch((e) => {
-            })
-    };
+            });
+    }, [email]);
 
     const _login = () => {
         loginService
@@ -159,7 +161,7 @@ export default createComponent((props) => {
                         <Input.Password
                             onPressEnter={email && currentState === "signUp" && password && confirmPassword && password === confirmPassword ? signUp : undefined}
                             placeholder="Confirm Password" style={{ marginBottom: 20 }} onChange={(e) => { setConfirmPassword(e.target.value) }} />
-                        <Button type="primary" block disabled={!email || password !== confirmPassword || !password || !confirmPassword} onClick={signUp}>
+                        <Button type="primary" block disabled={!email || password !== confirmPassword || !password || !confirmPassword || signupService.isLoading} onClick={signUp}>
                             {signupService.isLoading ? "Signing Up..." : "Sign Up"}
                         </Button>
                     </>

@@ -16,6 +16,8 @@ import GroupDetailsPage from "../auth/views/group-details-page";
 import DashboardPage from "../auth/views/dashboard";
 import LoginV2Page from "../auth/views/login-v2";
 import WelcomePage from "../auth/views/welcome-page";
+import UserAccountSettings from "../auth/views/user-account-settings";
+
 
 import { initialiseWidgets } from "./widgets";
 
@@ -42,4 +44,5 @@ export default createModule(({ use }) => {
   useComponent("dashboard-page", DashboardPage)
   useComponent("login-page-v2", LoginV2Page)
   useComponent("welcome-page", WelcomePage)
+  useComponent("user-account-settings", UserAccountSettings)
 });

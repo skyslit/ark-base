@@ -11,6 +11,7 @@ export default createComponent((props) => {
     const logoutService = useService({ serviceId: "user-logout" });
 
     const context = useContext()
+    const history = useHistory()
 
     const logoutUser = () => {
         logoutService
@@ -29,6 +30,7 @@ export default createComponent((props) => {
         <div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
             <h2>This is your homepage</h2>
             {context?.response?.meta?.currentUser ? (
+                <>
                 <div>
                     <Button
                         type="link"
@@ -50,6 +52,8 @@ export default createComponent((props) => {
                         Sign Out
                     </Button>
                 </div>
+                <div><Button type="link" onClick={()=>{history.push("/account-settings")}}>Go to account settings</Button></div>
+                </>
             ) : null}
         </div>
     );

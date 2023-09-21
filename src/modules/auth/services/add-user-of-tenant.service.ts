@@ -2,7 +2,7 @@ import { defineService, Data } from '@skyslit/ark-backend';
 
 export default defineService('add-user-of-tenant-service', (props) => {
 
-    const { useModel } = props.use(Data);
+    const { useModel, useFolderOperations } = props.use(Data);
     const AccountModel = useModel('account')
     const GroupModel = useModel('group')
     const AssignmentModel = useModel('member-assignment')
@@ -60,6 +60,69 @@ export default defineService('add-user-of-tenant-service', (props) => {
                 groupId: group ? group._id : newGroup._id
             });
             await member.save();
+
+            const folderApi = useFolderOperations();
+            folderApi
+                .addItem(
+                    "default",
+                    "/users",
+                    email,
+                    "folder",
+                    {},
+                    {
+                        permissions: [
+                            {
+                                type: "user",
+                                policy: "",
+                                userEmail: email,
+                                access: "owner",
+                            },
+                        ],
+                    },
+                    false,
+                    undefined,
+                    "supress",
+                    true
+                )
+                .then((userRoot) => {
+                    return folderApi.addItem(
+                        "default",
+                        userRoot.path,
+                        'dashboards',
+                        "folder",
+                        {},
+                        {
+                            permissions: [],
+                        },
+                        false,
+                        undefined,
+                        "supress",
+                        true
+                    ).then(() => userRoot)
+                })
+                .then((userRoot) => folderApi.addItem(
+                    "default",
+                    userRoot.path,
+                    'quick links',
+                    "folder",
+                    {},
+                    {
+                        permissions: [],
+                    },
+                    false,
+                    undefined,
+                    "supress",
+                    true
+                ))
+                .then(async (userRoot) => {
+                    if (tenantId) {
+                        const { currentDir, items } = await folderApi.fetchContent('default', userRoot.path, false);
+                        const containsTenantId = items.some(item => item.name === tenantId);
+                        if (!containsTenantId) {
+                            return folderApi.createShortcut('default', `/tenants/${tenantId.toLowerCase()}`, userRoot.path, tenantId);
+                        }
+                    }
+                })
 
             operationComplete(true);
         });

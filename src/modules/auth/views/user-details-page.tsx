@@ -207,8 +207,6 @@ export default createComponent((props) => {
         }
     }, [accountDetails])
 
-    console.log("accountDetails", accountDetails, haveAccess)
-
     const menu = (
         <Menu>
             <Menu.Item>
@@ -228,7 +226,7 @@ export default createComponent((props) => {
                             cancelText: "Cancel",
                             okButtonProps: { disabled: updateDashboardAccessService.isLoading },
                             onOk: () => {
-                                updateDashboardAccessService.invoke(
+                                return updateDashboardAccessService.invoke(
                                     {
                                         userId: accountDetails._id,
                                         haveAccess: !haveAccess

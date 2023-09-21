@@ -59,6 +59,12 @@ const SiderLayout = createComponent((props) => {
 
   const handleTenantModal = () => {
     setIsTenantModalOpen(!isTenantModalOpen)
+    setModalCurrentState("new-tenant")
+    setTenantId("")
+    if(modalCurrentState === "confirm-add-user"){
+      localStorage.setItem('selectedTenant', tenantId);
+      window.location.href = `/app/viewport/tenants/${tenantId.toLowerCase()}/global/dashboards/default`
+    }
   }
 
   const handleAddDashboardModal = () => {
@@ -176,7 +182,7 @@ const SiderLayout = createComponent((props) => {
       tenantId: tenantId,
     }, { force: true })
       .then((res) => {
-        setModalCurrentState("add-new-user")
+        setModalCurrentState("confirm-add-user")
       })
       .catch((e) => {
       })
@@ -210,7 +216,6 @@ const SiderLayout = createComponent((props) => {
     }, { force: true })
       .then((res) => {
         localStorage.setItem('selectedTenant', tenantId);
-        handleTenantModal()
         window.location.href = `/app/viewport/tenants/${tenantId.toLowerCase()}/global/dashboards/default`
       })
       .catch((e) => {
@@ -317,21 +322,32 @@ const SiderLayout = createComponent((props) => {
 
   const exitTenant = React.useCallback(() => {
     localStorage.removeItem('selectedTenant');
-    window.location.href = '/app/files/dashboards/default'
+    window.location.href = '/app/viewport/dashboards/default'
   }, [])
 
   React.useEffect(() => {
     if (!isUserSuperAdmin && !selectedTenant && allTenants.length > 0) {
       localStorage.setItem('selectedTenant', allTenants[0]?.slug);
-      history.push(`/app/viewport/tenants/${allTenants[0]?.slug}/global/dashboards/default`)
+      window.location.href = `/app/viewport/tenants/${allTenants[0]?.slug}/global/dashboards/default`
     }
-  }, [selectedTenant, isUserSuperAdmin, allTenants,window.location])
+    if (!isUserSuperAdmin && selectedTenant && location.pathname === "/app/viewport/dashboards/default") {
+      window.location.href = `/app/viewport/tenants/${selectedTenant.toLowerCase()}/global/dashboards/default`
+    }
+  }, [selectedTenant, isUserSuperAdmin, allTenants, window.location])
+
 
   const navigateFileManager = React.useMemo(() => {
     if (isUserSuperAdmin) {
       return `/app/files`;
     } else if (selectedTenant)
       return `/app/files/tenants/${selectedTenant.toLowerCase()}`;
+  }, [selectedTenant, isUserSuperAdmin]);
+
+  const navigateSettings = React.useMemo(() => {
+    if (isUserSuperAdmin) {
+      return `/app/files/info`;
+    } else if (selectedTenant)
+      return `/app/files/tenants/${selectedTenant.toLowerCase()}/info`;
   }, [selectedTenant, isUserSuperAdmin]);
 
   const addNewDashboard = React.useCallback(() => {
@@ -573,6 +589,15 @@ const SiderLayout = createComponent((props) => {
     </div>
   )
 
+  const ConfirmAddUserState = (
+    <div style={{padding:30,display:"flex",justifyContent:"center",alignItems:"center",flexDirection:"column"}}>
+        <CheckCircleIcon style={{fontSize:50,color:"green"}} />
+        <h3>Tenant Added!</h3>
+        <p>Do you want to add user to this tenant?</p>
+        <div style={{display:"flex",gap:5}}><Button type="ghost" onClick={handleTenantModal}>Skip</Button> <Button onClick={()=>{setModalCurrentState("add-new-user")}}>Yes</Button></div>
+    </div>
+  )
+
   const AddDashboardContents = (
     <div style={{ display: "flex", justifyContent: "center", flexDirection: "column" }}>
       <Input placeholder="Enter name" onChange={(e) => { setNewDashboardName(e.target.value) }} />
@@ -580,8 +605,13 @@ const SiderLayout = createComponent((props) => {
     </div>
   )
 
+
+
   let currentState
   switch (modalCurrentState) {
+    case "confirm-add-user":
+      currentState = ConfirmAddUserState
+      break;
     case "new-tenant":
       currentState = NewTenant
       break;
@@ -609,7 +639,7 @@ const SiderLayout = createComponent((props) => {
               </Typography.Text>
             </div>
           </div>
-          {!isUserSuperAdmin && filterNames.length === 0 && !searchInput ? (
+          {!isUserSuperAdmin && filterNames.length === 0 && !searchInput && !selectedTenant ? (
             null
           ) : (
             <div className="dropdown-section">
@@ -902,33 +932,31 @@ const SiderLayout = createComponent((props) => {
                       }`}
                   >
                     <SiderUsersIcon style={{ fontSize: 18 }} />
-                    <span className="btn-text">Users & Groups</span>
+                    <span className="btn-text">{isUserSuperAdmin ? "Global Access" : "Account"}</span>
                   </Link>
                 </div>
-                {isUserSuperAdmin === true ? (
                   <>
                     <div className="button-wrapper">
                       <Link
                         type="text"
-                        to="/app/files/info"
-                        className={`${location.pathname === "/app/files/info"
+                        to={navigateSettings}
+                        className={`${location.pathname === navigateSettings
                           ? "selected-btn"
                           : "unselected-btn"
                           }`}
                       >
                         <SiderSettingsIcon style={{ fontSize: 18 }} />
-                        <span className="btn-text">Settings</span>
+                        <span className="btn-text">{isUserSuperAdmin ? "Global Settings" : "Settings"}</span>
                       </Link>
                     </div>
                   </>
-                ) : null}
                 {/* {isUserSuperAdmin === true ? ( */}
                 <>
                   <div className="button-wrapper">
                     <Link
                       type="text"
                       to={navigateFileManager}
-                      className={`${location.pathname === `/app/files/tenants/${selectedTenant?.toLowerCase()}` || location.pathname === "/app/files"
+                      className={`${location.pathname === navigateFileManager
                         ? "selected-btn"
                         : "unselected-btn"
                         }`}
@@ -1175,7 +1203,7 @@ const SiderLayout = createComponent((props) => {
                     }`}
                 >
                   <SiderUsersIcon style={{ fontSize: 18 }} />
-                  <span className="btn-text">Users & Groups</span>
+                  <span className="btn-text">{isUserSuperAdmin ? "Global Access" : "Account"}</span>
                 </Link>
               </div>
               {isUserSuperAdmin === true ? (
@@ -1183,14 +1211,14 @@ const SiderLayout = createComponent((props) => {
                   <div className="button-wrapper">
                     <Link
                       type="text"
-                      to="/app/files/info"
-                      className={`${location.pathname === "/app/files/info"
+                      to={navigateSettings}
+                      className={`${location.pathname === navigateSettings
                         ? "selected-btn"
                         : "unselected-btn"
                         }`}
                     >
                       <SiderSettingsIcon style={{ fontSize: 18 }} />
-                      <span className="btn-text">Settings</span>
+                      <span className="btn-text">{isUserSuperAdmin ? "Global Settings" : "Settings"}</span>
                     </Link>
                   </div>
                 </>
@@ -1201,7 +1229,7 @@ const SiderLayout = createComponent((props) => {
                   <Link
                     type="text"
                     to={navigateFileManager}
-                    className={`${location.pathname === `/app/files/tenants/${selectedTenant?.toLowerCase()}` || location.pathname === "/app/files"
+                    className={`${location.pathname === navigateFileManager
                       ? "selected-btn"
                       : "unselected-btn"
                       }`}
