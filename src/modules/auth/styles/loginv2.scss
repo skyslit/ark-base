@@ -1,0 +1,67 @@
+.login-wrapper {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    height: 100%;
+
+    .card-wrapper {
+        box-shadow: 0px 3px 6px #00000029;
+        border: 1px solid #F0F0F0;
+        width: 595px;
+        height: 547px;
+        // width: 485px;
+        // height: 430px;
+        padding: 40px 45px 47px 45px;
+        display: flex;
+        flex-direction: column;
+
+        .heading {
+            color: #222222;
+            justify-content: center;
+            display: flex;
+            font-size: 33px;
+            margin: unset;
+            padding-bottom: 8px;
+            font-family: Roboto-Bold;
+        }
+
+        .signin-description {
+            font-family: Roboto-Regular;
+            color: #313131;
+            font-size: 16px;
+            justify-content: center;
+            display: flex;
+        }
+
+        label {
+            color: #191919;
+            font-family: Roboto-Regular;
+            font-size: 14px;
+        }
+
+        .custom-input {
+            height: 57px;
+            box-shadow: unset;
+            border: 1px solid #D6D6D6;
+            color: #222222;
+            font-family: Roboto-Regular;
+            font-size: 16px;
+            border-radius: 4px;
+
+            &:hover {
+                border: 1px solid #3F6BCE;
+            }
+
+            &:focus {
+                border: 1px solid #3F6BCE;
+            }
+
+            &::placeholder {
+                color: #ACACAC;
+                font-size: 16px;
+                font-family: Roboto-Regular;
+            }
+        }
+    }
+}

@@ -5,7 +5,7 @@ import { Col, Row, Typography, Form, Button, Input, message, Card, Spin } from "
 import { useParams, useHistory } from "react-router-dom";
 import { LeftArrowIcon } from "../icons/global-icons";
 import { LoadingOutlined } from "@ant-design/icons";
-
+import "../styles/loginv2.scss"
 
 export default createComponent((props) => {
     const { useService, useContext, useFolder } = props.use(Frontend);
@@ -139,12 +139,18 @@ export default createComponent((props) => {
     }
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: "#d7d7d7" }}>
-            <Card title={currentState === "login" ? "Login" : currentState === "signUp" ? "Sign Up" : "Signup/Login"} style={{ width: 400 }}>
-                {currentState !== "default" ? (
+        <div className="login-wrapper">
+            <div className="card-wrapper" >
+                <h3 className="heading">{currentState === "login" ? "Sign in" : currentState === "signUp" ? "Create new account" : "Sign in"}</h3>
+                <span className="signin-description">Enter your email to login or sign up</span>
+                {/* {currentState !== "default" ? (
                     <div><Button style={{ paddingLeft: "unset" }} type="text" onClick={() => { setCurrentState("default") }}><LeftArrowIcon /></Button></div>
-                ) : null}
-                <Input placeholder="Enter email"
+                ) : null} */}
+                <div>
+                    
+                </div>
+                <label>Your email</label>
+                <Input className="custom-input" placeholder="Enter your email address"
                     autoFocus
                     onChange={(e) => { setEmail(e.target.value) }}
                     value={email}
@@ -183,7 +189,7 @@ export default createComponent((props) => {
                         )}
                     </Button>
                 )}
-            </Card>
+            </div>
         </div>
     );
 });
