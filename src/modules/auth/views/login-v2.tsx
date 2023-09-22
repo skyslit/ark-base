@@ -17,11 +17,11 @@ export default createComponent((props) => {
     const signupService = useService({ serviceId: "user-signup-v2" });
     const adminValidationService = useService({ serviceId: "admin-validation" });
 
-    const [email, setEmail] = React.useState('arrizwin@skyslit.com')
+    const [email, setEmail] = React.useState('')
     const [password, setPassword] = React.useState('')
     const [passwordError, setPasswordError] = React.useState('')
     const [confirmPassword, setConfirmPassword] = React.useState('')
-    const [currentState, setCurrentState] = React.useState('signUp')
+    const [currentState, setCurrentState] = React.useState('default')
     const [isEmailValidated, seIsEmailValidated] = React.useState(true)
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
