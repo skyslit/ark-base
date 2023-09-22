@@ -381,8 +381,9 @@ const SiderLayout = createComponent((props) => {
   const menu = (
     <div>
       {filterNames.length === 0 && !searchInput ? (
-        <div style={{ height: 320 }} className="empty-tenant-wrapper">
-          <div>Add tenants to view their dashboard</div>
+        <div className="empty-tenant-wrapper">
+          <h4>Add tenants to view their dashboard</h4>
+          <p>Provide this app to other tenants (sellers, educators, etc.) who can list their products/services using your app and sell it to their customers.</p>
           <div><Button onClick={handleTenantModal}>Add Tenant</Button></div>
         </div>
       ) : (
