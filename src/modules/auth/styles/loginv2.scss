@@ -4,6 +4,16 @@
     justify-content: center;
     background-color: white;
     height: 100%;
+    flex-direction: column;
+
+    .logo-icon-wrapper {
+        margin-bottom: 60px;
+
+        .anticon svg {
+            width: 4em;
+            height: 1em;
+        }
+    }
 
     .card-wrapper {
         box-shadow: 0px 3px 6px #00000029;
@@ -22,7 +32,7 @@
             display: flex;
             font-size: 33px;
             margin: unset;
-            padding-bottom: 8px;
+            padding-bottom: 3px;
             font-family: Roboto-Bold;
         }
 
@@ -34,34 +44,130 @@
             display: flex;
         }
 
-        label {
-            color: #191919;
-            font-family: Roboto-Regular;
+        .label-field-wrapper {
+            flex-direction: column;
+            display: flex;
+            margin-top: 50px;
+            height: 100%;
+            justify-content: space-between;
+
+            label {
+                color: #191919;
+                font-family: Roboto-Regular;
+                font-size: 14px;
+                padding-bottom: 7px;
+            }
+
+            .custom-input {
+                height: 54px;
+                box-shadow: unset;
+                border: 1px solid #D6D6D6;
+                color: #222222;
+                font-family: Roboto-Regular;
+                font-size: 16px;
+                border-radius: 4px;
+
+                &:hover:enabled {
+                    border: 1px solid #3F6BCE;
+                }
+
+                &:focus:enabled {
+                    border: 1px solid #3F6BCE;
+                }
+
+                &::placeholder {
+                    color: #ACACAC;
+                    font-size: 16px;
+                    font-family: Roboto-Regular;
+                }
+            }
+
+            .ant-input-password {
+                height: 54px;
+                box-shadow: unset;
+                border: 1px solid #D6D6D6;
+                color: #222222;
+                font-family: Roboto-Regular;
+                font-size: 16px;
+                border-radius: 4px;
+
+                &:hover {
+                    border: 1px solid #3F6BCE;
+                }
+
+                &:focus {
+                    border: 1px solid #3F6BCE;
+                }
+
+                &::placeholder {
+                    color: #ACACAC;
+                    font-size: 16px;
+                    font-family: Roboto-Regular;
+                }
+            }
+            .continue-btn-wrapper {
+                display: flex;
+                justify-content: center;
+
+                .continue-btn {
+                    color: #FFFFFF;
+                    font-size: 16px;
+                    font-family: Roboto-Medium;
+                    background-color: #222222;
+                    border-radius: 29px;
+                    align-items: center;
+                    display: flex;
+                    justify-content: center;
+                    padding: 25px 0px;
+                    width: 145px;
+                    transition: all 0.2s;
+
+                    &:hover:enabled {
+                        opacity: 0.9;
+
+                        .anticon {
+                            transform: translateX(3px);
+                        }
+                    }
+
+                    &:active:enabled {
+                        transform: scale(0.98);
+
+                    }
+
+                    &:disabled {
+                        opacity: 0.8;
+                    }
+
+                    .arrow-icon {
+                        margin-left: 22px;
+                        transition: transform 0.2s;
+                        font-size: 14px;
+                    }
+                }
+            }
+        }
+    }
+
+    .dont-have-account-wrapper {
+        flex-direction: column;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 70px;
+
+        h5 {
+            color: #292929;
             font-size: 14px;
+            font-family: Roboto-Regular;
+            margin-bottom: 6px;
         }
 
-        .custom-input {
-            height: 57px;
-            box-shadow: unset;
-            border: 1px solid #D6D6D6;
-            color: #222222;
+        h6 {
+            color: #818181;
+            font-size: 14px;
             font-family: Roboto-Regular;
-            font-size: 16px;
-            border-radius: 4px;
-
-            &:hover {
-                border: 1px solid #3F6BCE;
-            }
-
-            &:focus {
-                border: 1px solid #3F6BCE;
-            }
-
-            &::placeholder {
-                color: #ACACAC;
-                font-size: 16px;
-                font-family: Roboto-Regular;
-            }
+            margin: unset;
         }
     }
 }

@@ -29,7 +29,10 @@ import AddBtn from "../icons/add-btn.svg";
 import CheckCircle from "../icons/check-circle.svg";
 // @ts-ignore
 import CloseRounded from "../icons/close-rounded.svg";
-
+// @ts-ignore
+import RightArrow from "../icons/right-arrow.svg";
+// @ts-ignore
+import SkyslitColorFullLogo from "../icons/skyslit-color-full-logo.svg";
 
 export const SiderFolderIcon = (props: any) => {
     return <Icon component={SiderFolder} {...props} />;
@@ -72,4 +75,10 @@ export const CheckCircleIcon = (props: any) => {
 };
 export const CloseRoundedIcon = (props: any) => {
     return <Icon component={CloseRounded} {...props} />;
+};
+export const RightArrowIcon = (props: any) => {
+    return <Icon component={RightArrow} {...props} />;
+};
+export const SkyslitColorFullLogoIcon = (props: any) => {
+    return <Icon component={SkyslitColorFullLogo} {...props} />;
 };

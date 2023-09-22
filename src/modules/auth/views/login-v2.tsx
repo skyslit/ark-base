@@ -3,7 +3,7 @@ import { createComponent, Frontend } from "@skyslit/ark-frontend";
 import "../styles/login-page.scss";
 import { Col, Row, Typography, Form, Button, Input, message, Card, Spin } from "antd";
 import { useParams, useHistory } from "react-router-dom";
-import { LeftArrowIcon } from "../icons/global-icons";
+import { LeftArrowIcon, RightArrowIcon, SkyslitColorFullLogoIcon } from "../icons/global-icons";
 import { LoadingOutlined } from "@ant-design/icons";
 import "../styles/loginv2.scss"
 
@@ -140,55 +140,73 @@ export default createComponent((props) => {
 
     return (
         <div className="login-wrapper">
+            <div className='logo-icon-wrapper'>
+                <SkyslitColorFullLogoIcon style={{ fontSize: 33 }} />
+            </div>
             <div className="card-wrapper" >
                 <h3 className="heading">{currentState === "login" ? "Sign in" : currentState === "signUp" ? "Create new account" : "Sign in"}</h3>
                 <span className="signin-description">Enter your email to login or sign up</span>
                 {/* {currentState !== "default" ? (
                     <div><Button style={{ paddingLeft: "unset" }} type="text" onClick={() => { setCurrentState("default") }}><LeftArrowIcon /></Button></div>
                 ) : null} */}
-                <div>
-                    
-                </div>
-                <label>Your email</label>
-                <Input className="custom-input" placeholder="Enter your email address"
-                    autoFocus
-                    onChange={(e) => { setEmail(e.target.value) }}
-                    value={email}
-                    onPressEnter={email && currentState === "default" && isEmailValidated ? CheckForExistingEmail : undefined}
-                    disabled={currentState === "login" || currentState === "signUp"} />
-                <div style={{ height: 20 }}>
-                    {!isEmailValidated ? (
-                        <span style={{ color: "red" }}>Please enter a valid email address</span>
-                    ) : null}
-                </div>
-                {currentState === "signUp" ? (
-                    <>
-                        <Input.Password autoFocus placeholder="Enter Password" style={{ marginBottom: 20 }} onChange={(e) => { setPassword(e.target.value) }} />
-                        <Input.Password
-                            onPressEnter={email && currentState === "signUp" && password && confirmPassword && password === confirmPassword ? signUp : undefined}
-                            placeholder="Confirm Password" style={{ marginBottom: 20 }} onChange={(e) => { setConfirmPassword(e.target.value) }} />
-                        <Button type="primary" block disabled={!email || password !== confirmPassword || !password || !confirmPassword || signupService.isLoading} onClick={signUp}>
-                            {signupService.isLoading ? "Signing Up..." : "Sign Up"}
-                        </Button>
-                    </>
-                ) : currentState === "login" ? (
-                    <>
-                        <Input.Password
-                            onPressEnter={email && currentState === "login" && password ? _login : undefined}
-                            autoFocus placeholder="Enter Password" style={{ marginBottom: 20 }} onChange={(e) => { setPassword(e.target.value) }} />
-                        <Button type="primary" block disabled={!email || !password || loginService.isLoading} onClick={_login} >
-                            {loginService.isLoading ? "Logging in..." : "Login"}
-                        </Button>
-                    </>
-                ) : (
-                    <Button type="primary" block disabled={!email || CheckForExistingEmailService.isLoading || !isEmailValidated} onClick={CheckForExistingEmail}>
-                        {CheckForExistingEmailService.isLoading ? (
-                            "Please Wait..."
+                <div className="label-field-wrapper">
+                    <div style={{ flexDirection: "column", display: 'flex' }}>
+                        <label>Your email</label>
+                        <Input className="custom-input" placeholder="Enter your email address"
+                            autoFocus
+                            onChange={(e) => { setEmail(e.target.value) }}
+                            value={email}
+                            onPressEnter={email && currentState === "default" && isEmailValidated ? CheckForExistingEmail : undefined}
+                            disabled={currentState === "login" || currentState === "signUp"} />
+                        <div style={{ height: 20 }}>
+                            {!isEmailValidated ? (
+                                <span style={{ color: "red" }}>Please enter a valid email address</span>
+                            ) : null}
+                        </div>
+
+                        {currentState === "signUp" ? (
+                            <>
+                                <Input.Password autoFocus placeholder="Enter Password" style={{ marginBottom: 20 }} onChange={(e) => { setPassword(e.target.value) }} />
+                                <Input.Password
+                                    onPressEnter={email && currentState === "signUp" && password && confirmPassword && password === confirmPassword ? signUp : undefined}
+                                    placeholder="Confirm Password" style={{ marginBottom: 20 }} onChange={(e) => { setConfirmPassword(e.target.value) }} />
+                            </>
+                        ) : currentState === "login" ? (
+                            <>
+                                <label>Password:</label>
+                                <Input.Password
+                                    onPressEnter={email && currentState === "login" && password ? _login : undefined}
+                                    autoFocus placeholder="Enter Password" style={{ marginBottom: 20 }} onChange={(e) => { setPassword(e.target.value) }} />
+                            </>
                         ) : (
-                            "Continue"
+                            null
                         )}
-                    </Button>
-                )}
+                    </div>
+
+                    <div className="continue-btn-wrapper">
+                        {currentState === "signUp" ? (
+                            <Button type="primary" block disabled={!email || password !== confirmPassword || !password || !confirmPassword || signupService.isLoading} onClick={signUp}>
+                                {signupService.isLoading ? "Signing Up..." : "Sign Up"}
+                            </Button>
+                        ) : currentState === "login" ? (
+                            <Button type="primary" block disabled={!email || !password || loginService.isLoading} onClick={_login} >
+                                {loginService.isLoading ? "Logging in..." : "Login"}
+                            </Button>
+                        ) : (
+                            CheckForExistingEmailService.isLoading ? (
+                                <LoadingOutlined style={{ fontSize: 30, color: "#222222" }} />
+                            ) : (
+                                <Button className="continue-btn" type="text" block disabled={!email || CheckForExistingEmailService.isLoading || !isEmailValidated} onClick={CheckForExistingEmail}>
+                                    Continue <RightArrowIcon className="arrow-icon" />
+                                </Button>
+                            )
+                        )}
+                    </div>
+                </div>
+            </div>
+            <div style={{ display: currentState !== "default" ? "none" : "flex" }} className="dont-have-account-wrapper">
+                <h5>Don’t have an account?</h5>
+                <h6>You can still enter your email, and we will guide you from there.</h6>
             </div>
         </div>
     );
