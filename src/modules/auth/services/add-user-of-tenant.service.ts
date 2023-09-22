@@ -114,15 +114,16 @@ export default defineService('add-user-of-tenant-service', (props) => {
                     "supress",
                     true
                 ))
-                .then(async (userRoot) => {
-                    if (tenantId) {
-                        const { currentDir, items } = await folderApi.fetchContent('default', userRoot.path, false);
-                        const containsTenantId = items.some(item => item.name === tenantId);
-                        if (!containsTenantId) {
-                            return folderApi.createShortcut('default', `/tenants/${tenantId.toLowerCase()}`, userRoot.path, tenantId);
-                        }
-                    }
-                })
+                // .then(async (userRoot) => {
+                //     if (tenantId) {
+                //         const { currentDir, items } = await folderApi.fetchContent('default', userRoot.path, false);
+                //         const containsTenantId = items.some(item => item.name === tenantId);
+                //         if (!containsTenantId) {
+                //             return folderApi.createShortcut('default', `/tenants/${tenantId.toLowerCase()}`, userRoot.path, tenantId);
+                //         }
+                //     }
+                // })
+                // folderApi.createShortcut()
 
             operationComplete(true);
         });
