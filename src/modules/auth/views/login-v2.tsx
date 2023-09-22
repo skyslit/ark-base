@@ -1,14 +1,14 @@
 import React from "react";
 import { createComponent, Frontend } from "@skyslit/ark-frontend";
 import "../styles/login-page.scss";
-import { Col, Row, Typography, Form, Button, Input, message, Card, Spin } from "antd";
-import { useParams, useHistory } from "react-router-dom";
-import { LeftArrowIcon, RightArrowIcon, SkyslitColorFullLogoIcon } from "../icons/global-icons";
+import { Typography, Button, Input, message, Spin } from "antd";
+import { useHistory } from "react-router-dom";
+import { RightArrowIcon, SkyslitColorFullLogoIcon } from "../icons/global-icons";
 import { LoadingOutlined } from "@ant-design/icons";
 import "../styles/loginv2.scss"
 
 export default createComponent((props) => {
-    const { useService, useContext, useFolder } = props.use(Frontend);
+    const { useService, useContext } = props.use(Frontend);
     const context = useContext();
     const history = useHistory()
 
@@ -17,17 +17,34 @@ export default createComponent((props) => {
     const signupService = useService({ serviceId: "user-signup-v2" });
     const adminValidationService = useService({ serviceId: "admin-validation" });
 
-    const [email, setEmail] = React.useState('')
+    const [email, setEmail] = React.useState('arrizwin@skyslit.com')
     const [password, setPassword] = React.useState('')
+    const [passwordError, setPasswordError] = React.useState('')
     const [confirmPassword, setConfirmPassword] = React.useState('')
-    const [currentState, setCurrentState] = React.useState('default')
+    const [currentState, setCurrentState] = React.useState('signUp')
     const [isEmailValidated, seIsEmailValidated] = React.useState(true)
 
-    const params: any = useParams()
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    const specialCharRegex = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/;
-    const capitalLetterRegex = /[A-Z]/;
 
+
+    const validatePassword = (value) => {
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+        if (!passwordRegex.test(value)) {
+            setPasswordError(
+                'Password must contain a minimum of 8 characters including one uppercase letter, one lowercase letter, and a number.'
+            );
+        } else {
+            setPasswordError('');
+        }
+    };
+
+    const handlePasswordChange = (e) => {
+        const newPassword = e.target.value;
+        setPassword(newPassword);
+        if (currentState === "signUp") {
+            validatePassword(newPassword);
+        }
+    };
 
     const CheckForExistingEmail = React.useCallback(() => {
         CheckForExistingEmailService
@@ -143,55 +160,84 @@ export default createComponent((props) => {
             <div className='logo-icon-wrapper'>
                 <SkyslitColorFullLogoIcon style={{ fontSize: 33 }} />
             </div>
-            <div className="card-wrapper" >
+            <div style={{ paddingBottom: currentState === "signUp" ? 25 : "" }} className="card-wrapper" >
                 <h3 className="heading">{currentState === "login" ? "Sign in" : currentState === "signUp" ? "Create new account" : "Sign in"}</h3>
-                <span className="signin-description">Enter your email to login or sign up</span>
-                {/* {currentState !== "default" ? (
-                    <div><Button style={{ paddingLeft: "unset" }} type="text" onClick={() => { setCurrentState("default") }}><LeftArrowIcon /></Button></div>
-                ) : null} */}
-                <div className="label-field-wrapper">
+                <span className="signin-description">{currentState === "signUp" ? "Set a new password to finalise" : "Enter your email to login or sign up"}</span>
+                <div style={{ marginTop: currentState === "signUp" || currentState === "login" ? 30 : 50 }} className="label-field-wrapper">
                     <div style={{ flexDirection: "column", display: 'flex' }}>
-                        <label>Your email</label>
-                        <Input className="custom-input" placeholder="Enter your email address"
-                            autoFocus
-                            onChange={(e) => { setEmail(e.target.value) }}
-                            value={email}
-                            onPressEnter={email && currentState === "default" && isEmailValidated ? CheckForExistingEmail : undefined}
-                            disabled={currentState === "login" || currentState === "signUp"} />
-                        <div style={{ height: 20 }}>
-                            {!isEmailValidated ? (
-                                <span style={{ color: "red" }}>Please enter a valid email address</span>
-                            ) : null}
-                        </div>
-
+                        {currentState === "default" ? (
+                            <>
+                                <label>Your email</label>
+                                <Input className="custom-input" placeholder="Enter your email address"
+                                    autoFocus
+                                    onChange={(e) => { setEmail(e.target.value) }}
+                                    value={email}
+                                    onPressEnter={email && currentState === "default" && isEmailValidated ? CheckForExistingEmail : undefined}
+                                    disabled={CheckForExistingEmailService.isLoading}
+                                />
+                                <div style={{ height: 20 }}>
+                                    {!isEmailValidated ? (
+                                        <span className="email-validation-msg">Please enter a valid email address</span>
+                                    ) : null}
+                                </div>
+                            </>
+                        ) : null}
                         {currentState === "signUp" ? (
                             <>
-                                <Input.Password autoFocus placeholder="Enter Password" style={{ marginBottom: 20 }} onChange={(e) => { setPassword(e.target.value) }} />
-                                <Input.Password
+                                <div className="email-change-wrapper">
+                                    <div style={{ flexDirection: 'column', display: 'flex', gap: 5, width: 340 }}>
+                                        <h5>Email:</h5>
+                                        <Typography.Text className="email-text" ellipsis={true}>
+                                            {email}
+                                        </Typography.Text>
+                                    </div>
+                                    <Button className="change-btn" type="text" onClick={() => { setCurrentState("default") }}>Change</Button>
+                                </div>
+                                <Input.Password disabled={signupService.isLoading} autoFocus placeholder="Enter your password" onChange={(e) => { handlePasswordChange(e) }} />
+                                <span style={{ display: passwordError ? "inline" : "none" }} className="password-condition-text">Password must contain a minimum of 8 characters including one uppercase letter, one lower case letter and a number.</span>
+                                <Input.Password style={{ marginTop: passwordError ? "unset" : 20 }} disabled={signupService.isLoading}
                                     onPressEnter={email && currentState === "signUp" && password && confirmPassword && password === confirmPassword ? signUp : undefined}
-                                    placeholder="Confirm Password" style={{ marginBottom: 20 }} onChange={(e) => { setConfirmPassword(e.target.value) }} />
+                                    placeholder="Re-enter password" onChange={(e) => { setConfirmPassword(e.target.value) }} />
+                                <span style={{ display: password !== confirmPassword && confirmPassword ? "inline" : "none" }} className="password-condition-text">Password does not match</span>
+
                             </>
                         ) : currentState === "login" ? (
                             <>
+                                <div className="email-change-wrapper">
+                                    <div className="email-text-wrapper">
+                                        <h5>Email:</h5>
+                                        <Typography.Text className="email-text" ellipsis={true}>
+                                            {email}
+                                        </Typography.Text>
+                                    </div>
+                                    <Button className="change-btn" type="text" onClick={() => { setCurrentState("default") }}>Change</Button>
+                                </div>
                                 <label>Password:</label>
-                                <Input.Password
+                                <Input.Password disabled={loginService.isLoading}
                                     onPressEnter={email && currentState === "login" && password ? _login : undefined}
-                                    autoFocus placeholder="Enter Password" style={{ marginBottom: 20 }} onChange={(e) => { setPassword(e.target.value) }} />
+                                    autoFocus placeholder="Enter your password" style={{ marginBottom: 20 }} onChange={(e) => { setPassword(e.target.value) }} />
                             </>
                         ) : (
                             null
                         )}
                     </div>
-
                     <div className="continue-btn-wrapper">
                         {currentState === "signUp" ? (
-                            <Button type="primary" block disabled={!email || password !== confirmPassword || !password || !confirmPassword || signupService.isLoading} onClick={signUp}>
-                                {signupService.isLoading ? "Signing Up..." : "Sign Up"}
-                            </Button>
+                            signupService.isLoading ? (
+                                <LoadingOutlined style={{ fontSize: 30, color: "#222222" }} />
+                            ) : (
+                                <Button style={{ width: 198 }} className="continue-btn" type="text" block disabled={!email || password !== confirmPassword || !password || !confirmPassword || signupService.isLoading} onClick={signUp}>
+                                    Create Account <RightArrowIcon style={{ marginLeft: 28 }} className="arrow-icon" />
+                                </Button>
+                            )
                         ) : currentState === "login" ? (
-                            <Button type="primary" block disabled={!email || !password || loginService.isLoading} onClick={_login} >
-                                {loginService.isLoading ? "Logging in..." : "Login"}
-                            </Button>
+                            loginService.isLoading ? (
+                                <LoadingOutlined style={{ fontSize: 30, color: "#222222" }} />
+                            ) : (
+                                <Button className="continue-btn" type="text" block disabled={!email || !password || loginService.isLoading} onClick={_login} >
+                                    Login <RightArrowIcon style={{ marginLeft: 28 }} className="arrow-icon" />
+                                </Button>
+                            )
                         ) : (
                             CheckForExistingEmailService.isLoading ? (
                                 <LoadingOutlined style={{ fontSize: 30, color: "#222222" }} />
