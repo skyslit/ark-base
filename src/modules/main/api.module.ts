@@ -9,7 +9,7 @@ import BlackListedTokenSchema from "../auth/schema/blacklisted-token.schema";
 
 import AdminValidation from "../auth/services/admin-validation.service";
 import UserLogin from "../auth/services/user-login.service";
-import AddAdminModel from "../auth/services/add-admin-account.service";
+import { addAdminAccountService, adminLauncherService } from "../auth/services/add-admin-account.service";
 import RegistrationService from "../auth/services/registration.service";
 import RegisterUserService from "../auth/services/register-user.service";
 import UserLogout from "../auth/services/logout-user.service";
@@ -69,7 +69,7 @@ export default createModule(({ use, run }) => {
 
   useService(AdminValidation);
   useService(UserLogin);
-  useService(AddAdminModel);
+  useService(addAdminAccountService);
   useService(RegistrationService);
   useService(RegisterUserService);
   useService(UserLogout);
@@ -111,6 +111,10 @@ export default createModule(({ use, run }) => {
   useService(LoginV2Service);
   useService(SignupV2Service);
   useService(UpdateDashboardAccess);
+  useService(adminLauncherService, {
+    method: 'get',
+    path: '/api/admin-launcher'
+  })
 
   if (useEnv("AWS_ACCESS_KEY_ID")) {
     useVolume(

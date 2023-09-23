@@ -395,7 +395,7 @@ export function Renderer() {
                   if (api?.meta?.mode === "picker") {
                     return (
                       <Breadcrumb.Item
-                        key={p.folderName}
+                        key={p.folderName} 
                         onClick={() => api.setPath(`/${p.fullPath}`)}
                       >
                         {p.folderName}

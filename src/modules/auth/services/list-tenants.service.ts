@@ -19,7 +19,7 @@ export default defineService("list-tenants", (props) => {
         await new Promise(async (operationComplete, error) => {
             const { currentDir, items } = await folderApi.fetchContent('default', '/tenants', false);
 
-            if (!isSuperAdmin) {
+            if (!isSuperAdmin && Array.isArray(items)) {
                 const foundItems = items.filter((item) =>
                     item.security &&
                     item.security.permissions &&
