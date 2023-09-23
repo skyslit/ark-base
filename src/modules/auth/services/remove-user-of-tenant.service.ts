@@ -6,16 +6,17 @@ export default defineService('remove-user-of-tenant-service', (props) => {
     const GroupModel = useModel("group")
     const AccountModel = useModel("account")
 
-    props.defineRule((props) => {
-        props.allowPolicy('ADMIN')
-    });
+    // props.defineRule((props) => {
+    //     props.allowPolicy('ADMIN')
+    // });
 
     props.defineLogic(async (props) => {
         await new Promise(async (operationComplete, error) => {
-            const tenantId = props.args.user.tenantId;
-            const { userId } = props.args.input;
+            const { userId,tenantId } = props.args.input;
+            const tenant_id = tenantId.toUpperCase()
+
             const accountItem = await MemberModel.findOne({ userId: userId }).exec();
-            const group: any = await GroupModel.findOne({ groupTitle: tenantId }).exec();
+            const group: any = await GroupModel.findOne({ groupTitle: `TENANT_${tenant_id}` }).exec();
 
             if (accountItem) {
                 if (group) {

@@ -103,6 +103,19 @@ export default createComponent((props) => {
     const changePasswordService = useService({ serviceId: "change-password" });
     const availabilityCheckService = useService({ serviceId: "availability-check-of-tenantId" });
 
+    const logoutService = useService({ serviceId: "user-logout" });
+
+
+    const logoutUser = () => {
+        logoutService
+            .invoke()
+            .then((res) => { })
+            .catch((e) => {
+                message.error("Try again!");
+            })
+            .finally(() => context.invoke(null, { force: true }));
+    };
+
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -314,8 +327,6 @@ export default createComponent((props) => {
             })
     }
 
-
-
     const updateEmail = (data) => {
         updateEmailService.invoke({
             email: data.newEmail,
@@ -361,8 +372,6 @@ export default createComponent((props) => {
         listUserDetails();
     }, []);
 
-
-
     const antIcon = (
         <LoadingOutlined style={{ fontSize: 30, color: "#4c91c9" }} spin />
     );
@@ -382,7 +391,6 @@ export default createComponent((props) => {
             </div>
         );
     }
-
 
     return (
         <>
@@ -792,204 +800,20 @@ export default createComponent((props) => {
                                         </div>
                                     </div>
                                 </div>
-                                {isSuperAdmin ? (
-                                    <Collapse>
-                                        <Panel key="1" header={`Users (${forUserCount.length})`}
-                                            extra={genExtra()}
-                                        >
-                                            <Table dataSource={listAllUsers.dataSource} columns={columns} onChange={listAllUsers.onChange} pagination={false} />
-                                            <div className="seeAll-text">
-                                                <Link to="/app/users/all" className="seeAll-button" >See All</Link>
-                                            </div>
-                                        </Panel>
-                                    </Collapse >
-                                ) : (null)}
-                                <Collapse>
-                                    <Panel key="1" header={`Groups (${items.length})`} extra={genExtra1()}>
-                                        <Table dataSource={listAllGroups.dataSource} columns={columns1} onChange={listAllGroups.onChange} pagination={false} />
-                                        <div className="seeAll-groups">
-                                            <Link to="/app/groups/all" className="seeAllGroupLink">See All</Link>
-                                        </div>
-                                    </Panel>
-                                </Collapse>
-                                <Modal title="New Group"
-                                    width={570}
-                                    open={isModalOpen}
-                                    onCancel={handleCancel}
-                                    footer={null}
-                                    centered
-                                    className="new-group-modal">
-                                    <Form layout="vertical" onFinish={addGroup} ref={groupRef as any} name="group"
-                                        onValuesChange={(changedFields, allFields) => {
-                                            if (
-                                                allFields.groupTitle !== "" &&
-                                                allFields.groupTitle !== undefined,
-                                                allFields.description !== "" &&
-                                                allFields.description !== undefined
-                                            ) {
-                                                setGroupTitleDisabled(false);
-                                            } else {
-                                                setGroupTitleDisabled(true);
-                                            }
-                                        }}
-                                    >
-                                        <Form.Item className="group-title-form-item"
-                                            label="Group title"
-                                            name="groupTitle"
-                                        >
-                                            <Input className="title-input" placeholder="Title" />
-                                        </Form.Item>
-                                        <div style={{ color: "red", marginBottom: 15, transition: "color 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)" }} >
-                                            {addGroupService.err ? addGroupService.err.message : ""}
-                                        </div>
-                                        <Form.Item
-                                            label="Description"
-                                            name="description"
-                                        >
-                                            <TextArea
-                                                showCount
-                                                maxLength={122}
-                                                style={{ height: 182, resize: 'none' }}
-                                                placeholder="The purpose of this group"
-                                                className="description-input"
-                                            />
-                                        </Form.Item>
-                                        <div style={{ display: "flex", justifyContent: "end", marginTop: 60 }}>
-                                            <Form.Item>
-                                                <Button className="create-btn" htmlType="submit" disabled={addGroupService.isLoading || groupTitleDisabled}>
-                                                    {addGroupService.isLoading === true ? (
-                                                        <>
-                                                            <LoadingOutlined style={{ marginRight: 5 }} />
-                                                            Creating...
-                                                        </>
-                                                    ) : (
-                                                        "Create"
-                                                    )}</Button>
-                                            </Form.Item></div>
-                                    </Form>
-                                </Modal>
-
-                                <Modal title="New User"
-                                    width={570}
-                                    open={isUserModalOpen}
-                                    onCancel={userCancel}
-                                    footer={null}
-                                    centered
-                                    className="new-user-modal">
-                                    <Form layout="vertical" ref={userRef as any} onFinish={addNewUser} name="user">
-                                        <div style={{ padding: "10px 28px 0 28px" }}>
-                                            <Form.Item
-                                                label="Name of the user"
-                                                name="name"
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                        message: 'Please input name of user!',
-                                                    },
-                                                ]}
-                                            >
-                                                <Input className="title-input" placeholder="John Doe" />
-                                            </Form.Item>
-                                            <Form.Item className="email-form-item"
-                                                label="Email Address"
-                                                name="email"
-                                                rules={[
-                                                    {
-                                                        type: 'email',
-                                                        message: 'The input is not valid E-mail!',
-                                                    },
-                                                    {
-                                                        required: true,
-                                                        message: 'Please input user E-mail!',
-                                                    },
-                                                ]}
-                                            >
-                                                <Input className="title-input" placeholder="johndoe@example.com" />
-                                            </Form.Item>
-                                            <div style={{ color: "red", marginBottom: 15, transition: "color 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)" }} >
-                                                {addNewUserService.err ? addNewUserService.err.message : ""}
-                                            </div>
-                                            <Form.Item
-                                                label="Password"
-                                                name="password"
-                                                rules={[
-                                                    { required: true, message: "Please enter a password for the user" },
-                                                    {
-                                                        pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,100}$/,
-                                                        min: 8,
-                                                        message: "The password you entered dosen't meet the criteria",
-                                                    }
-                                                ]}
-                                            >
-                                                <Input.Password className="title-input" placeholder="Enter a password" />
-                                            </Form.Item>
-                                            <><p style={{ color: "#717171", fontSize: 12 }}>Password should have at least 8 characters including one uppercase character, one lowercase character & one number</p></>
-                                            <Checkbox style={{ paddingBottom: 10, fontSize: 13 }} checked={isTenantIdAvailable} onChange={() => { setIsTenantIdAvailable(!isTenantIdAvailable) }}>Is this account for a tenant?</Checkbox>
-                                            <Form.Item>
-                                                {isTenantIdAvailable ? (
-                                                    <>
-                                                        <label style={{ fontSize: 13 }}>Tenant ID</label>
-                                                        <Input
-                                                            onChange={(e) => { setTenantId(e.target.value) }}
-                                                            className="title-input"
-                                                            style={{ marginTop: 7 }}
-                                                            placeholder="Enter organisation name"
-                                                        />
-                                                        {availabilityCheckService?.response?.data === false ? (
-                                                            <div style={{ color: "red", marginBottom: 15, transition: "color 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)" }}>
-                                                                Tenant ID already taken
-                                                            </div>
-                                                        ) : null}
-                                                    </>
-                                                ) : null}
-                                            </Form.Item>
-                                        </div>
-                                        <Divider />
-                                        <div style={{ padding: "0 28px", textAlign: "center" }}>
-                                            <span style={{ marginBottom: 14, color: "#0F0F0F", fontSize: 12, fontWeight: 500 }}>Assign to group</span>
-                                            <Form.Item
-                                                style={{ marginTop: 14 }}
-                                                name="groupId"
-                                            >
-                                                <Select
-                                                    placeholder="Select groups"
-                                                    mode="multiple"
-                                                    showArrow
-                                                    style={{ width: '100%' }}
-                                                    filterOption={(input, option) =>
-                                                        (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
-                                                    }
-                                                >
-                                                    {items.map((item, index) => (
-                                                        <Option value={item._id} key={index}>
-                                                            {item.groupTitle}
-                                                        </Option>
-                                                    ))}
-                                                </Select>
-                                            </Form.Item>
-                                        </div>
-                                        <div style={{
-                                            display: "flex",
-                                            justifyContent: "end",
-                                            padding: "0 28px",
-                                            marginTop: 40,
-                                            paddingBottom: 10
-                                        }}>
-                                            <Form.Item
-                                            >
-                                                <Button className="create-btn" htmlType="submit" disabled={addNewUserService.isLoading || availabilityCheckService?.response?.data === false && isTenantIdAvailable}>
-                                                    {addNewUserService.isLoading === true ? (
-                                                        <>
-                                                            <LoadingOutlined style={{ marginRight: 5 }} />
-                                                            Creating...
-                                                        </>
-                                                    ) : (
-                                                        "Create"
-                                                    )}
-                                                </Button>
-                                            </Form.Item></div>
-                                    </Form>
-                                </Modal>
+                                <div style={{ display: "flex", justifyContent: "end" }}><Button type="danger"
+                                    onClick={() => {
+                                        Modal.confirm({
+                                            maskClosable: true,
+                                            title: "Logout Confirmation",
+                                            content: " Are you sure you want to logout?",
+                                            okText: logoutService.isLoading ? "Logging out..": "Logout",
+                                            okButtonProps:{disabled:logoutService.isLoading},
+                                            onOk: () => {
+                                                localStorage.removeItem('selectedTenant');
+                                                logoutUser();
+                                            }                                                                               
+                                        });
+                                    }}>Logout</Button></div>
                             </Col>
                         </Row>
                     </div>

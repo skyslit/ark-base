@@ -1,0 +1,82 @@
+.tenant-editor-row-wrapper {
+    background-color: #FFFFFF;
+    height: 100%;
+    padding-top: 33px;
+
+    .tenant-editor-col-wrapper {
+        .tenant-editor-wrapper {
+            .heading-settings-user-wrapper {
+                display: flex;
+                justify-content: space-between;
+                padding: 0px 0px 20px 0px;
+                border-bottom: 1px solid #E7E7E7;
+
+                .header-text-wrapper {
+                    display: flex;
+                    flex-direction: column;
+
+                    .heading-settings {
+                        color: #848484;
+                        font-size: 13px;
+                        font-family: Almarose-Medium;
+                    }
+
+                    .heading-text {
+                        font-size: 18px;
+                        font-family: Almarose-Bold;
+                        color: #292929;
+                    }
+                }
+
+                .heading-button-wrapper {
+                    display: flex;
+
+                    .top-add-btn {
+                        color: #6143C6;
+                        border: 1px solid #6143C6;
+                        background-color: #FFFFFF;
+                        border-radius: 8px;
+                        height: 35px;
+                        transition: 0.5s;
+                        font-size: 13px;
+                        padding: 0px 34px;
+                        font-family: Almarose-Semibold;
+
+                        &:hover {
+                            opacity: 0.9;
+                        }
+
+                        &:active {
+                            transform: scale(0.98);
+                        }
+
+                        &:disabled {
+                            opacity: 0.5;
+                            cursor: not-allowed;
+                        }
+                    }
+                }
+            }
+
+            .ant-table-thead>tr>th {
+                border-bottom: 1px solid #f0f0f0;
+                font-family: "Almarose-Regular";
+            }
+
+            .table-wrapper {
+                display: flex;
+                flex-direction: column;
+                padding-top: 39px;
+                gap: 25px;
+
+                .table-class {
+                    border-radius: 4px;
+
+                    .ant-table table {
+                        border: 1px solid #DBDBDB;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -10,8 +10,8 @@ import { useParams, useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Fade from "react-reveal/Fade";
 import { Helmet } from "react-helmet-async";
-import { Col, Row, Typography, Button, Modal, Form, Input, message, Select } from "antd";
-import { ArrowLeftOutlined, EditOutlined, CloseOutlined, LoadingOutlined, CheckOutlined } from '@ant-design/icons';
+import { Col, Row, Typography, Button, Modal, Form, Input, message, Select, Menu, Dropdown } from "antd";
+import { ArrowLeftOutlined, EditOutlined, CloseOutlined, LoadingOutlined, CheckOutlined, MoreOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 
 export default createComponent((props) => {
     const { useService, useContext, useTableService } = props.use(Frontend);
@@ -55,6 +55,7 @@ export default createComponent((props) => {
         setShowEditEmail(!showEditEmail)
     }
 
+    const updateDashboardAccessService = useService({ serviceId: "update-dashboard-access" });
     const deleteUserService = useService({ serviceId: "delete-user-service" });
     const deleteUser = () => {
         const userId = (params as any).id;
@@ -198,6 +199,57 @@ export default createComponent((props) => {
         getGroupDetails;
     }, []);
 
+    const haveAccess = React.useMemo(() => {
+        if (accountDetails) {
+            return Boolean(accountDetails.haveDashboardAccess)
+        } else {
+            return false
+        }
+    }, [accountDetails])
+
+    const menu = (
+        <Menu>
+            <Menu.Item>
+                <Button type="text"
+                    onClick={() => {
+                        Modal.confirm({
+                            title: "Confirmation",
+                            icon: <QuestionCircleOutlined />,
+                            content: haveAccess
+                                ? "Do you want to take away this user's dashboard access?"
+                                : "Do you want to grant this user access to the dashboard?",
+                            className: 'custom-confirm-modal-wrapper',
+                            okText: updateDashboardAccessService.isLoading ? "Please wait..." : haveAccess ? "Remove access" : "Give access",
+                            okType: haveAccess ? "danger" : "primary",
+                            maskClosable: true,
+                            closable: true,
+                            cancelText: "Cancel",
+                            okButtonProps: { disabled: updateDashboardAccessService.isLoading },
+                            onOk: () => {
+                                return updateDashboardAccessService.invoke(
+                                    {
+                                        userId: accountDetails._id,
+                                        haveAccess: !haveAccess
+                                    },
+                                    { force: true })
+                                    .then((res) => {
+                                        listAccountDetails()
+                                    })
+                                    .catch(() => {
+                                        message.error("Try again!");
+                                    })
+                            }
+                        });
+                    }}
+                >
+                    {haveAccess ? (
+                        <span>Remove dashboard access</span>
+                    ) : <span>Give access to dashbooard</span>}
+                </Button>
+            </Menu.Item>
+        </Menu>
+    );
+
     return (
         <>
             <Helmet>
@@ -229,17 +281,26 @@ export default createComponent((props) => {
                                                     <img src={DeleteIcon} />
                                                     <Typography.Text className="delete-text"> Delete user </Typography.Text>
                                                 </button>
-                                                {/* <button className="edit-button">
-                                    <EditOutlined style={{ color: "#060708" }} />
-                                    <Typography.Text className="edit-user-text"> Edit user </Typography.Text>
-                                </button> */}
+                                                <Dropdown overlay={menu} trigger={["click"]}>
+                                                    <button disabled={(params as any).id === context.response.meta.currentUser._id} className="assign-group-bttn">
+                                                        <Typography.Text className="delete-text"><MoreOutlined /></Typography.Text>
+                                                    </button>
+                                                </Dropdown>
                                             </div>
-                                        ) : null}
+                                        ) : null
+                                    }
                                 </div>
                                 <div className="user-name-section">
-                                    <Typography.Text className="name-text" >{accountDetails.name}</Typography.Text>
+                                    <Typography.Text className="name-text" >{accountDetails.name || accountDetails.email}</Typography.Text>
                                     <br />
-                                    <Typography.Text className="mail-id-text">{accountDetails.email}</Typography.Text>
+                                    {accountDetails.name ? (
+                                        <Typography.Text className="mail-id-text">{accountDetails.email}</Typography.Text>
+                                    ) : null}
+                                    {haveAccess ? (
+                                        <Typography.Text className="mail-id-text">This user has dashboard access permission.</Typography.Text>
+                                    ) : (
+                                        <Typography.Text className="mail-id-text">This user has no dashboard access permission.</Typography.Text>
+                                    )}
                                 </div>
                                 <div className="user-information-box">
                                     <div><Typography.Text style={{ fontWeight: "500" }}>

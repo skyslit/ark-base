@@ -20,14 +20,19 @@ const AccountSchema = new Schema(
       defaultValue: "",
     },
     groupId: {
-      type:[String],
+      type: [String],
       required: false,
       defaultValue: "",
     },
     tenantId: {
-      type:String,
+      type: String,
       required: false,
       defaultValue: "",
+    },
+    haveDashboardAccess: {
+      type: Boolean,
+      required: false,
+      defaultValue: false,
     }
   },
   {

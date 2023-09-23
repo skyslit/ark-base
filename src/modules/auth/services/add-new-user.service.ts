@@ -43,18 +43,18 @@ export default defineService("add-user", (props) => {
         });
         await newUser.save();
 
-        if (newUser.tenantId){
+        if (newUser.tenantId) {
           tenantGroup = new GroupModel({
             groupTitle: newUser.tenantId,
             count: 0,
-            description:""
+            description: ""
           });
           await tenantGroup.save();
 
           addItem('default', `/`, newUser.tenantId, 'folder', {}, { permissions: [{ type: 'user', policy: '', access: 'owner', userEmail: newUser.email }] }, undefined, undefined, 'supress')
-          .then(() => addItem('default', `/${newUser.tenantId.toLowerCase()}`, "users", 'folder', {}, undefined, undefined, undefined, 'supress'))
-          .then(() => addItem('default', `/${newUser.tenantId.toLowerCase()}`, "uploads", 'folder', {},{ permissions: [{ type: 'public', policy: '', access: 'read', userEmail: "" }] }, undefined, undefined, 'supress'))
-          .then(() => addItem('default', `/${newUser.tenantId.toLowerCase()}`, "info", 'settings', {},{ permissions: [{ type: 'public', policy: '', access: 'read', userEmail: "" }] }, undefined, undefined, 'supress'))
+            .then(() => addItem('default', `/${newUser.tenantId.toLowerCase()}`, "users", 'folder', {}, undefined, undefined, undefined, 'supress'))
+            .then(() => addItem('default', `/${newUser.tenantId.toLowerCase()}`, "uploads", 'folder', {}, { permissions: [{ type: 'public', policy: '', access: 'read', userEmail: "" }] }, undefined, undefined, 'supress'))
+            .then(() => addItem('default', `/${newUser.tenantId.toLowerCase()}`, "info", 'settings', {}, { permissions: [{ type: 'public', policy: '', access: 'read', userEmail: "" }] }, undefined, undefined, 'supress'))
         }
 
         async.forEach(groupId, (id, next) => {

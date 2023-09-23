@@ -1,0 +1,305 @@
+.login-wrapper {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    height: 100%;
+    flex-direction: column;
+
+    @media (min-resolution: 100dpi) and (max-resolution: 125dpi) {
+        transform: scale(0.9);
+    }
+
+    @media (min-width: 0px) and (max-width: 576px) {
+        justify-content: unset;
+        padding: 39px 20px 54px 20px;
+    }
+
+    .logo-icon-wrapper {
+        margin-bottom: 60px;
+
+        @media (min-width: 0px) and (max-width: 576px) {
+            margin-bottom: 52px;
+        }
+
+        .anticon svg {
+            width: 4em;
+            height: 1em;
+
+            @media (min-width: 0px) and (max-width: 576px) {
+                width: 3em;
+            }
+        }
+    }
+
+    .card-wrapper {
+        box-shadow: 0px 3px 6px #00000029;
+        border: 1px solid #F0F0F0;
+        width: 100%;
+        max-width: 595px;
+        height: 547px;
+        padding: 40px 45px 47px 45px;
+        display: flex;
+        flex-direction: column;
+
+        @media (min-width: 0px) and (max-width: 576px) {
+            font-size: 28px;
+            border: unset;
+            box-shadow: unset;
+            height: unset;
+            max-width: unset;
+            padding: unset
+        }
+
+        .heading {
+            color: #222222;
+            justify-content: center;
+            display: flex;
+            font-size: 33px;
+            margin: unset;
+            padding-bottom: 3px;
+            font-family: Roboto-Bold;
+
+            @media (min-width: 0px) and (max-width: 576px) {
+                font-size: 28px;
+            }
+        }
+
+        .signin-description {
+            font-family: Roboto-Regular;
+            color: #313131;
+            font-size: 16px;
+            justify-content: center;
+            display: flex;
+        }
+
+        .label-field-wrapper {
+            flex-direction: column;
+            display: flex;
+            height: 100%;
+            justify-content: space-between;
+
+            label {
+                color: #191919;
+                font-family: Roboto-Regular;
+                font-size: 14px;
+                padding-bottom: 7px;
+            }
+
+            .custom-input {
+                height: 50px;
+                box-shadow: unset;
+                border: 1px solid #D6D6D6;
+                color: #222222;
+                font-family: Roboto-Regular;
+                font-size: 16px;
+                border-radius: 4px;
+
+                &:hover:enabled {
+                    border: 1px solid #3F6BCE;
+                }
+
+                &:focus:enabled {
+                    border: 1px solid #3F6BCE;
+                }
+
+                &::placeholder {
+                    color: #ACACAC;
+                    font-size: 16px;
+                    font-family: Roboto-Regular;
+                }
+            }
+
+            .email-validation-msg {
+                color: red;
+
+                @media (min-width: 0px) and (max-width: 576px) {
+                    font-size: 13px;
+                }
+            }
+
+            .ant-input-password {
+                height: 50px;
+                box-shadow: unset;
+                border: 1px solid #D6D6D6;
+                color: #222222;
+                font-family: Roboto-Regular;
+                font-size: 16px;
+                border-radius: 4px;
+
+                &:hover {
+                    border: 1px solid #3F6BCE;
+                }
+
+                &:focus {
+                    border: 1px solid #3F6BCE;
+                }
+
+                &:focus-within {
+                    border: 1px solid #3F6BCE;
+                }
+
+                &::placeholder {
+                    color: #ACACAC;
+                    font-size: 16px;
+                    font-family: Roboto-Regular;
+                }
+            }
+
+            .password-condition-text {
+                color: #747474;
+                font-size: 13px;
+                font-family: Roboto-Regular;
+                margin-top: 9px;
+                margin-bottom: 18px;
+                line-height: 18px;
+            }
+
+            .email-change-wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border: 1px solid #E6E6E6;
+                border-radius: 6px;
+                padding: 16px 18px 16px 28px;
+                margin-bottom: 22px;
+
+                .email-text-wrapper {
+                    flex-direction: column;
+                    display: flex;
+                    width: 340px;
+                    gap: 5px;
+
+                    @media (min-width: 0px) and (max-width: 576px) {
+                        width: 200px;
+                    }
+                }
+
+                h5 {
+                    color: #212020;
+                    font-size: 12px;
+                    font-family: Roboto-Regular;
+                    margin: unset;
+                }
+
+                .email-text {
+                    color: #393939;
+                    margin: unset;
+                    font-size: 22px;
+                    font-family: Roboto-Medium;
+
+                    @media (min-width: 0px) and (max-width: 576px) {
+                        font-size: 17px;
+                    }
+                }
+
+                .change-btn {
+                    color: #3F65E3;
+                    font-size: 16px;
+                    font-family: Roboto-Medium;
+                    padding: unset;
+                    background-color: transparent;
+                    border: unset;
+                    transition: all 0.2s;
+
+                    &:hover {
+                        opacity: 0.7;
+                    }
+
+                    &:active {
+                        transform: scale(0.98);
+                    }
+                }
+            }
+
+            .continue-btn-wrapper {
+                display: flex;
+                justify-content: center;
+
+                @media (min-width: 0px) and (max-width: 576px) {
+                    position: absolute;
+                    bottom: 54px;
+                    left: 0;
+                    right: 0;
+                }
+
+                .continue-btn {
+                    color: #FFFFFF;
+                    font-size: 16px;
+                    font-family: Roboto-Medium;
+                    background-color: #222222;
+                    border-radius: 29px;
+                    align-items: center;
+                    display: flex;
+                    justify-content: center;
+                    padding: 25px 0px;
+                    width: 145px;
+                    transition: all 0.2s;
+
+                    &:hover:enabled {
+                        opacity: 0.9;
+
+                        .anticon {
+                            transform: translateX(3px);
+                        }
+                    }
+
+                    &:active:enabled {
+                        transform: scale(0.98);
+
+                    }
+
+                    &:disabled {
+                        opacity: 0.8;
+                        background-color: #d6d6d6;
+                        cursor: default;
+                    }
+
+                    .arrow-icon {
+                        margin-left: 22px;
+                        transition: transform 0.2s;
+                        font-size: 14px;
+                    }
+                }
+            }
+        }
+    }
+
+    .dont-have-account-wrapper {
+        flex-direction: column;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 70px;
+
+        @media (min-width: 0px) and (max-width: 576px) {
+            position: absolute;
+            bottom: 130px;
+            left: 0;
+            right: 0;
+        }
+
+        h5 {
+            color: #292929;
+            font-size: 14px;
+            font-family: Roboto-Regular;
+            margin-bottom: 6px;
+
+            @media (min-width: 0px) and (max-width: 576px) {
+                font-size: 12px;
+            }
+        }
+
+        h6 {
+            color: #818181;
+            font-size: 14px;
+            font-family: Roboto-Regular;
+            margin: unset;
+            text-align: center;
+
+            @media (min-width: 0px) and (max-width: 576px) {
+                font-size: 12px;
+            }
+        }
+    }
+}

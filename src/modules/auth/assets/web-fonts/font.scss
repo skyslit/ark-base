@@ -22,6 +22,21 @@
         url("./AlmaroseMedium/font.woff") format("woff");
 }
 
+@font-face {
+    font-family: "Roboto-Bold";
+    src: url("./RobotoBold/Roboto-Bold.woff") format("woff");
+}
+
+@font-face {
+    font-family: "Roboto-Regular";
+    src: url("./RobotoRegular/Roboto-Regular.woff") format("woff");
+}
+
+@font-face {
+    font-family: "Roboto-Medium";
+    src: url("./RobotoMedium/Roboto-Medium.woff") format("woff");
+}
+
 html,
 body {
     font-family: Almarose-Regular;

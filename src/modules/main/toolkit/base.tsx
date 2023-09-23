@@ -20,6 +20,7 @@ import {
   Tabs,
   TabsProps,
   Select,
+  Table,
 } from "antd";
 import { useCatalogue, useFile } from "@skyslit/ark-frontend/build/dynamics-v2";
 import { Link, useHistory } from "react-router-dom";
@@ -39,97 +40,148 @@ export const ViewAsContext = React.createContext<any>(null);
 const { Header, Content } = Layout;
 const { Panel } = Collapse;
 
+
+// const TableView = () => {
+
+//   const dataSource = [
+//     {
+//       key: '1',
+//       name: 'Mike',
+//       age: 32,
+//       address: '10 Downing Street',
+//     },
+//     {
+//       key: '2',
+//       name: 'John',
+//       age: 42,
+//       address: '10 Downing Street',
+//     },
+//   ];
+
+//   const columns = [
+//     {
+//       title: 'Name',
+//       dataIndex: 'name',
+//       key: 'name',
+//     },
+//     {
+//       title: 'Age',
+//       dataIndex: 'age',
+//       key: 'age',
+//     },
+//     {
+//       title: 'Address',
+//       dataIndex: 'address',
+//       key: 'address',
+//     },
+//   ];
+
+//   return (
+//     <Table dataSource={dataSource} columns={columns} />
+//   )
+// }
+
 export function GridView() {
   const api = useCatalogue();
   const picker = useCatalogueItemPicker();
   const history = useHistory();
+  // const [selectedView, setSelectedView] = React.useState(
+  //   window.localStorage.getItem("selectedView")
+  // );
 
   if (!Array.isArray(api.items)) {
     return <div>Loading items...</div>;
   }
 
-  return (
-    <div style={{ width: "100%" }}>
-      {api.items.map((item) => {
-        return (
-          <Item
-            onClick={() => {
-              /** Select multiple items */
-              // setSelectedPaths((paths) => {
-              //   if (paths.indexOf(item.path) < 0) {
-              //     return [...paths, item.path];
-              //   }
-              //   return paths;
-              // });
+  // if (selectedView !== "table") {
+    return (
+      <div style={{ width: "100%" }}>
+        {api.items.map((item) => {
+          return (
+            <Item
+              onClick={() => {
+                /** Select multiple items */
+                // setSelectedPaths((paths) => {
+                //   if (paths.indexOf(item.path) < 0) {
+                //     return [...paths, item.path];
+                //   }
+                //   return paths;
+                // });
 
-              api.setSelectedItems([item]);
-            }}
-            onDoubleClick={(fullPath: string) => {
-              if (api?.meta?.mode === "picker") {
-                const customType =
-                  api.controller.namespaces[item.namespace].types[item.type];
-                const hasCustomRenderer = Boolean(
-                  customType?.toolkit?.Renderer
-                );
-                let isAFile = Boolean(hasCustomRenderer);
+                api.setSelectedItems([item]);
+              }}
+              onDoubleClick={(fullPath: string) => {
+                if (api?.meta?.mode === "picker") {
+                  const customType =
+                    api.controller.namespaces[item.namespace].types[item.type];
+                  const hasCustomRenderer = Boolean(
+                    customType?.toolkit?.Renderer
+                  );
+                  let isAFile = Boolean(hasCustomRenderer);
 
-                if (isAFile === true) {
-                  if (picker) {
-                    picker.settle({
-                      items: [item],
-                    });
+                  if (isAFile === true) {
+                    if (picker) {
+                      picker.settle({
+                        items: [item],
+                      });
+                    }
+                    return;
                   }
-                  return;
-                }
 
-                api.setPath(item.path);
-              } else {
-                history.push(fullPath);
+                  api.setPath(item.path);
+                } else {
+                  history.push(fullPath);
+                }
+              }}
+              selected={
+                api.selectedItems.findIndex((i) => i.path === item.path) > -1
               }
-            }}
-            selected={
-              api.selectedItems.findIndex((i) => i.path === item.path) > -1
-            }
-            key={item.slug}
-            item={item}
-            title={item.slug}
-            fullPath={api.getFullUrlFromPath(
-              api.getDestinationPathFromItem(item)
-            )}
-            onDelete={() =>
-              api.deleteItems([item.path]).catch((e) => {
-                message.error(
-                  e?.response?.data?.message
-                    ? e?.response?.data?.message
-                    : e.message
-                );
-              })
-            }
-            namespace={api.namespace}
-            onRename={(newName: any) =>
-              api.renameItem(item.path, item.parentPath, newName)
-            }
-            onCut={() =>
-              api.setClipboard({
-                action: "cut",
-                meta: {
-                  item,
-                },
-              })
-            }
-            onCopyShortcut={() =>
-              api.setClipboard({
-                action: "copy-shortcut",
-                meta: {
-                  item,
-                },
-              })
-            }
-          />
-        );
-      })}
-    </div>
-  );
+              key={item.slug}
+              item={item}
+              title={item.slug}
+              fullPath={api.getFullUrlFromPath(
+                api.getDestinationPathFromItem(item)
+              )}
+              onDelete={() =>
+                api.deleteItems([item.path]).catch((e) => {
+                  message.error(
+                    e?.response?.data?.message
+                      ? e?.response?.data?.message
+                      : e.message
+                  );
+                })
+              }
+              namespace={api.namespace}
+              onRename={(newName: any) =>
+                api.renameItem(item.path, item.parentPath, newName)
+              }
+              onCut={() =>
+                api.setClipboard({
+                  action: "cut",
+                  meta: {
+                    item,
+                  },
+                })
+              }
+              onCopyShortcut={() =>
+                api.setClipboard({
+                  action: "copy-shortcut",
+                  meta: {
+                    item,
+                  },
+                })
+              }
+            />
+          );
+        })}
+      </div>
+    );
+  // } else {
+  //   return (
+  //     <TableView />
+  //   )
+  // }
+
 }
 
 
@@ -343,7 +395,7 @@ export function Renderer() {
                   if (api?.meta?.mode === "picker") {
                     return (
                       <Breadcrumb.Item
-                        key={p.folderName}
+                        key={p.folderName} 
                         onClick={() => api.setPath(`/${p.fullPath}`)}
                       >
                         {p.folderName}
@@ -383,6 +435,9 @@ export function Renderer() {
                 </Option>
                 <Option value="list">
                   <ListOutlined /> List
+                </Option>
+                <Option value="table">
+                  <ListOutlined /> Table
                 </Option>
               </Select>
               {api.claims.write === true ? (
@@ -485,14 +540,14 @@ export function Renderer() {
             </Col>
           </Row>
         </Header>
-        <Layout className={selectedView === "grid" ? "content-wrapper" : "content-wrapper-for-list-view"} style={{ flex: 1 }}>
+        <Layout className={selectedView === "list" ? "content-wrapper-for-list-view" : "content-wrapper"} style={{ flex: 1 }}>
           <Content>
             <div className="content-header-for-list-view">
               <div style={{ minWidth: 300 }}>
-                <span style={{color: "#121212", fontSize:13, fontFamily:"Almarose-Semibold"}}>Item</span>
+                <span style={{ color: "#121212", fontSize: 13, fontFamily: "Almarose-Semibold" }}>Item</span>
               </div>
               <div>
-              <span style={{color: "#121212", fontSize:13, fontFamily:"Almarose-Semibold"}}>Type</span>
+                <span style={{ color: "#121212", fontSize: 13, fontFamily: "Almarose-Semibold" }}>Type</span>
               </div>
             </div>
             <div className="list-folder-wrapper">

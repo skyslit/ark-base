@@ -95,7 +95,7 @@ export default defineService("user-login-service", (props) => {
                       const { currentDir, items } = await folderApi.fetchContent('default', userRoot.path, false);
                       const containsTenantId = items.some(item => item.name === data.tenantId);
                       if (!containsTenantId) {
-                        return folderApi.createShortcut('default', `/${data.tenantId.toLowerCase()}`, userRoot.path, data.tenantId);
+                        return folderApi.createShortcut('default', `/tenants/${data.tenantId.toLowerCase()}`, userRoot.path, data.tenantId);
                       }
                     }
                   })
