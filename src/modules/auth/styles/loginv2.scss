@@ -127,15 +127,15 @@
                 font-size: 16px;
                 border-radius: 4px;
 
-                &:hover {
+                &:hover:enabled {
                     border: 1px solid #3F6BCE;
                 }
 
-                &:focus {
+                &:focus:enabled {
                     border: 1px solid #3F6BCE;
                 }
 
-                &:focus-within {
+                &:focus-within:enabled {
                     border: 1px solid #3F6BCE;
                 }
 
