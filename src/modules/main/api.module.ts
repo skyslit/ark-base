@@ -9,7 +9,10 @@ import BlackListedTokenSchema from "../auth/schema/blacklisted-token.schema";
 
 import AdminValidation from "../auth/services/admin-validation.service";
 import UserLogin from "../auth/services/user-login.service";
-import { addAdminAccountService, adminLauncherService } from "../auth/services/add-admin-account.service";
+import {
+  addAdminAccountService,
+  adminLauncherService,
+} from "../auth/services/add-admin-account.service";
 import RegistrationService from "../auth/services/registration.service";
 import RegisterUserService from "../auth/services/register-user.service";
 import UserLogout from "../auth/services/logout-user.service";
@@ -37,7 +40,7 @@ import ListGroupDetailsService from "../auth/services/list-group-details.service
 import RemoveMember from "../auth/services/remove-member.service";
 import GroupDetails from "../auth/services/group-details.service";
 import UpdateGroup from "../auth/services/update-group.service";
-import CrossCheckEmailService from '../auth/services/cross-check-email.service';
+import CrossCheckEmailService from "../auth/services/cross-check-email.service";
 import AvailabilityCheckOfTenantId from "../auth/services/availability-check-of-tenantId.service";
 import ListAllTenants from "../auth/services/list-all-tenants-table.service";
 import ListUsersOfTenant from "../auth/services/list-users-of-tenant-table.service";
@@ -47,6 +50,7 @@ import GetAllAccountsWithTenantId from "../auth/services/get-all-accounts-with-t
 import AddNewTenant from "../auth/services/add-new-tenant.service";
 import CreateNewUser from "../auth/services/create-new-user.service";
 import ListTenants from "../auth/services/list-tenants.service";
+import DeployDemoArchive from "../auth/services/demo-deploy.service";
 //login v2
 import CheckForExistingEmail from "../auth/services/check-email.service";
 import LoginV2Service from "../auth/services/login-v2.service";
@@ -111,10 +115,11 @@ export default createModule(({ use, run }) => {
   useService(LoginV2Service);
   useService(SignupV2Service);
   useService(UpdateDashboardAccess);
+  useService(DeployDemoArchive);
   useService(adminLauncherService, {
-    method: 'get',
-    path: '/api/admin-launcher'
-  })
+    method: "get",
+    path: "/api/admin-launcher",
+  });
 
   if (useEnv("AWS_ACCESS_KEY_ID")) {
     useVolume(
