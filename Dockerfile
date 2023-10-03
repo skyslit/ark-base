@@ -7,6 +7,7 @@ RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.
 RUN apt-get update -y
 RUN apt-get install python -y
 RUN apt-get install build-essential -y
+RUN apt-get install curl -y
 
 COPY package.json ./
 COPY package-lock.json ./
