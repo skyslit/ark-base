@@ -12,7 +12,7 @@ import webspaceCredentials from "../modules/main/toolkit/providers/webspace-cred
 
 setDefaultEnv({
   MONGO_CONNECTION_STRING: "mongodb://localhost:27017/dynamics-base",
-  NODE_PORT: "3000",
+  NODE_PORT: "3001",
 });
 
 export default createContext(async ({ use, useModule, useDataFromContext }) => {

@@ -25,6 +25,7 @@ import {
 } from "../../auth/icons/global-icons";
 import { Content } from "antd/lib/layout/layout";
 import NoSSR from "../../auth/reusables/NoSSR";
+import SetupPage from "../../auth/views/setup-page"
 const { Header, Sider } = Layout;
 
 let orgDetails: string = null;
@@ -437,7 +438,6 @@ const SiderLayout = createComponent((props) => {
   //   </Menu>
   // );
 
-
   const NewTenant = (
     <>
       <div className="add-tenant-header-wrapper">
@@ -626,7 +626,6 @@ const SiderLayout = createComponent((props) => {
       )}
     </div>
   )
-
   const ConfirmAddUserState = (
     <div style={{ padding: 30, display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
       <CheckCircleIcon style={{ fontSize: 50, color: "green" }} />
@@ -643,8 +642,6 @@ const SiderLayout = createComponent((props) => {
     </div>
   )
 
-
-
   let currentState
   switch (modalCurrentState) {
     case "confirm-add-user":
@@ -657,6 +654,12 @@ const SiderLayout = createComponent((props) => {
       currentState = AddNewUser
     default:
       break;
+  }
+
+  if(isUserSuperAdmin) {
+    return (
+      <SetupPage {...props}/>
+    )
   }
 
   return (

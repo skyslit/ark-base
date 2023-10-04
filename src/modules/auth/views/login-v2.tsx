@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import { RightArrowIcon, SkyslitColorFullLogoIcon } from "../icons/global-icons";
 import { LoadingOutlined } from "@ant-design/icons";
 import "../styles/loginv2.scss"
+import CompanyLogo from "../assets/images/company-logo.png";
 
 export default createComponent((props) => {
     const { useService, useContext } = props.use(Frontend);
@@ -172,8 +173,9 @@ export default createComponent((props) => {
     return (
         <div className="login-wrapper">
             <div className='logo-icon-wrapper'>
-                <SkyslitColorFullLogoIcon style={{ fontSize: 33 }} />
-            </div>
+                {/* <SkyslitColorFullLogoIcon style={{ fontSize: 33 }} /> */}
+                <img src={CompanyLogo} width={140}></img>
+            </div> 
             <div style={{ paddingBottom: currentState === "signUp" ? 25 : "" }} className="card-wrapper" >
                 <h3 className="heading">{currentState === "login" ? "Sign in" : currentState === "signUp" ? "Create new account" : "Sign in"}</h3>
                 <span className="signin-description">{currentState === "signUp" ? "Set a new password to finalise" : "Enter your email to login or sign up"}</span>
