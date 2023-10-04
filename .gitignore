@@ -24,5 +24,7 @@ build
 .fpz
 
 # Ark
+.env
 user-uploads
 .ark-test-user.json
+archive-download

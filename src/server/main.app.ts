@@ -11,6 +11,7 @@ import webAppCreator from "../web.client";
 import webspaceCredentials from "../modules/main/toolkit/providers/webspace-credentials";
 
 setDefaultEnv({
+  MONGO_IMPORT_BIN_PATH: "mongoimport",
   MONGO_CONNECTION_STRING: "mongodb://localhost:27017/dynamics-base",
   NODE_PORT: "3001",
 });
