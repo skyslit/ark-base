@@ -50,12 +50,15 @@ import GetAllAccountsWithTenantId from "../auth/services/get-all-accounts-with-t
 import AddNewTenant from "../auth/services/add-new-tenant.service";
 import CreateNewUser from "../auth/services/create-new-user.service";
 import ListTenants from "../auth/services/list-tenants.service";
-import DeployDemoArchive from "../auth/services/demo-deploy.service";
 //login v2
 import CheckForExistingEmail from "../auth/services/check-email.service";
 import LoginV2Service from "../auth/services/login-v2.service";
 import SignupV2Service from "../auth/services/user-signup.service";
 import UpdateDashboardAccess from "../auth/services/update-dashboard-access.service";
+//Demo services
+import GetAllDemoData from "../auth/services/demo-services/get-all-demo-data.service";
+import DeployDemoArchive from "../auth/services/demo-services/demo-deploy.service";
+
 
 import createS3Volume from "./toolkit/providers/s3-volume";
 import createWebspaceVolume from "./toolkit/providers/webspace-blob";
@@ -116,6 +119,8 @@ export default createModule(({ use, run }) => {
   useService(SignupV2Service);
   useService(UpdateDashboardAccess);
   useService(DeployDemoArchive);
+  useService(GetAllDemoData);
+
   useService(adminLauncherService, {
     method: "get",
     path: "/api/admin-launcher",

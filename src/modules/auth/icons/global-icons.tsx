@@ -33,6 +33,10 @@ import CloseRounded from "../icons/close-rounded.svg";
 import RightArrow from "../icons/right-arrow.svg";
 // @ts-ignore
 import SkyslitColorFullLogo from "../icons/skyslit-color-full-logo.svg";
+// @ts-ignore
+import TeamUser from "../icons/team-user-icon.svg";
+// @ts-ignore
+import Close from "../icons/close-icon.svg";
 
 export const SiderFolderIcon = (props: any) => {
     return <Icon component={SiderFolder} {...props} />;
@@ -81,4 +85,10 @@ export const RightArrowIcon = (props: any) => {
 };
 export const SkyslitColorFullLogoIcon = (props: any) => {
     return <Icon component={SkyslitColorFullLogo} {...props} />;
+};
+export const TeamUserIcon = (props: any) => {
+    return <Icon component={TeamUser} {...props} />;
+};
+export const CloseIcon = (props: any) => {
+    return <Icon component={Close} {...props} />;
 };

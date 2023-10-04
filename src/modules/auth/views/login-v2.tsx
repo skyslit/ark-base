@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import { RightArrowIcon, SkyslitColorFullLogoIcon } from "../icons/global-icons";
 import { LoadingOutlined } from "@ant-design/icons";
 import "../styles/loginv2.scss"
+import CompanyLogo from "../assets/images/company-logo.png";
 
 export default createComponent((props) => {
     const { useService, useContext } = props.use(Frontend);
@@ -23,6 +24,8 @@ export default createComponent((props) => {
     const [confirmPassword, setConfirmPassword] = React.useState('')
     const [currentState, setCurrentState] = React.useState('default')
     const [isEmailValidated, seIsEmailValidated] = React.useState(true)
+    const [isClosing, setIsClosing] = React.useState(false);
+
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
@@ -47,22 +50,28 @@ export default createComponent((props) => {
     };
 
     const CheckForExistingEmail = React.useCallback(() => {
+        setIsClosing(true)
         CheckForExistingEmailService
             .invoke({
                 email
             }, { force: true })
             .then((res) => {
-                if (res.data === true) {
-                    setCurrentState("login")
-                } else {
-                    setCurrentState("signUp")
-                }
+                setTimeout(() => {
+                    setIsClosing(false);
+                    if (res.data === true) {
+                        setCurrentState("login")
+                    } else {
+                        setCurrentState("signUp")
+                    }
+                }, 1000);
             })
             .catch((e) => {
+                setIsClosing(true)
             });
     }, [email]);
 
     const _login = () => {
+        setIsClosing(true)
         loginService
             .invoke(
                 {
@@ -88,6 +97,7 @@ export default createComponent((props) => {
     };
 
     const signUp = (data: any) => {
+        setIsClosing(true)
         signupService
             .invoke(
                 {
@@ -97,9 +107,14 @@ export default createComponent((props) => {
                 { force: true }
             )
             .then((res) => {
-                _login()
+                setTimeout(() => {
+                    setIsClosing(false);
+                    _login()
+                }, 1000);
             })
-            .catch((e) => { });
+            .catch((e) => {
+                setIsClosing(true)
+            });
     };
 
     React.useEffect(() => {
@@ -158,8 +173,9 @@ export default createComponent((props) => {
     return (
         <div className="login-wrapper">
             <div className='logo-icon-wrapper'>
-                <SkyslitColorFullLogoIcon style={{ fontSize: 33 }} />
-            </div>
+                {/* <SkyslitColorFullLogoIcon style={{ fontSize: 33 }} /> */}
+                <img src={CompanyLogo} width={140}></img>
+            </div> 
             <div style={{ paddingBottom: currentState === "signUp" ? 25 : "" }} className="card-wrapper" >
                 <h3 className="heading">{currentState === "login" ? "Sign in" : currentState === "signUp" ? "Create new account" : "Sign in"}</h3>
                 <span className="signin-description">{currentState === "signUp" ? "Set a new password to finalise" : "Enter your email to login or sign up"}</span>
@@ -173,7 +189,7 @@ export default createComponent((props) => {
                                     onChange={(e) => { setEmail(e.target.value) }}
                                     value={email}
                                     onPressEnter={email && currentState === "default" && isEmailValidated ? CheckForExistingEmail : undefined}
-                                    disabled={CheckForExistingEmailService.isLoading}
+                                    disabled={CheckForExistingEmailService.isLoading || isClosing}
                                 />
                                 <div style={{ height: 20 }}>
                                     {!isEmailValidated ? (
@@ -193,9 +209,9 @@ export default createComponent((props) => {
                                     </div>
                                     <Button className="change-btn" type="text" onClick={() => { setCurrentState("default") }}>Change</Button>
                                 </div>
-                                <Input.Password disabled={signupService.isLoading} autoFocus placeholder="Enter your password" onChange={(e) => { handlePasswordChange(e) }} />
+                                <Input.Password disabled={signupService.isLoading || isClosing} autoFocus placeholder="Enter your password" onChange={(e) => { handlePasswordChange(e) }} />
                                 <span style={{ display: passwordError ? "inline" : "none" }} className="password-condition-text">Password must contain a minimum of 8 characters including one uppercase letter, one lower case letter and a number.</span>
-                                <Input.Password style={{ marginTop: passwordError ? "unset" : 20 }} disabled={signupService.isLoading}
+                                <Input.Password style={{ marginTop: passwordError ? "unset" : 20 }} disabled={signupService.isLoading || isClosing}
                                     onPressEnter={email && currentState === "signUp" && password && confirmPassword && password === confirmPassword ? signUp : undefined}
                                     placeholder="Re-enter password" onChange={(e) => { setConfirmPassword(e.target.value) }} />
                                 <span style={{ display: password !== confirmPassword && confirmPassword ? "inline" : "none" }} className="password-condition-text">Password does not match</span>
@@ -223,7 +239,7 @@ export default createComponent((props) => {
                     </div>
                     <div className="continue-btn-wrapper">
                         {currentState === "signUp" ? (
-                            signupService.isLoading ? (
+                            signupService.isLoading || isClosing ? (
                                 <LoadingOutlined style={{ fontSize: 30, color: "#222222" }} />
                             ) : (
                                 <Button style={{ width: 198 }} className="continue-btn" type="text" block disabled={!email || password !== confirmPassword || !password || !confirmPassword || signupService.isLoading} onClick={signUp}>
@@ -239,7 +255,7 @@ export default createComponent((props) => {
                                 </Button>
                             )
                         ) : (
-                            CheckForExistingEmailService.isLoading ? (
+                            CheckForExistingEmailService.isLoading || isClosing ? (
                                 <LoadingOutlined style={{ fontSize: 30, color: "#222222" }} />
                             ) : (
                                 <Button className="continue-btn" type="text" block disabled={!email || CheckForExistingEmailService.isLoading || !isEmailValidated} onClick={CheckForExistingEmail}>
