@@ -22,6 +22,7 @@ import { useHistory } from "react-router-dom";
 import Fade from "react-reveal/Fade";
 import { Helmet } from "react-helmet-async";
 
+
 const DefaultState = (props) => {
     const { setCurrentState } = props
     return (
@@ -65,6 +66,19 @@ const SetupState = () => {
 
 export default createComponent((props) => {
     const [currentState, setCurrentState] = React.useState("default")
+    const { useService } = props.use(Frontend);
+    const fetchDemoDataByProjectId = useService({ serviceId: "fetchDemoDataByProjectId" });
+
+    React.useEffect(() => {
+        fetchDemoDataByProjectId
+            .invoke({
+                projectId : "6465b83c27be001224e57d8b"
+            }, { force: true })
+            .then((res) => {
+                console.log("res",res)
+            })
+            .catch(() => { });
+    },[])
 
     let state
     switch (currentState) {
