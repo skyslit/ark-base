@@ -93,7 +93,6 @@ export default createComponent((props) => {
           setSelectedItemDetails(item)
         }
     },[selectedItem])
-    console.log("selectedItem",selectedItemDetails)
     let state
     switch (currentState) {
         case "default":
