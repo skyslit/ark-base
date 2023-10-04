@@ -24,7 +24,7 @@ import { Helmet } from "react-helmet-async";
 
 
 const DefaultState = (props) => {
-    const { setCurrentState } = props
+    const { setCurrentState,demoItems,selectedItem,setSelectedItem } = props
     return (
         <div className="setup-page-wrapper">
             <div className="top-section">
@@ -34,11 +34,13 @@ const DefaultState = (props) => {
                 <div style={{ width: "65%" }}>
                     <Select
                         style={{ width: "100%" }}
-                        defaultValue={"cloud-kitchen"}
-                        options={[
-                            { value: 'order-builder', label: 'Order Builder' },
-                            { value: 'cloud-kitchen', label: 'Cloud kitchen' }
-                        ]}
+                        onChange={(value)=>{setSelectedItem(value)}}
+                        value={selectedItem}
+                        placeholder="Select"
+                        options={demoItems.map((item) => ({
+                            label: item.description,
+                            value: item._id,
+                        }))}
                     /><br />
                     <Checkbox style={{ marginTop: 32 }}>Pre-fill app with sample data</Checkbox>
                 </div>
@@ -68,6 +70,9 @@ export default createComponent((props) => {
     const [currentState, setCurrentState] = React.useState("default")
     const { useService } = props.use(Frontend);
     const fetchDemoDataByProjectId = useService({ serviceId: "fetchDemoDataByProjectId" });
+    const [demoItems, setDemoItems] = React.useState([])
+    const [selectedItem, setSelectedItem] = React.useState()
+    const [selectedItemDetails, setSelectedItemDetails] = React.useState()
 
     React.useEffect(() => {
         fetchDemoDataByProjectId
@@ -75,15 +80,24 @@ export default createComponent((props) => {
                 projectId : "6465b83c27be001224e57d8b"
             }, { force: true })
             .then((res) => {
-                console.log("res",res)
+                setDemoItems(res.data)
             })
             .catch(() => { });
     },[])
 
+    React.useEffect(()=>{
+        if(selectedItem){
+          const item = demoItems.find((data:any)=>{
+            return data._id === selectedItem
+          })
+          setSelectedItemDetails(item)
+        }
+    },[selectedItem])
+    console.log("selectedItem",selectedItemDetails)
     let state
     switch (currentState) {
         case "default":
-            state = <DefaultState {...props} setCurrentState={setCurrentState} />
+            state = <DefaultState {...props} setCurrentState={setCurrentState} demoItems={demoItems} setSelectedItem={setSelectedItem} selectedItem={selectedItem} />
             break;
         case "setup":
             state = <SetupState />

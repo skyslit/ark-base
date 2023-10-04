@@ -6,9 +6,6 @@ export default {
     fetchDemoDataByProjectId: async (projectId: string, includeAll: boolean = false) => {
         try {
             const res = await axios({
-                // httpsAgent: new https.Agent({
-                //     rejectUnauthorized: false
-                // }),
                 method: 'POST',
                 baseURL: useEnv("COMPASS_ENDPOINT") || 'https://compass.skyslit.com',
                 url: '/___service/compass/getArchivedDemoReleasesByProjectId',
