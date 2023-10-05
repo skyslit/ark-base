@@ -10,11 +10,28 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+
+        @media (min-width: 0px) and (max-width: 768px) {
+            padding: 0 30px;
+        }
+
+        h1 {
+            margin-bottom: 80px;
+            @media (min-width: 0px) and (max-width: 768px) {
+                margin-bottom: 40px;
+            }
+        }
+
         p {
             color: #383739;
             font-size: 18px;
             font-family: "Roboto-Regular";
             margin-bottom: 5px;
+
+            @media (min-width: 0px) and (max-width: 768px) {
+                font-size: 16px;
+                text-align: center;
+            }
         }
 
         h2 {
@@ -22,8 +39,27 @@
             font-weight: 800;
             color: #383739;
             font-family: "Roboto-Bold";
+
+            @media (min-width: 0px) and (max-width: 768px) {
+                font-size: 28px;
+                text-align: center;
+            }
+        }
+
+        .select-wrapper {
+            width: 776px;
+
+            @media (min-width: 768px) and (max-width: 840px) {
+                width: 535px;
+            }
+
+            @media (min-width: 0px) and (max-width: 768px) {
+                width: 365px;
+                padding: 0 35px;
+            }
         }
     }
+
 
     .logo-section {
         text-align: center;
@@ -37,26 +73,142 @@
 
         h1 {
             font-family: 'Roboto-Bold';
-            font-size:40px;
+            font-size: 40px;
             margin-bottom: 5px;
+
+            @media (min-width: 0px) and (max-width: 768px) {
+                font-size: 30px;
+            }
         }
-        p{
+
+        p {
             font-family: 'Roboto-Regular';
             font-size: 24px;
+
+            @media (min-width: 0px) and (max-width: 768px) {
+                font-size: 19px;
+                text-align: center;
+            }
         }
     }
-    Button{
+
+    button {
         background: #222222;
         border-radius: 29px;
         height: 43px;
-        width: 114px;
+        width: 122px;
         color: #FFFFFF;
         font-size: 16px;
         font-family: 'Almarose-Regular';
         font-weight: 500;
-        &:hover{
+        cursor: pointer;
+        outline: unset;
+        border: unset;
+
+        &:hover:enabled {
             color: #FFFFFF;
             background: #3d3d3d;
+        }
+
+        &:disabled {
+            background: #e1e1e1;
+            color: #b1b1b1;
+            cursor: default;
+        }
+
+    }
+
+    .ant-checkbox-wrapper:hover .ant-checkbox-inner,
+    .ant-checkbox:hover .ant-checkbox-inner,
+    .ant-checkbox-input:focus+.ant-checkbox-inner {
+        border-color: #386ab9;
+    }
+
+    .ant-checkbox-checked .ant-checkbox-inner {
+        background-color: #386ab9;
+    }
+
+    .ant-checkbox+span {
+        font-family: "Roboto-Medium";
+        color: #383739;
+        font-size: 18px;
+
+        @media (min-width: 0px) and (max-width: 768px) {
+            font-size: 15px;
+        }
+    }
+
+    .ant-radio-inner {
+        width: 20px;
+        height: 20px;
+
+        @media (min-width: 0px) and (max-width: 768px) {
+            width: 18px;
+            height: 18px;
+        }
+
+        &::after {
+            width: 12px;
+            height: 12px;
+        }
+    }
+
+    .ant-checkbox-inner {
+        width: 20px;
+        height: 20px;
+
+        @media (min-width: 0px) and (max-width: 768px) {
+            width: 18px;
+            height: 18px;
+        }
+
+        &::after {
+            width: 8px;
+            height: 12px;
+        }
+    }
+
+    .ant-radio,
+    .ant-checkbox {
+        font-size: 20px;
+    }
+
+}
+
+.finalise-setup-select {
+    .ant-select-selector {
+        border: unset !important;
+        border-bottom: 2px solid #CBCBCB !important;
+        box-shadow: none !important;
+        font-family: "Roboto-Medium";
+        font-size: 22px;
+        color: #383739;
+        height: 44px !important;
+
+        @media (min-width: 0px) and (max-width: 768px) {
+            font-size: 18px;
+            height: 35px;
+        }
+    }
+
+    .ant-select:hover .ant-select-selector {
+        border-color: #a2a2a2 !important;
+        box-shadow: none !important;
+    }
+
+    .ant-select-arrow .anticon:not(.ant-select-suffix) {
+        margin-bottom: 5px;
+    }
+}
+
+.finalise-setup-popup {
+    .ant-select-item-option-content {
+        font-family: "Roboto-Medium";
+        font-size: 22px;
+        color: #383739;
+
+        @media (min-width: 0px) and (max-width: 768px) {
+            font-size: 18px;
         }
     }
 }
