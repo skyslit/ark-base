@@ -37,6 +37,8 @@ import SkyslitColorFullLogo from "../icons/skyslit-color-full-logo.svg";
 import TeamUser from "../icons/team-user-icon.svg";
 // @ts-ignore
 import Close from "../icons/close-icon.svg";
+// @ts-ignore
+import Down from "../icons/down-arrow.svg";
 
 export const SiderFolderIcon = (props: any) => {
     return <Icon component={SiderFolder} {...props} />;
@@ -91,4 +93,7 @@ export const TeamUserIcon = (props: any) => {
 };
 export const CloseIcon = (props: any) => {
     return <Icon component={Close} {...props} />;
+};
+export const DownArrowIcon = (props: any) => {
+    return <Icon component={Down} {...props} />;
 };
