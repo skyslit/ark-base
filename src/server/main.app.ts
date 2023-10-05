@@ -20,7 +20,7 @@ export default createContext(async ({ use, useModule, useDataFromContext }) => {
   await resolveEnvironmentVar([
     {
       resolver: webspaceCredentials,
-      keys: Object.keys(getRuntimeVars()).filter((key) =>
+      keys: Object.keys({ ...getRuntimeVars(), ...process.env }).filter((key) =>
         key.startsWith("ws_cred___")
       ),
     },
