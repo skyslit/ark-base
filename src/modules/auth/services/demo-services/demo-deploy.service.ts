@@ -1,10 +1,11 @@
-import { defineService, Data } from "@skyslit/ark-backend";
+import { defineService, Data, IArkVolume } from "@skyslit/ark-backend";
 import Joi from "joi";
 import fs from "fs";
 import path from "path";
 import extract from "extract-zip";
 import { useEnv } from "@skyslit/ark-core";
 import { exec } from "child_process";
+import { glob } from "glob";
 
 async function downloadArchive(archiveId: string) {}
 
@@ -27,13 +28,39 @@ async function importCollection(
   });
 }
 
+async function uploadBlob(blobRootDir: string, volume: IArkVolume) {
+  const files = await glob("**", {
+    cwd: blobRootDir,
+    withFileTypes: true,
+  });
+
+  for (const file of files) {
+    if (file.isDirectory() === true) {
+      continue;
+    }
+
+    const fullPath = file.fullpath();
+    const relativePath = path.relative(blobRootDir, fullPath);
+
+    await new Promise<void>((resolve, reject) => {
+      const reader = fs.createReadStream(fullPath);
+      const writer = volume.createWriteStream(relativePath);
+      reader.on("close", resolve);
+      reader.on("error", reject);
+      reader.pipe(writer);
+    });
+
+    console.log(`Uploaded ${relativePath}`);
+  }
+}
+
 function extractZip(archiveFilePath: string, outputDir: string) {
   return extract(archiveFilePath, { dir: outputDir });
 }
 
 async function cleanup() {}
 
-async function deployDemoArchive(archiveId: string) {
+async function deployDemoArchive(archiveId: string, volume: IArkVolume) {
   try {
     const ARCHIVE_DIR = path.join(__dirname, "../../archive-download");
     const TEMP_DIR = path.join(ARCHIVE_DIR, archiveId);
@@ -81,6 +108,14 @@ async function deployDemoArchive(archiveId: string) {
         }
       }
     }
+
+    for (const blob of metaData.blobs) {
+      const { blobEnvVarName, blobDirName, wsBucketId } = blob;
+      if (["WS_BLOB_BUCKET_ID"].indexOf(blobEnvVarName) > -1) {
+        const blobRootDir = path.join(TEMP_DIR, blobDirName, wsBucketId);
+        await uploadBlob(blobRootDir, volume);
+      }
+    }
   } catch (e) {
     await cleanup();
     throw e;
@@ -88,6 +123,7 @@ async function deployDemoArchive(archiveId: string) {
 }
 
 export default defineService("deploy-demo-archive", (props) => {
+  const { useVolume } = props.use(Data);
   props.defineRule((props) => {
     props.allowPolicy("SUPER_ADMIN");
   });
@@ -100,7 +136,8 @@ export default defineService("deploy-demo-archive", (props) => {
 
   props.defineLogic(async (props) => {
     const { archiveId } = props.args.input;
-    await deployDemoArchive(archiveId);
+    const volume = useVolume();
+    await deployDemoArchive(archiveId, volume);
     return props.success({ message: "Completed" });
   });
 });
