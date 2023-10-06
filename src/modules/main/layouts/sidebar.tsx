@@ -156,6 +156,19 @@ const SiderLayout = createComponent((props) => {
     return false;
   }, [context?.response?.meta?.currentUser]);
 
+  const isDemoDataLoaded = React.useMemo(() => {
+    if (context?.response?.meta?.currentUser) {
+      try {
+        return (
+          context.response.meta.currentUser.canDeployDemoData
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return false;
+  }, [context?.response?.meta?.currentUser]);
+
   const logoutService = useService({ serviceId: "user-logout" });
   const getAllAccountsWithTenantId = useService({ serviceId: "get-all-accounts-with-tenantId" });
   const addNewTenantService = useService({ serviceId: "add-new-tenant" });
@@ -656,9 +669,9 @@ const SiderLayout = createComponent((props) => {
       break;
   }
 
-  if(isUserSuperAdmin) {
+  if (isUserSuperAdmin && isDemoDataLoaded) {
     return (
-      <SetupPage {...props}/>
+      <SetupPage {...props} />
     )
   }
 

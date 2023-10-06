@@ -28,7 +28,12 @@ export default createContext(async ({ use, useModule, useDataFromContext }) => {
   ]);
 
   const { useDatabase, useModel } = use(Data);
-  const { useServer, useRoute, useWebApp } = use(Backend);
+  const { useServer, useRoute, useWebApp, useRemoteConfig } = use(Backend);
+  const { load } = useRemoteConfig({
+    privateConfig: {
+      canDeployDemoData: true
+    }
+  })
   const { enableAuth } = use(Security);
 
   useDatabase("default", useEnv("MONGO_CONNECTION_STRING"));
@@ -48,6 +53,8 @@ export default createContext(async ({ use, useModule, useDataFromContext }) => {
       return app;
     },
     deserializeUser: async (user) => {
+      const config = await load();
+
       if (user && user?._id) {
         // @ts-ignore
         const AccountModel: any = useDataFromContext(
@@ -91,6 +98,7 @@ export default createContext(async ({ use, useModule, useDataFromContext }) => {
           password: undefined,
           policies: groups,
           deserialized: true,
+          canDeployDemoData: config?.privateConfig?.canDeployDemoData || false
         };
       }
       return user;
