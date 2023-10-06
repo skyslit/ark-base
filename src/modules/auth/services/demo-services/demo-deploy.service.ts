@@ -113,7 +113,20 @@ async function deployDemoArchive(archiveId: string, volume: IArkVolume) {
           (c) => c.databaseId === databaseId
         )) {
           const { collectionName, exportFileName, databaseDirName } =
-            collection;
+            collection as any;
+
+          const shouldSkipImport =
+            [
+              "main_accounts",
+              "main_groups",
+              "main_member-assignments",
+              "main_blacklisted_tokens",
+            ].indexOf(collectionName) > -1;
+
+          if (shouldSkipImport === true) {
+            continue;
+          }
+
           await importCollection(
             dbConnStr,
             collectionName,
