@@ -1,13 +1,25 @@
 import { defineService, Data, IArkVolume } from "@skyslit/ark-backend";
 import Joi from "joi";
-import fs from "fs";
+import fs from "fs-extra";
 import path from "path";
 import extract from "extract-zip";
 import { useEnv } from "@skyslit/ark-core";
 import { exec } from "child_process";
 import { glob } from "glob";
 
-async function downloadArchive(archiveId: string) {}
+async function downloadArchive(archiveId: string, destFilePath: string) {
+  return new Promise((resolve, reject) => {
+    const importCommand = `curl https://compass.skyslit.com/api/v1/demo-archives?exportId=${archiveId} --output ${destFilePath}`;
+    exec(importCommand, (err, stdout, stderr) => {
+      console.log(err, stdout, stderr);
+      if (err) {
+        reject(err);
+      } else {
+        resolve(true);
+      }
+    });
+  });
+}
 
 async function importCollection(
   dbConnStr: string,
@@ -58,18 +70,21 @@ function extractZip(archiveFilePath: string, outputDir: string) {
   return extract(archiveFilePath, { dir: outputDir });
 }
 
-async function cleanup() {}
+async function cleanup(dirPath: string) {
+  fs.emptyDirSync(dirPath);
+  fs.rmdirSync(dirPath);
+}
 
 async function deployDemoArchive(archiveId: string, volume: IArkVolume) {
+  const ARCHIVE_DIR = path.join(__dirname, "../../archive-download");
+  const TEMP_DIR = path.join(ARCHIVE_DIR, archiveId);
+  const ARCHIVE_FILE_PATH = path.join(TEMP_DIR, "archive");
+
   try {
-    const ARCHIVE_DIR = path.join(__dirname, "../../archive-download");
-    const TEMP_DIR = path.join(ARCHIVE_DIR, archiveId);
-    const ARCHIVE_FILE_PATH = path.join(TEMP_DIR, "archive");
-
-    await downloadArchive(archiveId);
-    console.log("Archive downloaded");
-
     fs.mkdirSync(TEMP_DIR, { recursive: true });
+
+    await downloadArchive(archiveId, ARCHIVE_FILE_PATH);
+    console.log("Archive downloaded");
 
     await extractZip(ARCHIVE_FILE_PATH, TEMP_DIR);
     console.log("Archive extracted");
@@ -117,16 +132,18 @@ async function deployDemoArchive(archiveId: string, volume: IArkVolume) {
       }
     }
   } catch (e) {
-    await cleanup();
+    await cleanup(TEMP_DIR);
     throw e;
   }
+
+  await cleanup(TEMP_DIR);
 }
 
 export default defineService("deploy-demo-archive", (props) => {
   const { useVolume } = props.use(Data);
-  props.defineRule((props) => {
-    props.allowPolicy("SUPER_ADMIN");
-  });
+  // props.defineRule((props) => {
+  //   props.allowPolicy("SUPER_ADMIN");
+  // });
 
   props.defineValidator(
     Joi.object({
