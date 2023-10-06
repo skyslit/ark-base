@@ -1,4 +1,4 @@
-import { defineService, Data, IArkVolume } from "@skyslit/ark-backend";
+import { defineService, Data, IArkVolume, Backend } from "@skyslit/ark-backend";
 import Joi from "joi";
 import fs from "fs-extra";
 import path from "path";
@@ -115,18 +115,6 @@ async function deployDemoArchive(archiveId: string, volume: IArkVolume) {
           const { collectionName, exportFileName, databaseDirName } =
             collection as any;
 
-          const shouldSkipImport =
-            [
-              "main_accounts",
-              "main_groups",
-              "main_member-assignments",
-              "main_blacklisted_tokens",
-            ].indexOf(collectionName) > -1;
-
-          if (shouldSkipImport === true) {
-            continue;
-          }
-
           await importCollection(
             dbConnStr,
             collectionName,
@@ -153,10 +141,11 @@ async function deployDemoArchive(archiveId: string, volume: IArkVolume) {
 }
 
 export default defineService("deploy-demo-archive", (props) => {
+  const { useRemoteConfig } = props.use(Backend);
   const { useVolume } = props.use(Data);
-  // props.defineRule((props) => {
-  //   props.allowPolicy("SUPER_ADMIN");
-  // });
+  props.defineRule((props) => {
+    props.allowPolicy("SUPER_ADMIN");
+  });
 
   props.defineValidator(
     Joi.object({
@@ -167,7 +156,11 @@ export default defineService("deploy-demo-archive", (props) => {
   props.defineLogic(async (props) => {
     const { archiveId } = props.args.input;
     const volume = useVolume();
+    const { put } = useRemoteConfig();
+
     await deployDemoArchive(archiveId, volume);
+    await put('private', 'canDeployDemoData', false);
+
     return props.success({ message: "Completed" });
   });
 });

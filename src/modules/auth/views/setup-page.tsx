@@ -1,5 +1,5 @@
 import React from "react";
-import { createComponent, Frontend } from "@skyslit/ark-frontend";
+import { createComponent, Frontend, useArkReactServices } from "@skyslit/ark-frontend";
 import '../styles/setup-page.scss';
 import {
     Col,
@@ -25,7 +25,34 @@ import { RightArrowIcon, DownArrowIcon } from "../icons/global-icons";
 
 
 const DefaultState = (props) => {
+    const { use } = useArkReactServices();
+    const { useService } = use(Frontend);
+    const history = useHistory();
+
     const { setCurrentState, demoItems, selectedItem, setSelectedItem } = props
+
+    const deployDemoArchieveService = useService({ serviceId: "deploy-demo-archive" });
+
+    const deployDemoArchieve = () => {
+        deployDemoArchieveService
+            .invoke({
+                archiveId: selectedItem
+            }, { force: true })
+            .then((res) => {
+                history.push("/");
+            })
+            .catch((e) => {
+                message.error(e.message)
+            });
+    }
+
+    React.useEffect(() => {
+        if (deployDemoArchieveService.isLoading) {
+            setCurrentState("setup")
+        }
+    }, [deployDemoArchieveService.isLoading])
+
+
     return (
         <div className="setup-page-wrapper">
             <div className="top-section">
@@ -45,25 +72,28 @@ const DefaultState = (props) => {
                             label: item.name || item.description,
                             value: item._id,
                         }))}
-                    /><br />
-                    <Checkbox style={{ marginTop: 32 }}>Pre-fill app with sample data</Checkbox>
+                    />
+                    {/* <br />
+                    <Checkbox style={{ marginTop: 32 }}>Pre-fill app with sample data</Checkbox> */}
                 </div>
             </div>
-            <div style={{ textAlign: "center" }} onClick={() => { setCurrentState("setup") }}>
-                <button disabled={!selectedItem}>Proceed<RightArrowIcon style={{ marginLeft: 15, color: !selectedItem ? "#b1b1b1" : undefined }} /></button></div>
+            <div style={{ textAlign: "center" }} >
+                <button disabled={!selectedItem || deployDemoArchieveService.isLoading} onClick={deployDemoArchieve}>Proceed<RightArrowIcon style={{ marginLeft: 15, color: !selectedItem ? "#b1b1b1" : undefined }} /></button></div>
         </div>
     )
 }
 
-const SetupState = () => {
+const SetupState = (props) => {
+    const [fakeState, setFakeState] = React.useState("Setting up..");
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+
     return (
         <div className="setup-page-wrapper">
             <div className="logo-section">
                 <h1>Logo</h1>
             </div>
             <div className="middle-section">
-                <h1>Setting up..</h1>
+                <h1>{fakeState}</h1>
                 <p>Please wait for a few seconds while we setup your app</p>
             </div>
             <div style={{ textAlign: "center" }}><Spin indicator={antIcon} style={{ color: "#222222" }} /></div>
@@ -104,7 +134,7 @@ export default createComponent((props) => {
             state = <DefaultState {...props} setCurrentState={setCurrentState} demoItems={demoItems} setSelectedItem={setSelectedItem} selectedItem={selectedItem} />
             break;
         case "setup":
-            state = <SetupState />
+            state = <SetupState {...props} currentState={currentState} />
             break;
         default:
             break;
