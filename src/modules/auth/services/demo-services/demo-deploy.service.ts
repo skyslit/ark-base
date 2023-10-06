@@ -28,8 +28,10 @@ async function importCollection(
 ) {
   return new Promise<boolean>((resolve, reject) => {
     const BINPATH = useEnv("MONGO_IMPORT_BIN_PATH");
-    const importCommand = `${BINPATH} --uri ${dbConnStr} --collection=${collectionName} --file=${filePath}`;
-    exec(importCommand, (err, stdout, stderr) => {
+    const importCommand = `mongoimport.exe --uri ${dbConnStr} --collection=${collectionName} --file=${filePath}`;
+    exec(importCommand, {
+      cwd: "C:\\Program Files\\MongoDB\\Tools\\100\\bin"
+    }, (err, stdout, stderr) => {
       console.log(err, stdout, stderr);
       if (err) {
         reject(err);

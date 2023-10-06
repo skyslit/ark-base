@@ -1,5 +1,5 @@
 import React from "react";
-import { createComponent, Frontend } from "@skyslit/ark-frontend";
+import { createComponent, Frontend, useArkReactServices } from "@skyslit/ark-frontend";
 import '../styles/setup-page.scss';
 import {
     Col,
@@ -25,7 +25,29 @@ import { RightArrowIcon, DownArrowIcon } from "../icons/global-icons";
 
 
 const DefaultState = (props) => {
+    const { use } = useArkReactServices();
+    const { useService } = use(Frontend);
+    const history = useHistory();
+
     const { setCurrentState, demoItems, selectedItem, setSelectedItem } = props
+
+    const deployDemoArchieveService = useService({ serviceId: "deploy-demo-archive" });
+
+    const deployDemoArchieve = () => {
+        deployDemoArchieveService
+            .invoke({
+                archiveId: selectedItem
+            }, { force: true })
+            .then((res) => {
+                history.push("/");
+            })
+            // .then((res) => {
+            //     setCurrentState("setup")
+            // })
+            .catch(() => { });
+    }
+
+
     return (
         <div className="setup-page-wrapper">
             <div className="top-section">
@@ -49,8 +71,8 @@ const DefaultState = (props) => {
                     <Checkbox style={{ marginTop: 32 }}>Pre-fill app with sample data</Checkbox>
                 </div>
             </div>
-            <div style={{ textAlign: "center" }} onClick={() => { setCurrentState("setup") }}>
-                <button disabled={!selectedItem}>Proceed<RightArrowIcon style={{ marginLeft: 15, color: !selectedItem ? "#b1b1b1" : undefined }} /></button></div>
+            <div style={{ textAlign: "center" }} >
+                <button disabled={!selectedItem} onClick={deployDemoArchieve}>Proceed<RightArrowIcon style={{ marginLeft: 15, color: !selectedItem ? "#b1b1b1" : undefined }} /></button></div>
         </div>
     )
 }
