@@ -102,17 +102,19 @@ const SetupState = (props) => {
 }
 
 export default createComponent((props) => {
-    const [currentState, setCurrentState] = React.useState("default")
     const { useService } = props.use(Frontend);
-    const fetchDemoDataByProjectId = useService({ serviceId: "fetchDemoDataByProjectId" });
+    const [currentState, setCurrentState] = React.useState("default")
     const [demoItems, setDemoItems] = React.useState([])
     const [selectedItem, setSelectedItem] = React.useState()
     const [selectedItemDetails, setSelectedItemDetails] = React.useState()
-
+    const { projectId } = props
+    
+    const fetchDemoDataByProjectId = useService({ serviceId: "fetchDemoDataByProjectId" });
+ 
     React.useEffect(() => {
         fetchDemoDataByProjectId
             .invoke({
-                projectId: "6465b83c27be001224e57d8b"
+                projectId: projectId
             }, { force: true })
             .then((res) => {
                 setDemoItems(res.data)

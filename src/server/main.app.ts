@@ -1,4 +1,3 @@
-import "dotenv/config";
 import {
   createContext,
   useEnv,
@@ -6,7 +5,7 @@ import {
   resolveEnvironmentVar,
   getRuntimeVars,
 } from "@skyslit/ark-core";
-import { Backend, Data, Security } from "@skyslit/ark-backend";
+import { Backend, Data, Security, passThroughEnvVar } from "@skyslit/ark-backend";
 import MainAPIModule from "../modules/main/api.module";
 import webAppCreator from "../web.client";
 import webspaceCredentials from "../modules/main/toolkit/providers/webspace-credentials";
@@ -16,6 +15,8 @@ setDefaultEnv({
   MONGO_CONNECTION_STRING: "mongodb://localhost:27017/dynamics-base",
   NODE_PORT: "3000",
 });
+
+passThroughEnvVar("PROJECT_ID");
 
 export default createContext(async ({ use, useModule, useDataFromContext }) => {
   await resolveEnvironmentVar([
