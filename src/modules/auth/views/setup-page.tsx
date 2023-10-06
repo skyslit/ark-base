@@ -32,12 +32,25 @@ const DefaultState = (props) => {
     const { setCurrentState, demoItems, selectedItem, setSelectedItem } = props
 
     const deployDemoArchieveService = useService({ serviceId: "deploy-demo-archive" });
+    const skipDemoArchieveService = useService({ serviceId: "skip-demo-archive" });
 
     const deployDemoArchieve = () => {
         deployDemoArchieveService
             .invoke({
                 archiveId: selectedItem
             }, { force: true })
+            .then((res) => {
+                history.push("/");
+            })
+            .catch((e) => {
+                message.error(e.message)
+            });
+    }
+
+    const skipDemoArchieve = () => {
+        skipDemoArchieveService
+            .invoke({},
+                { force: true })
             .then((res) => {
                 history.push("/");
             })
@@ -77,8 +90,10 @@ const DefaultState = (props) => {
                     <Checkbox style={{ marginTop: 32 }}>Pre-fill app with sample data</Checkbox> */}
                 </div>
             </div>
-            <div style={{ textAlign: "center" }} >
-                <button disabled={!selectedItem || deployDemoArchieveService.isLoading} onClick={deployDemoArchieve}>Proceed<RightArrowIcon style={{ marginLeft: 15, color: !selectedItem ? "#b1b1b1" : undefined }} /></button></div>
+            <div style={{ justifyContent: "center", gap: 20, display: "flex" }} >
+                <button disabled={!selectedItem || deployDemoArchieveService.isLoading} onClick={deployDemoArchieve}>Proceed<RightArrowIcon style={{ marginLeft: 15, color: !selectedItem ? "#b1b1b1" : undefined }} /></button>
+                <Button onClick={skipDemoArchieve} disabled={ skipDemoArchieveService.isLoading}>Skip</Button>
+                </div>
         </div>
     )
 }
