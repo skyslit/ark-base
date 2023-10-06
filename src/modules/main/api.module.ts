@@ -57,7 +57,7 @@ import SignupV2Service from "../auth/services/user-signup.service";
 import UpdateDashboardAccess from "../auth/services/update-dashboard-access.service";
 //Demo services
 import GetAllDemoData from "../auth/services/demo-services/get-all-demo-data.service";
-import DeployDemoArchive from "../auth/services/demo-services/demo-deploy.service";
+import { deployDemoArchiveService, skipDemoArchiveService } from "../auth/services/demo-services/demo-deploy.service";
 
 
 import createS3Volume from "./toolkit/providers/s3-volume";
@@ -118,7 +118,8 @@ export default createModule(({ use, run }) => {
   useService(LoginV2Service);
   useService(SignupV2Service);
   useService(UpdateDashboardAccess);
-  useService(DeployDemoArchive);
+  useService(deployDemoArchiveService);
+  useService(skipDemoArchiveService);
   useService(GetAllDemoData);
 
   useService(adminLauncherService, {

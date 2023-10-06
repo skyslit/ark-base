@@ -140,7 +140,7 @@ async function deployDemoArchive(archiveId: string, volume: IArkVolume) {
   await cleanup(TEMP_DIR);
 }
 
-export default defineService("deploy-demo-archive", (props) => {
+export const deployDemoArchiveService = defineService("deploy-demo-archive", (props) => {
   const { useRemoteConfig } = props.use(Backend);
   const { useVolume } = props.use(Data);
   props.defineRule((props) => {
@@ -159,6 +159,22 @@ export default defineService("deploy-demo-archive", (props) => {
     const { put } = useRemoteConfig();
 
     await deployDemoArchive(archiveId, volume);
+    await put('private', 'canDeployDemoData', false);
+
+    return props.success({ message: "Completed" });
+  });
+});
+
+
+export const skipDemoArchiveService = defineService("skip-demo-archive", (props) => {
+  const { useRemoteConfig } = props.use(Backend);
+  props.defineRule((props) => {
+    props.allowPolicy("SUPER_ADMIN");
+  });
+
+  props.defineLogic(async (props) => {
+    const { put } = useRemoteConfig();
+
     await put('private', 'canDeployDemoData', false);
 
     return props.success({ message: "Completed" });
