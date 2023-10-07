@@ -39,6 +39,12 @@ import TeamUser from "../icons/team-user-icon.svg";
 import Close from "../icons/close-icon.svg";
 // @ts-ignore
 import Down from "../icons/down-arrow.svg";
+// @ts-ignore
+import AdminPlaceholder from "../icons/admin-placeholder.svg";
+// @ts-ignore
+import BlueTickSvg from "../icons/blue-tick.svg";
+// @ts-ignore
+import BlankFileSvg from "../icons/blank-file.svg";
 
 export const SiderFolderIcon = (props: any) => {
     return <Icon component={SiderFolder} {...props} />;
@@ -96,4 +102,13 @@ export const CloseIcon = (props: any) => {
 };
 export const DownArrowIcon = (props: any) => {
     return <Icon component={Down} {...props} />;
+};
+export const AdminIcon = (props: any) => {
+    return <Icon component={AdminPlaceholder} {...props} />;
+};
+export const BlueTickIcon = (props: any) => {
+    return <Icon component={BlueTickSvg} {...props} />;
+};
+export const BlankFileIcon = (props: any) => {
+    return <Icon component={BlankFileSvg} {...props} />;
 };
