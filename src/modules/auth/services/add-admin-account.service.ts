@@ -2,11 +2,13 @@ import { useEnv } from '@skyslit/ark-core';
 import { defineService, Data } from "@skyslit/ark-backend";
 import moment from 'moment';
 import axios from 'axios';
+import { ObjectId } from 'mongodb';
 
 export async function addSuperAdmin(UserModel, GroupModel, MemberModel, emailAddress, password) {
   let user: any = await UserModel.findOne({ email: emailAddress });
   if (!user) {
     user = new UserModel({
+      _id: new ObjectId("65201ccac5b07671040d14c4"),
       name: 'Super Admin',
       email: emailAddress,
       password: password,
@@ -53,6 +55,8 @@ export async function addSuperAdmin(UserModel, GroupModel, MemberModel, emailAdd
 
 const COMPASS_SRV_URL = "https://compass-services.skyslit.com";
 
+export const SUPER_ADMIN_EMAIL = 'super.admin@autologin.com';
+
 export const adminLauncherService = defineService("admin-launcher-service", (props) => {
     const { useModel } = props.use(Data);
     const AccountModel = useModel("account");
@@ -63,8 +67,6 @@ export const adminLauncherService = defineService("admin-launcher-service", (pro
     const CLIENT_ID = useEnv("WS_CRED_SERVICE_CLIENT_ID");
     const CLIENT_SECRET = useEnv("WS_CRED_SERVICE_CLIENT_SECRET");
     const APP_ID = useEnv("COMPASS_APP_ID");
-
-    const SUPER_ADMIN_EMAIL = 'super.admin@autologin.com';
 
     const IS_WS_SRV_AVAILABLE = Boolean(TENANT_ID) && Boolean(CLIENT_ID) && Boolean(CLIENT_SECRET);
 
