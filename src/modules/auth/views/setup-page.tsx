@@ -4,60 +4,52 @@ import '../styles/setup-page.scss';
 import {
     Col,
     Row,
-    Typography,
-    Form,
     Button,
-    Input,
     Divider,
     message,
-    Select,
-    Checkbox,
     Spin,
 } from "antd";
-import SkyslitLogo from "../assets/images/skyslit.jpg";
-import RecoveryImage from "../assets/images/recovery-image.png";
-import { ArrowLeftOutlined, LoadingOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import DemoPlaceholder from "../assets/images/demo-placeholder.png"
+import { LoadingOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
-import Fade from "react-reveal/Fade";
-import { Helmet } from "react-helmet-async";
-import { RightArrowIcon, DownArrowIcon } from "../icons/global-icons";
-
+import { RightArrowIcon, AdminIcon, BlueTickIcon, BlankFileIcon } from "../icons/global-icons";
 
 const DefaultState = (props) => {
     const { use } = useArkReactServices();
     const { useService } = use(Frontend);
     const history = useHistory();
 
-    const { setCurrentState, demoItems, selectedItem, setSelectedItem } = props
+    const { setCurrentState, demoItems, selectedItem, setSelectedItem, fetchDemoDataByProjectId } = props
 
     const deployDemoArchieveService = useService({ serviceId: "deploy-demo-archive" });
     const skipDemoArchieveService = useService({ serviceId: "skip-demo-archive" });
 
     const deployDemoArchieve = () => {
-        deployDemoArchieveService
-            .invoke({
-                archiveId: selectedItem
-            }, { force: true })
-            .then((res) => {
-                history.push("/");
-            })
-            .catch((e) => {
-                message.error(e.message)
-            });
+        if (selectedItem === "blank") {
+            skipDemoArchieveService
+                .invoke({},
+                    { force: true })
+                .then((res) => {
+                    history.push("/");
+                })
+                .catch((e) => {
+                    message.error(e.message)
+                });
+        } else {
+            deployDemoArchieveService
+                .invoke({
+                    archiveId: selectedItem
+                }, { force: true })
+                .then((res) => {
+                    history.push("/");
+                })
+                .catch((e) => {
+                    message.error(e.message)
+                });
+        }
+
     }
 
-    const skipDemoArchieve = () => {
-        skipDemoArchieveService
-            .invoke({},
-                { force: true })
-            .then((res) => {
-                history.push("/");
-            })
-            .catch((e) => {
-                message.error(e.message)
-            });
-    }
 
     React.useEffect(() => {
         if (deployDemoArchieveService.isLoading) {
@@ -65,36 +57,71 @@ const DefaultState = (props) => {
         }
     }, [deployDemoArchieveService.isLoading])
 
+    const antIcon = (
+        <LoadingOutlined style={{ fontSize: 30, color: "#4c91c9" }} spin />
+    );
+
+    if (fetchDemoDataByProjectId.isLoading) {
+        return (
+            <div
+                style={{
+                    backgroundColor: "#F8F8F8",
+                    height: "100vh",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+            >
+                <Spin indicator={antIcon} />
+            </div>
+        );
+    }
+
 
     return (
-        <div className="setup-page-wrapper">
-            <div className="top-section">
-                <h1 style={{ marginBottom: 80 }}>Logo</h1>
-                <p>Let’s finalise few things before we get into your new app</p>
-                <h2>What does your app primarily do?</h2>
-                <div className="select-wrapper">
-                    <Select
-                        className="finalise-setup-select"
-                        popupClassName="finalise-setup-popup"
-                        suffixIcon={<DownArrowIcon />}
-                        style={{ width: "100%" }}
-                        onChange={(value) => { setSelectedItem(value) }}
-                        value={selectedItem}
-                        placeholder="Select"
-                        options={demoItems.map((item) => ({
-                            label: item.name || item.description,
-                            value: item._id,
-                        }))}
-                    />
-                    {/* <br />
-                    <Checkbox style={{ marginTop: 32 }}>Pre-fill app with sample data</Checkbox> */}
+        <Row className="setup-page-row-wrapper" justify="center">
+            <Col className="setup-page-col-wrapper" xs={22} sm={22} md={20} lg={20} xl={18}>
+                <div className="header-wrapper">
+                    <span className="name-text"></span>
+                    <div style={{ gap: 12, display: "flex", alignItems: "center" }}>
+                        <AdminIcon style={{ fontSize: 28 }} />
+                        <span className="admin-text">Admin</span>
+                    </div>
                 </div>
-            </div>
-            <div style={{ justifyContent: "center", gap: 20, display: "flex" }} >
-                <button disabled={!selectedItem || deployDemoArchieveService.isLoading} onClick={deployDemoArchieve}>Proceed<RightArrowIcon style={{ marginLeft: 15, color: !selectedItem ? "#b1b1b1" : undefined }} /></button>
-                <Button onClick={skipDemoArchieve} disabled={ skipDemoArchieveService.isLoading}>Skip</Button>
+                <div className="content-wrapper">
+                    <div className="setup-heading-wrapper">
+                        <span className="setup-text">Setup your new app</span>
+                        <Divider />
+                        <span className="choose-text">Choose how you want to start this app</span>
+                        <p className="description">Select a business from below and we will automatically pre-fill your app with appropriate sample datas; Or you could start blank.</p>
+                    </div>
+                    <div className="demo-items-wrapper">
+                        {demoItems.map((item) => {
+                            return (
+                                <div key={item._id} className={selectedItem === item._id ? 'single-demo-item-wrapper-selected' : 'single-demo-item-wrapper'} onClick={(e) => { setSelectedItem(item._id) }}>
+                                    <BlueTickIcon className="tick-icon" />
+                                    <div style={{ height: "190px" }}>
+                                        <img src={DemoPlaceholder} />
+                                    </div>
+                                    <span className="demo-name">{item.name}</span>
+                                    <p>{item.description}</p>
+                                </div>
+
+                            )
+                        })}
+                        <div className={selectedItem === "blank" ? 'blank-demo-item-wrapper-selected' : 'blank-demo-item-wrapper'} onClick={(e) => { setSelectedItem("blank") }}>
+                            <BlueTickIcon className="tick-icon" />
+                            <div style={{ height: "190px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                <BlankFileIcon style={{ fontSize: 35 }} />
+                            </div>
+                            <span className="demo-name">Start Blank</span>
+                            <p>No sample data</p>
+                        </div>
+                    </div>
                 </div>
-        </div>
+                <div className="btn-wrapper"><Button disabled={!selectedItem || deployDemoArchieveService.isLoading} onClick={deployDemoArchieve}>Proceed<RightArrowIcon style={{ marginLeft: 15, color: !selectedItem ? "#b1b1b1" : undefined }} /></Button></div>
+            </Col>
+        </Row>
     )
 }
 
@@ -123,9 +150,9 @@ export default createComponent((props) => {
     const [selectedItem, setSelectedItem] = React.useState()
     const [selectedItemDetails, setSelectedItemDetails] = React.useState()
     const { projectId } = props
-    
+
     const fetchDemoDataByProjectId = useService({ serviceId: "fetchDemoDataByProjectId" });
- 
+
     React.useEffect(() => {
         fetchDemoDataByProjectId
             .invoke({
@@ -148,7 +175,7 @@ export default createComponent((props) => {
     let state
     switch (currentState) {
         case "default":
-            state = <DefaultState {...props} setCurrentState={setCurrentState} demoItems={demoItems} setSelectedItem={setSelectedItem} selectedItem={selectedItem} />
+            state = <DefaultState {...props} setCurrentState={setCurrentState} demoItems={demoItems} setSelectedItem={setSelectedItem} selectedItem={selectedItem} fetchDemoDataByProjectId={fetchDemoDataByProjectId} />
             break;
         case "setup":
             state = <SetupState {...props} currentState={currentState} />
