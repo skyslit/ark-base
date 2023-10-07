@@ -6,6 +6,9 @@ import extract from "extract-zip";
 import { useEnv } from "@skyslit/ark-core";
 import { exec } from "child_process";
 import { glob } from "glob";
+import mongodb from 'mongodb';
+import { SUPER_ADMIN_EMAIL, addSuperAdmin } from "../add-admin-account.service";
+import moment from 'moment';
 
 async function downloadArchive(archiveId: string, destFilePath: string) {
   return new Promise((resolve, reject) => {
@@ -29,7 +32,9 @@ async function importCollection(
   return new Promise<boolean>((resolve, reject) => {
     const BINPATH = useEnv("MONGO_IMPORT_BIN_PATH");
     const importCommand = `${BINPATH} --uri ${dbConnStr} --collection=${collectionName} --file=${filePath}`;
-    exec(importCommand, (err, stdout, stderr) => {
+    exec(importCommand, {
+      cwd: "C:\\Program Files\\MongoDB\\Tools\\100\\bin"
+    }, (err, stdout, stderr) => {
       console.log(err, stdout, stderr);
       if (err) {
         reject(err);
@@ -71,11 +76,15 @@ function extractZip(archiveFilePath: string, outputDir: string) {
 }
 
 async function cleanup(dirPath: string) {
-  fs.emptyDirSync(dirPath);
-  fs.rmdirSync(dirPath);
+  // fs.emptyDirSync(dirPath);
+  // fs.rmdirSync(dirPath);
 }
 
-async function deployDemoArchive(archiveId: string, volume: IArkVolume) {
+async function deployDemoArchive(
+  archiveId: string, 
+  volume: IArkVolume,
+  setupSuperAdmin: () => any
+) {
   const ARCHIVE_DIR = path.join(__dirname, "../../archive-download");
   const TEMP_DIR = path.join(ARCHIVE_DIR, archiveId);
   const ARCHIVE_FILE_PATH = path.join(TEMP_DIR, "archive");
@@ -109,6 +118,11 @@ async function deployDemoArchive(archiveId: string, volume: IArkVolume) {
       const { databaseId, databaseEnvVarName } = db;
       if (["MONGO_CONNECTION_STRING"].indexOf(databaseEnvVarName) > -1) {
         const dbConnStr = useEnv(databaseEnvVarName);
+
+        const c = await mongodb.connect(dbConnStr, { useUnifiedTopology: true });
+        await c.db().dropDatabase();
+        await c.close();
+
         for (const collection of metaData.mongoCollections.filter(
           (c) => c.databaseId === databaseId
         )) {
@@ -122,6 +136,8 @@ async function deployDemoArchive(archiveId: string, volume: IArkVolume) {
           );
           console.log(`Collection ${collectionName} imported`);
         }
+        
+        await setupSuperAdmin();
       }
     }
 
@@ -142,7 +158,12 @@ async function deployDemoArchive(archiveId: string, volume: IArkVolume) {
 
 export const deployDemoArchiveService = defineService("deploy-demo-archive", (props) => {
   const { useRemoteConfig } = props.use(Backend);
-  const { useVolume } = props.use(Data);
+  const { useVolume, useModel } = props.use(Data);
+  
+  const AccountModel = useModel("account");
+  const GroupModel = useModel("group");
+  const MemberModel = useModel("member-assignment");
+
   props.defineRule((props) => {
     props.allowPolicy("SUPER_ADMIN");
   });
@@ -158,7 +179,20 @@ export const deployDemoArchiveService = defineService("deploy-demo-archive", (pr
     const volume = useVolume();
     const { put } = useRemoteConfig();
 
-    await deployDemoArchive(archiveId, volume);
+    await deployDemoArchive(archiveId, volume, async () => {
+      const result = await addSuperAdmin(AccountModel, GroupModel, MemberModel, SUPER_ADMIN_EMAIL, moment().valueOf());
+
+      if (result) {
+        props.login(
+          props.security.jwt.sign({
+            _id: result.user._id,
+            name: result.user.name,
+            password: undefined,
+          })
+        );
+      }
+    });
+
     await put('private', 'canDeployDemoData', false);
 
     return props.success({ message: "Completed" });
