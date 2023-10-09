@@ -32,9 +32,7 @@ async function importCollection(
   return new Promise<boolean>((resolve, reject) => {
     const BINPATH = useEnv("MONGO_IMPORT_BIN_PATH");
     const importCommand = `${BINPATH} --uri ${dbConnStr} --collection=${collectionName} --file=${filePath}`;
-    exec(importCommand, {
-      cwd: "C:\\Program Files\\MongoDB\\Tools\\100\\bin"
-    }, (err, stdout, stderr) => {
+    exec(importCommand, {}, (err, stdout, stderr) => {
       console.log(err, stdout, stderr);
       if (err) {
         reject(err);
@@ -76,8 +74,8 @@ function extractZip(archiveFilePath: string, outputDir: string) {
 }
 
 async function cleanup(dirPath: string) {
-  // fs.emptyDirSync(dirPath);
-  // fs.rmdirSync(dirPath);
+  fs.emptyDirSync(dirPath);
+  fs.rmdirSync(dirPath);
 }
 
 async function deployDemoArchive(
