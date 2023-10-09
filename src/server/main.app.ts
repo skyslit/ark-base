@@ -18,6 +18,7 @@ setDefaultEnv({
 });
 
 passThroughEnvVar("PROJECT_ID");
+passThroughEnvVar("BUSINESS_NAME");
 
 export default createContext(async ({ use, useModule, useDataFromContext }) => {
   await resolveEnvironmentVar([
