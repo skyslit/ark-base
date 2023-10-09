@@ -16,13 +16,27 @@ import { RightArrowIcon, AdminIcon, BlueTickIcon, BlankFileIcon } from "../icons
 
 const DefaultState = (props) => {
     const { use } = useArkReactServices();
-    const { useService } = use(Frontend);
+    const { useService, useContext } = use(Frontend);
     const history = useHistory();
+    const context = useContext();
 
     const { setCurrentState, demoItems, selectedItem, setSelectedItem, fetchDemoDataByProjectId } = props
 
     const deployDemoArchieveService = useService({ serviceId: "deploy-demo-archive" });
     const skipDemoArchieveService = useService({ serviceId: "skip-demo-archive" });
+
+    const businessName = React.useMemo(() => {
+        if (context?.response?.meta?.passThroughVariables) {
+          try {
+            return (
+              context.response.meta.passThroughVariables.BUSINESS_NAME
+            );
+          } catch (e) {
+            console.error(e);
+          }
+        }
+        return false;
+      }, [context?.response?.meta?.passThroughVariables]);
 
     const deployDemoArchieve = () => {
         if (selectedItem === "blank") {
@@ -82,7 +96,7 @@ const DefaultState = (props) => {
         <Row className="setup-page-row-wrapper" justify="center">
             <Col className="setup-page-col-wrapper" xs={22} sm={22} md={20} lg={20} xl={18}>
                 <div className="header-wrapper">
-                    <span className="name-text"></span>
+                    <span className="name-text">{businessName ? businessName : null}</span>
                     <div style={{ gap: 12, display: "flex", alignItems: "center" }}>
                         <AdminIcon style={{ fontSize: 28 }} />
                         <span className="admin-text">Admin</span>
@@ -106,7 +120,6 @@ const DefaultState = (props) => {
                                     <span className="demo-name">{item.name}</span>
                                     <p>{item.description}</p>
                                 </div>
-
                             )
                         })}
                         <div className={selectedItem === "blank" ? 'blank-demo-item-wrapper-selected' : 'blank-demo-item-wrapper'} onClick={(e) => { setSelectedItem("blank") }}>
