@@ -1,5 +1,5 @@
 import { createModule, useEnv } from "@skyslit/ark-core";
-import { Data, Backend } from "@skyslit/ark-backend";
+import { Data, Backend, defineService, Communication } from "@skyslit/ark-backend";
 
 import AccountSchema from "../auth/schema/account.schema";
 import GroupSchema from "../auth/schema/group.schema";
@@ -62,11 +62,16 @@ import { deployDemoArchiveService, skipDemoArchiveService } from "../auth/servic
 
 import createS3Volume from "./toolkit/providers/s3-volume";
 import createWebspaceVolume from "./toolkit/providers/webspace-blob";
+import { createWSEmailProvider } from "./toolkit/providers/ws-email";
+import { loadEmailTemplate } from "./toolkit/helpers/loadEmailTemplate";
 
 export default createModule(({ use, run }) => {
   const { useModel, useVolume, useFolderOperations } = use(Data);
   const { enableDynamicsV2Services, useService } = use(Backend);
-  console.log("api.module.ts loaded");
+  const { enableCommunication, useProvider } = use(Communication);
+  
+  enableCommunication();
+  useProvider(createWSEmailProvider());
 
   useModel("account", AccountSchema);
   useModel("group", GroupSchema);
@@ -121,6 +126,7 @@ export default createModule(({ use, run }) => {
   useService(deployDemoArchiveService);
   useService(skipDemoArchiveService);
   useService(GetAllDemoData);
+
 
   useService(adminLauncherService, {
     method: "get",

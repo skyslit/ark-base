@@ -28,3 +28,4 @@ build
 user-uploads
 .ark-test-user.json
 archive-download
+.test-emails
