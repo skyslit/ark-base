@@ -18,25 +18,11 @@ const DefaultState = (props) => {
     const { use } = useArkReactServices();
     const { useService, useContext } = use(Frontend);
     const history = useHistory();
-    const context = useContext();
 
-    const { setCurrentState, demoItems, selectedItem, setSelectedItem, fetchDemoDataByProjectId } = props
+    const { setCurrentState, demoItems, selectedItem, setSelectedItem, fetchDemoDataByProjectId, businessName } = props
 
     const deployDemoArchieveService = useService({ serviceId: "deploy-demo-archive" });
     const skipDemoArchieveService = useService({ serviceId: "skip-demo-archive" });
-
-    const businessName = React.useMemo(() => {
-        if (context?.response?.meta?.passThroughVariables) {
-          try {
-            return (
-              context.response.meta.passThroughVariables.BUSINESS_NAME
-            );
-          } catch (e) {
-            console.error(e);
-          }
-        }
-        return false;
-      }, [context?.response?.meta?.passThroughVariables]);
 
     const deployDemoArchieve = () => {
         if (selectedItem === "blank") {
@@ -75,6 +61,12 @@ const DefaultState = (props) => {
         <LoadingOutlined style={{ fontSize: 30, color: "#4c91c9" }} spin />
     );
 
+    React.useEffect(() => {
+        if (demoItems.length > 0) {
+            setSelectedItem(demoItems[0]._id)
+        }
+    }, [demoItems])
+
     if (fetchDemoDataByProjectId.isLoading) {
         return (
             <div
@@ -91,7 +83,6 @@ const DefaultState = (props) => {
         );
     }
 
-
     return (
         <Row className="setup-page-row-wrapper" justify="center">
             <Col className="setup-page-col-wrapper" xs={22} sm={22} md={20} lg={20} xl={18}>
@@ -106,8 +97,8 @@ const DefaultState = (props) => {
                     <div className="setup-heading-wrapper">
                         <span className="setup-text">Setup your new app</span>
                         <Divider />
-                        <span className="choose-text">Choose how you want to start this app</span>
-                        <p className="description">Select a business from below and we will automatically pre-fill your app with appropriate sample datas; Or you could start blank.</p>
+                        <span className="choose-text">Choose a template</span>
+                        <p className="description">Select a template from below and we will automatically pre-fill your app with appropriate sample datas; Or you could start blank.</p>
                     </div>
                     <div className="demo-items-wrapper">
                         {demoItems.map((item) => {
@@ -139,30 +130,48 @@ const DefaultState = (props) => {
 }
 
 const SetupState = (props) => {
+
+    const { businessName } = props
+
     const [fakeState, setFakeState] = React.useState("Setting up..");
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     return (
         <div className="setup-page-wrapper">
             <div className="logo-section">
-                <h1>Logo</h1>
+                <span className="name-text">{businessName ? businessName : null}</span>
             </div>
             <div className="middle-section">
                 <h1>{fakeState}</h1>
                 <p>Please wait for a few seconds while we setup your app</p>
             </div>
-            <div style={{ textAlign: "center" }}><Spin indicator={antIcon} style={{ color: "#222222" }} /></div>
+            <div className="bottom-section"><Spin indicator={antIcon} style={{ color: "#222222" }} /></div>
         </div>
     )
 }
 
 export default createComponent((props) => {
-    const { useService } = props.use(Frontend);
+    const { useService, useContext } = props.use(Frontend);
     const [currentState, setCurrentState] = React.useState("default")
     const [demoItems, setDemoItems] = React.useState([])
     const [selectedItem, setSelectedItem] = React.useState()
     const [selectedItemDetails, setSelectedItemDetails] = React.useState()
     const { projectId } = props
+
+    const context = useContext();
+
+    const businessName = React.useMemo(() => {
+        if (context?.response?.meta?.passThroughVariables) {
+            try {
+                return (
+                    context.response.meta.passThroughVariables.BUSINESS_NAME
+                );
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        return false;
+    }, [context?.response?.meta?.passThroughVariables]);
 
     const fetchDemoDataByProjectId = useService({ serviceId: "fetchDemoDataByProjectId" });
 
@@ -188,10 +197,10 @@ export default createComponent((props) => {
     let state
     switch (currentState) {
         case "default":
-            state = <DefaultState {...props} setCurrentState={setCurrentState} demoItems={demoItems} setSelectedItem={setSelectedItem} selectedItem={selectedItem} fetchDemoDataByProjectId={fetchDemoDataByProjectId} />
+            state = <DefaultState {...props} businessName={businessName} setCurrentState={setCurrentState} demoItems={demoItems} setSelectedItem={setSelectedItem} selectedItem={selectedItem} fetchDemoDataByProjectId={fetchDemoDataByProjectId} />
             break;
         case "setup":
-            state = <SetupState {...props} currentState={currentState} />
+            state = <SetupState {...props} currentState={currentState} businessName={businessName} />
             break;
         default:
             break;
