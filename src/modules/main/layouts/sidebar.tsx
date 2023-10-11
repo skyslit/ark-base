@@ -683,15 +683,11 @@ const SiderLayout = createComponent((props) => {
       break;
   }
 
- /*  if (isUserSuperAdmin && isDemoDataLoaded && projectId) {
+  if (isUserSuperAdmin && isDemoDataLoaded && projectId) {
     return (
       <SetupPage {...props} projectId={projectId} />
     )
-  } */
-
-    return (
-      <SetupPage {...props} projectId={projectId} />
-    )
+  }
 
   return (
     <>
