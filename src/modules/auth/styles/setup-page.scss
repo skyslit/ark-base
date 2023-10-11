@@ -4,6 +4,7 @@
     display: flex;
     justify-content: space-between;
     flex-direction: column;
+    padding-bottom: unset;
 
     .top-section {
         display: flex;
@@ -63,6 +64,18 @@
 
     .logo-section {
         text-align: center;
+
+        .name-text {
+            letter-spacing: -0.27px;
+            color: #383739;
+            font-size: 18px;
+            font-family: "Roboto-Medium";
+
+            @media (min-width: 0px) and (max-width: 768px) {
+                letter-spacing: -0.21px;
+                font-size: 14px;
+            }
+        }
     }
 
     .middle-section {
@@ -73,7 +86,7 @@
 
         h1 {
             font-family: 'Roboto-Bold';
-            font-size: 40px;
+            font-size: 34px;
             margin-bottom: 5px;
 
             @media (min-width: 0px) and (max-width: 768px) {
@@ -83,13 +96,22 @@
 
         p {
             font-family: 'Roboto-Regular';
-            font-size: 24px;
+            font-size: 20px;
+            margin-bottom: unset;
 
             @media (min-width: 0px) and (max-width: 768px) {
                 font-size: 19px;
                 text-align: center;
             }
         }
+    }
+
+    .bottom-section {
+        border-top: 1px solid #E2E2E2;
+        height: 91px;
+        justify-content: center;
+        display: flex;
+        align-items: center;
     }
 
     button {
@@ -121,15 +143,16 @@
 }
 
 .setup-page-row-wrapper {
-    padding: 46px 0px 83px;
+    padding-top: 46px;
+    padding-bottom: 115px;
     background: #FFFFFF;
 
     @media (min-resolution: 100dpi) and (max-resolution: 125dpi) {
-        padding: 37px 0px 47px;
+        padding-top: 37px;
     }
 
     @media (min-width: 0px) and (max-width: 768px) {
-        padding: 35px 0px 45px;
+        padding-top: 35px;
     }
 
     .setup-page-col-wrapper {
@@ -153,7 +176,7 @@
             .admin-text {
                 letter-spacing: -0.27px;
                 color: #383739;
-                font-size: 18px;
+                font-size: 15px;
                 font-family: "Roboto-Medium";
 
                 @media (min-width: 0px) and (max-width: 768px) {
@@ -164,7 +187,7 @@
         }
 
         .content-wrapper {
-            margin-top: 69px;
+            margin-top: 35px;
 
             @media (min-resolution: 100dpi) and (max-resolution: 125dpi) {
                 margin-top: 50px;
@@ -182,7 +205,7 @@
                 .setup-text {
                     letter-spacing: -0.27px;
                     color: #262626;
-                    font-size: 18px;
+                    font-size: 16px;
                     font-family: "Roboto-Medium";
 
                     @media (min-width: 0px) and (max-width: 768px) {
@@ -204,7 +227,7 @@
                 .choose-text {
                     letter-spacing: -1.29px;
                     color: #383739;
-                    font-size: 38px;
+                    font-size: 32px;
                     font-family: "Roboto-Bold";
                     margin-bottom: 10px;
 
@@ -219,7 +242,7 @@
                 .description {
                     letter-spacing: -0.27px;
                     color: #606060;
-                    font-size: 16px;
+                    font-size: 14px;
                     font-family: "Roboto-Regular";
                     text-align: center;
                     max-width: 561px;
@@ -337,7 +360,7 @@
                     .demo-name {
                         letter-spacing: -0.27px;
                         color: #383739;
-                        font-size: 18px;
+                        font-size: 16px;
                         font-family: "Roboto-Medium";
                         margin: 0px 0px 7px 0px;
                         text-align: center;
@@ -398,15 +421,13 @@
             justify-content: center;
             align-items: center;
             display: flex;
-            padding-top: 105px;
-
-            @media (min-resolution: 100dpi) and (max-resolution: 125dpi) {
-                padding-top: 80px;
-            }
-
-            @media (min-width: 0px) and (max-width: 768px) {
-                padding-top: 80px;
-            }
+            position: fixed;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            padding: 20px 0px;
+            border-top: 1px solid #E2E2E2;
+            background-color: white;
 
             button {
                 background: #222222;
@@ -417,9 +438,15 @@
                 outline: unset;
                 border: unset;
                 padding: 25px 22px;
+                justify-content: center;
                 display: flex;
                 align-items: center;
                 transition: all 0.2s;
+
+                @media (min-width: 0px) and (max-width: 768px) {
+                    width: 85%;
+                    padding-top: 28px;
+                }
 
                 .anticon {
                     transition: transform 0.2s;

@@ -370,9 +370,9 @@ const SiderLayout = createComponent((props) => {
   const navigateFileManager = React.useMemo(() => {
     if (isUserSuperAdmin) {
       return `/app/files`;
-    } else if (selectedTenant){
+    } else if (selectedTenant) {
       return `/app/files/tenants/${selectedTenant.toLowerCase()}`;
-    }else{
+    } else {
       return "/app/files"
     }
   }, [selectedTenant, isUserSuperAdmin]);
@@ -683,11 +683,15 @@ const SiderLayout = createComponent((props) => {
       break;
   }
 
-  if (isUserSuperAdmin && isDemoDataLoaded && projectId) {
+ /*  if (isUserSuperAdmin && isDemoDataLoaded && projectId) {
     return (
       <SetupPage {...props} projectId={projectId} />
     )
-  }
+  } */
+
+    return (
+      <SetupPage {...props} projectId={projectId} />
+    )
 
   return (
     <>
