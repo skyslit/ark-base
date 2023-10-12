@@ -1,0 +1,154 @@
+.onboarding-page-row-wrapper {
+    // padding-top: 46px;
+    // padding-bottom: 64px;
+    background: #FFFFFF;
+    transform: scale(0.8);
+
+    @media (min-resolution: 100dpi) and (max-resolution: 125dpi) {
+        padding-bottom: 64px;
+        transform: unset;
+        padding-top: 37px;
+    }
+
+    @media (min-width: 0px) and (max-width: 768px) {
+        padding-top: 35px;
+        padding-bottom: 48px;
+        transform: unset;
+    }
+
+    .onboarding-page-col-wrapper {
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            @media (min-resolution: 100dpi) and (max-resolution: 125dpi) {
+                margin-top: 50px;
+            }
+
+            .onboarding-heading-wrapper {
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+
+                .onboarding-text {
+                    letter-spacing: -0.7px;
+                    color: #393939;
+                    font-size: 28px;
+                    font-family: "Roboto-Regular";
+                    margin-top: 20px;
+
+                    @media (min-width: 0px) and (max-width: 768px) {
+                        font-size: 22px;
+                    }
+                }
+
+                .choose-text {
+                    letter-spacing: -3.28px;
+                    color: #383739;
+                    font-size: 82px;
+                    font-family: "Roboto-Bold";
+                    margin-bottom: 22px;
+                    margin-top: 7px;
+                    line-height: 1;
+
+                    @media (min-width: 0px) and (max-width: 768px) {
+                        letter-spacing: -0.76px;
+                        font-size: 26px;
+                        margin-bottom: 20px;
+                    }
+                }
+
+                .description {
+                    color: #171717;
+                    font-size: 20px;
+                    font-family: "Roboto-Regular";
+                    text-align: center;
+                    margin: unset;
+
+                    @media (min-width: 0px) and (max-width: 768px) {
+                        font-size: 13px;
+                    }
+                }
+            }
+
+            .instruction-wrapper {
+                margin-top: 65px;
+                padding: 20px 30px 40px 30px;
+                border: 1px solid #E3E3E3;
+                border-radius: 7px;
+                max-width: 510px;
+                width: 100%;
+                gap: 40px;
+                display: flex;
+                flex-direction: column;
+
+                @media (min-width: 0px) and (max-width: 768px) {
+                    margin-top: 40px;
+                    gap: 33px;
+                }
+
+                .instruction-text {
+                    display: flex;
+                    justify-content: center;
+                    color: #535353;
+                    font-size: 20px;
+                    font-family: 'Roboto-Regular';
+
+                    @media (min-width: 0px) and (max-width: 350px) {
+                        font-size: 15px;
+                    }
+
+                    @media (min-width: 350px) and (max-width: 768px) {
+                        font-size: 14px;
+                    }
+
+                    .custom-break {
+                        @media (min-width: 0px) and (max-width: 768px) {
+                            display: none;
+                        }
+                    }
+                }
+
+                .step-wrapper {
+                    display: flex;
+                    gap: 26px;
+                    align-items: center;
+
+                    .circle-wrapper {
+                        align-items: center;
+                        display: flex;
+                        justify-content: center;
+                        min-width: 35px;
+                        height: 35px;
+                        border: 1px solid #CECECE;
+                        border-radius: 50%;
+                        color: #535353;
+                        font-size: 20px;
+                        font-family: 'Roboto-Regular';
+
+                        @media (min-width: 0px) and (max-width: 768px) {
+                            font-size: 15px;
+                            min-width: 28px;
+                            height: 28px;
+                        }
+                    }
+                }
+            }
+
+            .icon-wrapper {
+                margin-top: 100px;
+
+                @media (min-width: 0px) and (max-width: 768px) {
+                    margin-top: 70px;
+                }
+
+                .anticon svg {
+                    width: 7em;
+                    height: 2em;
+                }
+            }
+        }
+    }
+}

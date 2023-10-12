@@ -90,6 +90,11 @@ export default createReactApp(({ use, useModule }) => {
       component: useComponent("main/user-account-settings"),
       Route: useComponent("protectedRoute"),
     },
+/*     {
+      path: "/onboarding",
+      hideInMenu: true,
+      component: useComponent("main/onboarding"),
+    }, */
     {
       path: "/",
       hideInMenu: true,
