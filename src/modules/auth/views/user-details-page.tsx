@@ -21,7 +21,7 @@ export default createComponent((props) => {
     const [updatePassword, setUpdatePassword] = React.useState(false);
     const [isAssignModalOpen, setIsAssignModalOpen] = React.useState(false);
     const [items, setItems] = React.useState([]);
-    const [accountDetails, setAccountDetails] = React.useState([]);
+    const [accountDetails, setAccountDetails] = React.useState(null);
     const [groupDetails, setGroupDetails] = React.useState([]);
     const [editName, setEditName] = React.useState(false);
     const [showEditEmail, setShowEditEmail] = React.useState(false);
@@ -153,7 +153,7 @@ export default createComponent((props) => {
     const listGroupDetailsService = useService({ serviceId: "get-group-by-id" });
     const getGroupDetails = React.useMemo(() => {
         listGroupDetailsService.invoke({
-            groupId: accountDetails.groupId
+            groupId: accountDetails?.groupId
         }, { force: true })
             .then((res) => {
                 setGroupDetails(res.data[0])
@@ -252,11 +252,13 @@ export default createComponent((props) => {
 
     return (
         <>
-            <Helmet>
-                <title>
-                    {`${accountDetails ? accountDetails.name : ""} | Groups`}
-                </title>
-            </Helmet>
+            {accountDetails ? (
+                <Helmet>
+                    <title>
+                        {`${accountDetails.name || accountDetails.email} | Groups`}
+                    </title>
+                </Helmet>
+            ) : null}
             <div className="user-details-layout">
                 <Fade duration={700}>
                     <Row style={{ background: "#F8F8F8" }} justify="center">
@@ -291,10 +293,10 @@ export default createComponent((props) => {
                                     }
                                 </div>
                                 <div className="user-name-section">
-                                    <Typography.Text className="name-text" >{accountDetails.name || accountDetails.email}</Typography.Text>
+                                    <Typography.Text className="name-text" >{accountDetails?.name || accountDetails?.email}</Typography.Text>
                                     <br />
-                                    {accountDetails.name ? (
-                                        <Typography.Text className="mail-id-text">{accountDetails.email}</Typography.Text>
+                                    {accountDetails?.name ? (
+                                        <><Typography.Text className="mail-id-text">{accountDetails?.email}</Typography.Text><br /></>
                                     ) : null}
                                     {haveAccess ? (
                                         <Typography.Text className="mail-id-text">This user has dashboard access permission.</Typography.Text>
@@ -369,7 +371,7 @@ export default createComponent((props) => {
                                             showEditEmail === false ? "basic-sub2" : "basic-sub2-hide"
                                         }>
                                             <Typography.Text className="accountEmail">
-                                                {accountDetails.email}
+                                                {accountDetails?.email}
                                             </Typography.Text>
                                         </div>
 
@@ -578,7 +580,7 @@ export default createComponent((props) => {
                                         </span>
                                         <br />
                                         <span style={{ color: "#8F959D", fontSize: 14 }}>
-                                            {`Do you want to delete ${accountDetails.name} ?`}
+                                            {`Do you want to delete ${accountDetails?.name} ?`}
                                         </span>
                                     </div>
                                     <div className="delete-btn-section">

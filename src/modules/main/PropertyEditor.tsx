@@ -1,26 +1,38 @@
 import React from "react";
-import { Frontend, useArkReactServices } from '@skyslit/ark-frontend';
+import { createComponent, Frontend, useArkReactServices } from "@skyslit/ark-frontend";
 import { useFile } from '@skyslit/ark-frontend/build/dynamics-v2';
-import { Input, Row, Col, Button, Tabs, Menu, Grid, Form, Divider, Select, Table, Dropdown, Modal, message } from 'antd';
-import {
-    DeleteOutlined,
-    HolderOutlined,
-    LoadingOutlined
-} from '@ant-design/icons';
+import { useCatalogueItemPicker, generateFileLink } from '@skyslit/ark-frontend/build/dynamics-v2/widgets/catalogue';
+import { Input, Row, Col, Button, Tabs, Select, Menu, Grid, Form, Divider } from 'antd';
+import { Space, Table, Tag, Dropdown, Modal, message } from 'antd';
+import Placeholder from "./assets/images/placeholder.jpg";
 import { createSchema } from '@skyslit/ark-frontend/build/dynamics-v2';
 import "./PropertyEditor.scss"
 import type { TabsProps } from 'antd';
-
+import { useState, useEffect } from 'react';
+import { useParams, useHistory } from "react-router-dom";
+import {
+    HolderOutlined,
+    LoadingOutlined,
+    DeleteOutlined
+} from '@ant-design/icons';
 
 export const PropertySchema = createSchema({
     orgName: "",
+    shopLogoPath: "",
+    shopAddress: "",
+    description: "",
+    phoneNumber: "",
+    email: "",
+    availableSlots: [""],
+    marketinglogo: "",
 })
 
 export function PropertyRenderer() {
+    const ArkServices = useArkReactServices();
 
     const BasicInformation = ((props) => {
-
-        const file = useFile();
+        const picker = useCatalogueItemPicker();
+        const file:any = useFile();
 
         return (
             <Row className="basic-information-editor-row-wrapper" justify="center">
@@ -32,10 +44,106 @@ export function PropertyRenderer() {
                         <div className="content-wrapper">
                             <div className="input-wrapper">
                                 <label>Business Name:</label>
-                                <Input className="input" placeholder="Give a name for this app (Eg: John’s Online Store)"
+                                <Input className="input" placeholder="Give a name for this app"
                                     onChange={(e) => file.cms.updateKey("orgName", e.target.value)}
                                     value={(file.cms.content as any).orgName}
                                 />
+                            </div>
+                            {/* <div className="input-wrapper">
+                                <label>Available slots</label>
+                                <Select className="select" mode="tags" value={(file.cms.content as any).availableSlots} onChange={(e) => file.cms.updateKey('availableSlots', e)} />
+                            </div> */}
+                            <div className="input-wrapper">
+                                <label>Address</label>
+                                <Input className="input"
+                                    placeholder="Enter your address"
+                                    value={file.cms.content.shopAddress} onChange={(e) => file.cms.updateKey('shopAddress', e.target.value)} />
+                            </div>
+                            <div className="input-wrapper">
+                                <label>Phone Number</label>
+                                <Input className="input" type="number"
+                                    placeholder="Enter your phone number"
+                                    value={file.cms.content.phoneNumber} onChange={(e) => file.cms.updateKey('phoneNumber', e.target.value)} />
+                            </div>
+                            <div className="input-wrapper">
+                                <label>Marketing Email ID</label>
+                                <Input className="input"
+                                    placeholder="Enter your marketing email ID"
+                                    value={file.cms.content.email} onChange={(e) => file.cms.updateKey('email', e.target.value)} />
+                            </div>
+                            <div className="input-wrapper">
+                                <label>Description</label>
+                                <Input.TextArea className="description" value={file.cms.content.description}
+                                    onChange={(e) => file.cms.updateKey('description', e.target.value)} />
+                            </div>
+                            <div className="input-wrapper">
+                                {/*  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                                    <label>Logo</label>
+                                    <div className="whole-logo-image">
+                                        {(file.cms.content as any).shopLogoPath ? (
+                                            <img
+                                                className="image-wrapper"
+                                                src={generateFileLink((file.cms.content as any).shopLogoPath)} />
+                                        ) : (
+                                            <img
+                                                className="image-wrapper"
+                                                src={Placeholder} />
+                                        )}
+                                        {(file.cms.content as any).shopLogoPath ? (
+                                            <Button className="delete-btn" onClick={() => file.cms.updateKey('shopLogoPath', '')}>Delete Image</Button>
+                                        ) : (
+                                            <Button
+                                                className="upload-btn"
+                                                onClick={() => {
+                                                    picker.chooseItems().then((result) => {
+                                                        file.cms.updateKey('shopLogoPath', result.items[0].path);
+                                                    });
+                                                }}
+                                            >
+                                                Upload Image
+                                            </Button>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="text-wrapper">
+                                    <span className="recomnd-text">Recommended Size: 70 x 70 px</span>
+                                    <span className="recomnd-text">Maximum size: 2 MB </span>
+                                </div> */}
+
+
+                                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                                    <label>Marketing logo</label>
+                                    <div className="whole-logo-image">
+                                        {(file.cms.content as any).marketinglogo ? (
+                                            <img
+                                                className="image-wrapper"
+                                                src={generateFileLink((file.cms.content as any).marketinglogo)} />
+                                        ) : (
+                                            <img
+                                                className="image-wrapper"
+                                                src={Placeholder} />
+                                        )}
+                                        {(file.cms.content as any).marketinglogo ? (
+                                            <Button className="delete-btn" onClick={() => file.cms.updateKey('marketinglogo', '')}>Delete Image</Button>
+                                        ) : (
+                                            <Button
+                                                className="upload-btn"
+                                                onClick={() => {
+                                                    picker.chooseItems({ initialPath: "/uploads" }).then((result) => {
+                                                        file.cms.updateKey('marketinglogo', result.items[0].path);
+                                                    });
+                                                }}
+                                            >
+                                                Upload Image
+                                            </Button>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="text-wrapper">
+                                    <span className="recomnd-text">Recommended Size: 70 x 70 px</span>
+                                    <span className="recomnd-text">Maximum size: 2 MB </span>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -48,6 +156,7 @@ export function PropertyRenderer() {
 
         const { use } = useArkReactServices();
         const { useService, useTableService } = use(Frontend);
+        const [isTenantIdAvailable, setIsTenantIdAvailable] = React.useState(false);
         const [tenantId, setTenantId] = React.useState("");
         const [isUserModalOpen, setIsUserModalOpen] = React.useState(false);
 
@@ -65,6 +174,14 @@ export function PropertyRenderer() {
         const userCancel = () => {
             setIsUserModalOpen(false);
         };
+
+        const disabledState = React.useMemo(() => {
+            return (
+                addTenantService.isLoading ||
+                availabilityCheckService?.response?.data === false ||
+                tenantId === ""
+            );
+        }, [addTenantService.isLoading, availabilityCheckService?.response?.data, tenantId]);
 
         const menu = (userId) => (
             <Menu >
@@ -101,31 +218,31 @@ export function PropertyRenderer() {
 
         const columns = [
             {
-                title: 'Roll No:',
                 key: 'rollno',
+                title: 'Sl No:',
                 render: (text, record, index) => index + 1,
             },
             {
+                key: 'name',
                 title: 'Name',
                 dataIndex: 'name',
-                key: 'name',
             },
             {
+                key: 'email',
                 title: 'Email',
                 dataIndex: 'email',
-                key: 'email',
                 responsive: ['md'],
             },
             {
+                key: 'tenantId',
                 title: 'Tenant ID',
                 dataIndex: 'tenantId',
-                key: 'tenantId',
                 responsive: ['md'],
             },
             {
+                key: 'x',
                 title: 'Action',
                 dataIndex: '',
-                key: 'x',
                 width: 100,
                 render: (data) =>
                 (
@@ -139,13 +256,13 @@ export function PropertyRenderer() {
         ];
 
 
-        // React.useEffect(() => {
-        //     listAllGroupsService.invoke({}, { force: true })
-        //         .then((res) => {
-        //         })
-        //         .catch(() => {
-        //         })
-        // }, []);
+        React.useEffect(() => {
+            listAllGroupsService.invoke({}, { force: true })
+                .then((res) => {
+                })
+                .catch(() => {
+                })
+        }, []);
 
         const hasGroupsLoaded = React.useMemo(() => {
             return listAllGroupsService.hasInitialized === true && listAllGroupsService.isLoading === false
@@ -158,13 +275,13 @@ export function PropertyRenderer() {
             return [];
         }, [hasGroupsLoaded, listAllGroupsService.response,]);
 
-        const adminGroup : any = React.useMemo(() => {
+        const adminGroup: any = React.useMemo(() => {
             return groups.find(group => group.groupTitle === 'ADMIN');
-          }, [groups]);
+        }, [groups]);
 
-          const initialValues = {
+        const initialValues = {
             groupId: adminGroup ? [adminGroup._id] : undefined
-          };
+        };
 
 
         React.useEffect(() => {
@@ -181,7 +298,6 @@ export function PropertyRenderer() {
             }
         }, [tenantId])
 
-
         const addNewTenant = (data) => {
             addTenantService.invoke({
                 name: data.name,
@@ -194,6 +310,9 @@ export function PropertyRenderer() {
                     setIsUserModalOpen(false);
                     tenantForm.resetFields()
                     listTenants.onChange();
+                    // setIsTenantIdAvailable(false);
+                    setTenantId("")
+
                 })
                 .catch((e) => {
                 })
@@ -228,9 +347,9 @@ export function PropertyRenderer() {
                                 dataSource={listTenants.dataSource}
                                 columns={listTenants.columns}
                                 onChange={listTenants.onChange}
-                                loading={listTenants.loading} 
+                                loading={listTenants.loading}
                                 pagination={listTenants.pagination}
-                                />
+                            />
                         </div>
                     </div>
                 </Col>
@@ -317,7 +436,7 @@ export function PropertyRenderer() {
                                     mode="multiple"
                                     showArrow
                                     style={{ width: '100%' }}
-                                    options={groups.map((item : any) => ({ label: item.groupTitle, value: item._id }))}
+                                    options={groups.map((item: any) => ({ label: item.groupTitle, value: item._id }))}
                                 />
                             </Form.Item>
                         </div>
@@ -330,7 +449,7 @@ export function PropertyRenderer() {
                         }}>
                             <Form.Item
                             >
-                                <Button className="create-btn" htmlType="submit" disabled={addTenantService.isLoading || availabilityCheckService?.response?.data === false || tenantId === ""}>
+                                <Button className="create-btn" htmlType="submit" disabled={disabledState}>
                                     {addTenantService.isLoading === true ? (
                                         <>
                                             <LoadingOutlined style={{ marginRight: 5 }} />
@@ -357,6 +476,11 @@ export function PropertyRenderer() {
         //     key: '2',
         //     label: `Tenants`,
         //     children: <TenantsInformation />
+        // },
+        // {
+        //     key: '3',
+        //     label: `Enrolled Users`,
+        //     children: <EnrolledUsersInformation />
         // }
     ];
 

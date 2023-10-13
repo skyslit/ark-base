@@ -7,11 +7,15 @@ import { RightArrowIcon, SkyslitColorFullLogoIcon } from "../icons/global-icons"
 import { LoadingOutlined } from "@ant-design/icons";
 import "../styles/loginv2.scss"
 import CompanyLogo from "../assets/images/company-logo.png";
+import { generateFileLink } from '@skyslit/ark-frontend/build/dynamics-v2/widgets/catalogue';
+
 
 export default createComponent((props) => {
     const { useService, useContext } = props.use(Frontend);
     const context = useContext();
-    const history = useHistory()
+    const history = useHistory();
+    const { useFolder } = props.use(Frontend);
+    const { readFile } = useFolder();
 
     const CheckForExistingEmailService = useService({ serviceId: "check-for-existing-email" });
     const loginService = useService({ serviceId: "user-login-v2-service" });
@@ -26,6 +30,14 @@ export default createComponent((props) => {
     const [isEmailValidated, seIsEmailValidated] = React.useState(true)
     const [isClosing, setIsClosing] = React.useState(false);
 
+    const [orgDetails, setOrgDetails] = React.useState();
+
+    React.useEffect(() => {
+        readFile("/info").then((res) => {
+            console.log("res",res)
+            setOrgDetails(res?.meta?.content);
+        });
+    }, []);
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
@@ -174,7 +186,7 @@ export default createComponent((props) => {
         <div className="login-wrapper">
             <div className='logo-icon-wrapper'>
                 {/* <SkyslitColorFullLogoIcon style={{ fontSize: 33 }} /> */}
-                <img src={CompanyLogo} width={140}></img>
+                <img src={generateFileLink(orgDetails?.marketinglogo)} width={140}></img>
             </div> 
             <div style={{ paddingBottom: currentState === "signUp" ? 25 : "" }} className="card-wrapper" >
                 <h3 className="heading">{currentState === "login" ? "Sign in" : currentState === "signUp" ? "Create new account" : "Sign in"}</h3>

@@ -177,6 +177,23 @@ export default createModule(({ use, run }) => {
       },
       {
         parentPath: "/",
+        name: "uploads",
+        type: "folder",
+        meta: {},
+        security: {
+          // @ts-ignore
+          permissions: [
+            {
+              type: "public",
+              policy: "",
+              userEmail: "",
+              access: "read",
+            },
+          ],
+        },
+      },
+      {
+        parentPath: "/",
         name: "dashboards",
         type: "folder",
         meta: {},
