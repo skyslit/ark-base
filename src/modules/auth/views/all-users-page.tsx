@@ -40,9 +40,10 @@ export default createComponent((props) => {
                 );
             },
             render: (user: any, row: any) => {
+                console.log("data",row)
                 return (
                     <>
-                        <Link className="allUserstable-name" to={`/users/${(row as any)._id}`} style={{ color: "black" }}>{user}</Link>
+                        <Link className="allUserstable-name" to={`/app/users/${(row as any)._id}`} style={{ color: "black" }}>{user || row.email}</Link>
                     </>
                 )
             }
@@ -151,7 +152,7 @@ export default createComponent((props) => {
                     <Row style={{ paddingBottom: 50 }} justify="center">
                         <Col className="all-users-main" span={22}>
                             <div className="back-button-div">
-                                <Link to={"app/users"} className="back-btn">
+                                <Link to={"/app/users"} className="back-btn">
                                     <ArrowLeftOutlined />
                                     <span className="back-btn-text">Back to Dashboard</span>
                                 </Link>

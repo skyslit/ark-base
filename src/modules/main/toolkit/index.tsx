@@ -74,18 +74,18 @@ export function initialiseToolkit() {
     fileSchema: PropertySchema,
   });
 
-  controller.defineType("settings", {
-    name: "Settings",
-    toolkit: {
-      Renderer() {
-        return (
-          <FileEditor>
-            <SettingsRenderer />
-          </FileEditor>
-        );
-      },
-    },
-    fileCollectionName: "settings",
-    fileSchema: SettingsSchema,
-  });
+  // controller.defineType("settings", {
+  //   name: "Settings",
+  //   toolkit: {
+  //     Renderer() {
+  //       return (
+  //         <FileEditor>
+  //           <SettingsRenderer />
+  //         </FileEditor>
+  //       );
+  //     },
+  //   },
+  //   fileCollectionName: "settings",
+  //   fileSchema: SettingsSchema,
+  // });
 }

@@ -27,14 +27,27 @@ export default defineService("add-new-tenant", (props) => {
 
         const newTenant = tenantSlug(tenantId);
         await new Promise(async (operationComplete, error) => {
-            addItem('default', `/`, "Tenants", 'folder', {}, {}, undefined, undefined, 'supress')
+            addItem('default', `/`, "Tenants", 'folder', {}, {
+                permissions: [
+                    { type: 'public', policy: '', access: 'read', userEmail: "" },
+                ],
+            }, undefined, undefined, 'supress')
                 .then(() => {
                     addItem('default', `/tenants`, newTenant, 'folder', {}, {}, undefined, undefined, 'supress').then(() => {
                         addItem('default', `/tenants/${newTenant.toLowerCase()}`, "global", 'folder', {}, {}, undefined, undefined, 'supress').then(() => {
                             addItem('default', `/tenants/${newTenant.toLowerCase()}/global`, "dashboards", 'folder', {}, {}, undefined, undefined, 'supress').then(() => {
                                 addItem('default', `/tenants/${newTenant.toLowerCase()}/global/dashboards`, "default", 'dashboard', {}, {}, undefined, undefined, 'supress').then(() => {
-                                    addItem('default', `/tenants/${newTenant.toLowerCase()}`, "info", 'settings', {}, {}, undefined, undefined, 'supress').then(() => {
+                                    addItem('default', `/tenants/${newTenant.toLowerCase()}`, "info", 'settings', {}, {
+                                        permissions: [
+                                            { type: 'public', policy: '', access: 'read', userEmail: "" },
+                                        ],
+                                    }, undefined, undefined, 'supress').then(() => {
                                         addItem('default', `/tenants/${newTenant.toLowerCase()}`, "users", 'folder', {}, {}, undefined, undefined, 'supress').then(() => {
+                                            addItem('default', `/tenants/${newTenant.toLowerCase()}`, "uploads", 'folder', {}, {
+                                                permissions: [
+                                                    { type: 'public', policy: '', access: 'read', userEmail: "" },
+                                                ],
+                                            }, undefined, undefined, 'supress')
                                         })
                                     })
                                 })

@@ -43,6 +43,30 @@ export default defineService("user-login-v2-service", (props) => {
                                     ).replace("??", "?");
                                 }
 
+                                const folderApi = useFolderOperations();
+                                folderApi
+                                  .addItem(
+                                    "default",
+                                    "/users",
+                                    email,
+                                    "folder",
+                                    {},
+                                    {
+                                      permissions: [
+                                        {
+                                          type: "user",
+                                          policy: "",
+                                          userEmail: email,
+                                          access: "owner",
+                                        },
+                                      ],
+                                    },
+                                    false,
+                                    undefined,
+                                    "supress",
+                                    true
+                                  )
+
                                 operationComplete(true);
                             } else {
                                 error({ message: "Email/Password does not match" });
