@@ -1,3 +1,4 @@
+import { initialiseEnquiry } from "./enquiry";
 export function initialiseCustomTypes() {
-  /** Initialise custom types below */
+  initialiseEnquiry()
 }

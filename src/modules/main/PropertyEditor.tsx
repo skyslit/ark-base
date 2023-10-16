@@ -6,7 +6,7 @@ import { Input, Row, Col, Button, Tabs, Select, Menu, Grid, Form, Divider } from
 import { Space, Table, Tag, Dropdown, Modal, message } from 'antd';
 import Placeholder from "./assets/images/placeholder.jpg";
 import { createSchema } from '@skyslit/ark-frontend/build/dynamics-v2';
-import "./PropertyEditor.scss"
+import "./PropertyEditor.scss";
 import type { TabsProps } from 'antd';
 import { useState, useEffect } from 'react';
 import { useParams, useHistory } from "react-router-dom";
