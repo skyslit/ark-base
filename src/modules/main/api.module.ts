@@ -65,11 +65,14 @@ import createWebspaceVolume from "./toolkit/providers/webspace-blob";
 import { createWSEmailProvider } from "./toolkit/providers/ws-email";
 import { loadEmailTemplate } from "./toolkit/helpers/loadEmailTemplate";
 
+import { EnquiryMetaSyncAutomator } from "./custom-types/enquiry/automation/metasync-automation";
+
+
 export default createModule(({ use, run }) => {
   const { useModel, useVolume, useFolderOperations } = use(Data);
   const { enableDynamicsV2Services, useService } = use(Backend);
   const { enableCommunication, useProvider } = use(Communication);
-  
+
   enableCommunication();
   useProvider(createWSEmailProvider());
 
@@ -156,7 +159,9 @@ export default createModule(({ use, run }) => {
   enableDynamicsV2Services();
 
   run(async () => {
-    const { ensurePaths } = useFolderOperations();
+    const { ensurePaths, defineAutomation } = useFolderOperations();
+
+    defineAutomation('default', 'enquiry', EnquiryMetaSyncAutomator)
     await ensurePaths("default", [
       {
         parentPath: "/",
@@ -188,6 +193,23 @@ export default createModule(({ use, run }) => {
               policy: "",
               userEmail: "",
               access: "read",
+            },
+          ],
+        },
+      },
+      {
+        parentPath: "/",
+        name: "Enquiries",
+        type: "folder",
+        meta: {},
+        security: {
+          // @ts-ignore
+          permissions: [
+            {
+              type: "public",
+              policy: "",
+              userEmail: "",
+              access: "write",
             },
           ],
         },
