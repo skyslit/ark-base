@@ -82,6 +82,7 @@ export default createComponent((props) => {
     const [groups, setGroups] = React.useState(null);
     const [isTenantIdAvailable, setIsTenantIdAvailable] = React.useState(false);
     const [tenantId, setTenantId] = React.useState("");
+    const [show, setShow] = React.useState(false);
 
 
     const context = useContext();
@@ -376,9 +377,21 @@ export default createComponent((props) => {
         <LoadingOutlined style={{ fontSize: 30, color: "#4c91c9" }} spin />
     );
 
+    React.useEffect(() => {
+        setShow(true);
+        const handleBeforeUnload = () => {
+            setShow(false);
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
+
     if (showAllGroupsService && listUserDetailsService.isLoading) {
         return (
             <div
+                className={`${show ? 'fade-enter-active' : 'fade-exit-active'}`}
                 style={{
                     backgroundColor: "#F8F8F8",
                     height: "100vh",
@@ -397,8 +410,8 @@ export default createComponent((props) => {
             <Helmet>
                 <title> Settings | Account </title>
             </Helmet>
-            <Fade duration={700}>
-                <div className="account-settings-layout">
+            <Fade>
+                <div className={`account-settings-layout ${show ? 'fade-enter-active' : 'fade-exit-active'}`}>
                     <div className="content-wrapper">
                         <Row justify="center" >
                             <Col span={22} className="main-col" >
@@ -419,55 +432,14 @@ export default createComponent((props) => {
                                     <div><Typography.Text style={{ fontWeight: "500" }}>
                                         Basic Information
                                     </Typography.Text></div>
-                                    <div className="basic-info-name-section">
-                                        <div className="basic-sub">
-                                            <div style={{ display: "flex" }}>
-                                                <img className="name-img" src={NameLogo} style={{ width: 40, height: 40 }}></img>
-                                                <Typography.Text ellipsis={true} className="name-text">Name</Typography.Text>
-                                            </div>
-                                            <div className={
-                                                editName === true ? "edit-name-section-sm" : "edit-name-section-hide-sm"
-                                            }>
-                                                <Form name="name" onFinish={updateName} form={nameForm}
-                                                    onValuesChange={(changedFields, allFields) => {
-                                                        if (
-                                                            allFields.name !== "" &&
-                                                            allFields.name !== undefined
-                                                        ) {
-                                                            setNameDisabled(false);
-                                                        } else {
-                                                            setNameDisabled(true);
-                                                        }
-                                                    }}
-                                                >
-                                                    <Form.Item name="name" >
-                                                        <Input className="input-section-sm" />
-                                                    </Form.Item>
-                                                </Form>
-                                                <div style={{ display: "flex", justifyContent: "end", marginTop: 18 }}>
-                                                    <button className="save-btn-sm" form="name" htmlType="submit" disabled={updateNameService.isLoading || nameDisabled}>
-                                                        {updateNameService.isLoading === true ? (
-                                                            <>
-                                                                <LoadingOutlined style={{ marginRight: 5 }} />
-                                                                Saving...
-                                                            </>
-                                                        ) : (
-                                                            "Save"
-                                                        )}</button></div>
-                                                <button className="close-btn-sm" onClick={triggerEditName}> <CloseOutlined className="close-icon" />
-                                                </button>
-                                            </div>
+                                    {/* <div className="basic-info-name-section">
+                                    <div className="basic-sub">
+                                        <div style={{ display: "flex" }}>
+                                            <img className="name-img" src={NameLogo} style={{ width: 40, height: 40 }}></img>
+                                            <Typography.Text ellipsis={true} className="name-text">Name</Typography.Text>
                                         </div>
                                         <div className={
-                                            editName === false ? "basic-sub2" : "basic-sub2-hide"
-                                        }>
-                                            <Typography.Text ellipsis={true} className="user-name">
-                                                {userDetails ? userDetails.name ? userDetails.name : <span style={{ fontStyle: "Italic", fontWeight: "400" }}>Enter your name</span> : <span style={{ fontStyle: "Italic", fontWeight: "400" }}>Enter your name</span>}
-                                            </Typography.Text>
-                                            <button className="edit-btn" onClick={triggerEditName}><img className="edit-img" src={EditIcon}></img></button>
-                                        </div>
-                                        <div className={
-                                            editName === true ? "edit-name-section" : "edit-name-section-hide"
+                                            editName === true ? "edit-name-section-sm" : "edit-name-section-hide-sm"
                                         }>
                                             <Form name="name" onFinish={updateName} form={nameForm}
                                                 onValuesChange={(changedFields, allFields) => {
@@ -482,11 +454,11 @@ export default createComponent((props) => {
                                                 }}
                                             >
                                                 <Form.Item name="name" >
-                                                    <Input className="input-section" />
+                                                    <Input className="input-section-sm" />
                                                 </Form.Item>
                                             </Form>
-                                            <div style={{ width: "60%", display: "flex", justifyContent: "end", marginTop: 18 }}>
-                                                <button className="save-btn" form="name" htmlType="submit" disabled={updateNameService.isLoading || nameDisabled}>
+                                            <div style={{ display: "flex", justifyContent: "end", marginTop: 18 }}>
+                                                <button className="save-btn-sm" form="name" htmlType="submit" disabled={updateNameService.isLoading || nameDisabled}>
                                                     {updateNameService.isLoading === true ? (
                                                         <>
                                                             <LoadingOutlined style={{ marginRight: 5 }} />
@@ -495,10 +467,51 @@ export default createComponent((props) => {
                                                     ) : (
                                                         "Save"
                                                     )}</button></div>
-                                            <button className="close-btn" onClick={triggerEditName}> <CloseOutlined className="close-icon" />
+                                            <button className="close-btn-sm" onClick={triggerEditName}> <CloseOutlined className="close-icon" />
                                             </button>
                                         </div>
                                     </div>
+                                    <div className={
+                                        editName === false ? "basic-sub2" : "basic-sub2-hide"
+                                    }>
+                                        <Typography.Text ellipsis={true} className="user-name">
+                                            {userDetails ? userDetails.name ? userDetails.name : <span style={{ fontStyle: "Italic", fontWeight: "400" }}>Enter your name</span> : <span style={{ fontStyle: "Italic", fontWeight: "400" }}>Enter your name</span>}
+                                        </Typography.Text>
+                                        <button className="edit-btn" onClick={triggerEditName}><img className="edit-img" src={EditIcon}></img></button>
+                                    </div>
+                                    <div className={
+                                        editName === true ? "edit-name-section" : "edit-name-section-hide"
+                                    }>
+                                        <Form name="name" onFinish={updateName} form={nameForm}
+                                            onValuesChange={(changedFields, allFields) => {
+                                                if (
+                                                    allFields.name !== "" &&
+                                                    allFields.name !== undefined
+                                                ) {
+                                                    setNameDisabled(false);
+                                                } else {
+                                                    setNameDisabled(true);
+                                                }
+                                            }}
+                                        >
+                                            <Form.Item name="name" >
+                                                <Input className="input-section" />
+                                            </Form.Item>
+                                        </Form>
+                                        <div style={{ width: "60%", display: "flex", justifyContent: "end", marginTop: 18 }}>
+                                            <button className="save-btn" form="name" htmlType="submit" disabled={updateNameService.isLoading || nameDisabled}>
+                                                {updateNameService.isLoading === true ? (
+                                                    <>
+                                                        <LoadingOutlined style={{ marginRight: 5 }} />
+                                                        Saving...
+                                                    </>
+                                                ) : (
+                                                    "Save"
+                                                )}</button></div>
+                                        <button className="close-btn" onClick={triggerEditName}> <CloseOutlined className="close-icon" />
+                                        </button>
+                                    </div>
+                                </div> */}
 
                                     <div className="basic-info-email-section">
                                         <div className="basic-sub">
@@ -556,7 +569,7 @@ export default createComponent((props) => {
                                             <Typography.Text ellipsis={true} className="user-email">
                                                 {userDetails ? userDetails.email : ""}
                                             </Typography.Text>
-                                            <button className="edit-btn" onClick={triggerEditEmail}><img className="edit-img" src={EditIcon}></img></button>
+                                            {/* <button className="edit-btn" onClick={triggerEditEmail}><img className="edit-img" src={EditIcon}></img></button> */}
                                         </div>
                                         <div className={
                                             showEditEmail === true ? "edit-email-section" : "edit-email-section-hide"
@@ -806,12 +819,12 @@ export default createComponent((props) => {
                                             maskClosable: true,
                                             title: "Logout Confirmation",
                                             content: " Are you sure you want to logout?",
-                                            okText: logoutService.isLoading ? "Logging out..": "Logout",
-                                            okButtonProps:{disabled:logoutService.isLoading},
+                                            okText: logoutService.isLoading ? "Logging out.." : "Logout",
+                                            okButtonProps: { disabled: logoutService.isLoading },
                                             onOk: () => {
                                                 localStorage.removeItem('selectedTenant');
                                                 logoutUser();
-                                            }                                                                               
+                                            }
                                         });
                                     }}>Logout</Button></div>
                             </Col>
