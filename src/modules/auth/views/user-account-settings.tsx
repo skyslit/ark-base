@@ -411,8 +411,8 @@ export default createComponent((props) => {
                 <title> Settings | Account </title>
             </Helmet>
             <Fade>
-                <div className={`account-settings-layout ${show ? 'fade-enter-active' : 'fade-exit-active'}`}>
-                    <div className="content-wrapper">
+                <div className={`account-settings-layout ${show ? 'fade-enter-active' : 'fade-exit-active'}`} style={{ height: "100%" }}>
+                    <div className="content-wrapper" style={{ paddingBottom: "unset" }}>
                         <Row justify="center" >
                             <Col span={22} className="main-col" >
                                 <div className="profile-wrapper">
