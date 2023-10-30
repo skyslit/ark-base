@@ -9,12 +9,10 @@ import "../styles/loginv2.scss"
 import CompanyLogo from "../assets/images/company-logo.png";
 import { generateFileLink } from '@skyslit/ark-frontend/build/dynamics-v2/widgets/catalogue';
 
-
 export default createComponent((props) => {
-    const { useService, useContext } = props.use(Frontend);
+    const { useService, useContext, useFolder } = props.use(Frontend);
     const context = useContext();
-    const history = useHistory();
-    const { useFolder } = props.use(Frontend);
+    const history = useHistory()
     const { readFile } = useFolder();
 
     const CheckForExistingEmailService = useService({ serviceId: "check-for-existing-email" });
@@ -29,15 +27,8 @@ export default createComponent((props) => {
     const [currentState, setCurrentState] = React.useState('default')
     const [isEmailValidated, seIsEmailValidated] = React.useState(true)
     const [isClosing, setIsClosing] = React.useState(false);
-
-    const [orgDetails, setOrgDetails] = React.useState();
-
-    React.useEffect(() => {
-        readFile("/info").then((res) => {
-            console.log("res",res)
-            setOrgDetails(res?.meta?.content);
-        });
-    }, []);
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [organisationDetails, setOrganisationDetails] = React.useState({});
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
@@ -60,6 +51,9 @@ export default createComponent((props) => {
             validatePassword(newPassword);
         }
     };
+
+    const urlSearchParams = new URLSearchParams(history.location.search);
+    const redirectUrl = urlSearchParams.get('url');
 
     const CheckForExistingEmail = React.useCallback(() => {
         setIsClosing(true)
@@ -84,6 +78,7 @@ export default createComponent((props) => {
 
     const _login = () => {
         setIsClosing(true)
+        setIsLoading(true)
         loginService
             .invoke(
                 {
@@ -98,13 +93,19 @@ export default createComponent((props) => {
                     window.location.replace(res?.meta?.redirectUri);
                 } else {
                     localStorage.removeItem('selectedTenant');
-                    window.location.reload()
+                    localStorage.removeItem('userEmail');
+                    if (redirectUrl) {
+                        window.location.href = redirectUrl
+                    } else {
+                        window.location.reload()
+                    }
                     context.invoke({}, { force: true });
                     // history.push("/account/settings")
                 }
             })
             .catch((e) => {
                 message.error(e.message)
+                setIsLoading(false)
             });
     };
 
@@ -163,6 +164,12 @@ export default createComponent((props) => {
         adminValidation();
     }, []);
 
+    React.useEffect(() => {
+        readFile(`/info`).then((res) => {
+            setOrganisationDetails(res.meta.content)
+        })
+    }, [])
+
     const antIcon = (
         <LoadingOutlined style={{ fontSize: 30, color: "#4c91c9" }} spin />
     );
@@ -182,12 +189,15 @@ export default createComponent((props) => {
         );
     }
 
+
+
     return (
         <div className="login-wrapper">
             <div className='logo-icon-wrapper'>
                 {/* <SkyslitColorFullLogoIcon style={{ fontSize: 33 }} /> */}
-                <img src={generateFileLink(orgDetails?.marketinglogo)} width={140}></img>
-            </div> 
+                {/* <img src={CompanyLogo} width={140}></img> */}
+                <img src={generateFileLink(`${organisationDetails.marketinglogo}`)} style={{ width: "140px", objectFit: "contain" }} />
+            </div>
             <div style={{ paddingBottom: currentState === "signUp" ? 25 : "" }} className="card-wrapper" >
                 <h3 className="heading">{currentState === "login" ? "Sign in" : currentState === "signUp" ? "Create new account" : "Sign in"}</h3>
                 <span className="signin-description">{currentState === "signUp" ? "Set a new password to finalise" : "Enter your email to login or sign up"}</span>
@@ -259,7 +269,7 @@ export default createComponent((props) => {
                                 </Button>
                             )
                         ) : currentState === "login" ? (
-                            loginService.isLoading ? (
+                            loginService.isLoading || isLoading ? (
                                 <LoadingOutlined style={{ fontSize: 30, color: "#222222" }} />
                             ) : (
                                 <Button className="continue-btn" type="text" block disabled={!email || !password || loginService.isLoading} onClick={_login} >
