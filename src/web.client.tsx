@@ -91,7 +91,7 @@ export default createReactApp(({ use, useModule }) => {
       Route: useComponent("protectedRoute"),
     },
     {
-      path: "/",
+      path: "*",
       hideInMenu: true,
       component: useComponent("main/welcome-page"),
       // Route: useComponent("protectedRoute"),
